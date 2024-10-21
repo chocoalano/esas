@@ -10,6 +10,7 @@ class Empcard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(HomeController());
+    controller.setAccount();
     return Row(
       children: [
         CircleAvatar(
