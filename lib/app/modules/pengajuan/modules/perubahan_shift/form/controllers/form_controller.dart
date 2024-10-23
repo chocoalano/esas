@@ -4,6 +4,7 @@ import 'package:esas/app/modules/pengajuan/modules/perubahan_shift/models/hrd_op
 import 'package:esas/app/modules/pengajuan/modules/perubahan_shift/models/line_options_model.dart';
 import 'package:esas/app/networks/api/pengajuan/api_perubahan_shift.dart';
 import 'package:esas/constant.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../models/group_absensi_model.dart';
 import '../../models/shift_model.dart';
@@ -18,29 +19,32 @@ class FormController extends GetxController {
   var lineOptions = <LineOptionsModel>[].obs;
 
   // Observables untuk data form
-  var date = ''.obs;
-  var currentGroup = 0.obs;
-  var currentShift = 0.obs;
-  var adjustShift = 0.obs;
-  var status = 'w'.obs;
-  var lineId = 0.obs;
-  var lineApprove = 'w'.obs;
-  var hrId = 0.obs;
-  var hrApprove = 'w'.obs;
+  late final TextEditingController date;
+  late final TextEditingController currentGroup;
+  late final TextEditingController currentShift;
+  late final TextEditingController adjustShift;
+  late final TextEditingController lineId;
+  late final TextEditingController hrId;
 
   @override
   void onInit() {
     fetchKelengkapan();
     super.onInit();
+    date = TextEditingController();
+    currentGroup = TextEditingController();
+    currentShift = TextEditingController();
+    adjustShift = TextEditingController();
+    lineId = TextEditingController();
+    hrId = TextEditingController();
   }
 
-  Future<void> fetchCurrentShift() async {
+  Future<void> fetchCurrentShift(String date) async {
     isLoading(true);
     try {
-      final response = await provider.fetchSchedule(date.value);
+      final response = await provider.fetchSchedule(date);
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
-      currentGroup(fetch['groupAttendanceId'] ?? 0);
-      currentShift(fetch['timeAttendanceId'] ?? 0);
+      currentGroup.text = fetch['groupAttendanceId'] ?? '0';
+      currentShift.text = fetch['timeAttendanceId'] ?? '0';
     } catch (e) {
       showErrorSnackbar(e.toString());
     } finally {
@@ -95,39 +99,24 @@ class FormController extends GetxController {
   /// Method untuk mengirim data form ke backend.
   Future<void> submitForm() async {
     final formData = {
-      'userId': 328, // Ambil ID user dari akun
-      'date': date.value,
-      'currentGroup': currentGroup.value,
-      'currentShift': currentShift.value,
-      'adjustShift': adjustShift.value,
-      'status': status.value,
-      'lineId': lineId.value,
-      'lineApprove': lineApprove.value,
-      'hrId': hrId.value,
-      'hrApprove': hrApprove.value,
+      'date': date.text,
+      'currentGroup': currentGroup.text,
+      'currentShift': currentShift.text,
+      'adjustShift': adjustShift.text,
+      'status': 'w',
+      'lineId': lineId.text,
+      'lineApprove': 'w',
+      'hrId': hrId.text,
+      'hrApprove': 'w',
     };
     isLoading(true);
     try {
       await provider.submitCreate(formData);
       showSuccessSnackbar('Data berhasil ditambahkan');
-      resetForm();
     } catch (e) {
       showErrorSnackbar(e.toString());
     } finally {
       isLoading(false);
     }
-  }
-
-  /// Method untuk mereset nilai form ke default.
-  void resetForm() {
-    date.value = '';
-    currentGroup.value = 0;
-    currentShift.value = 0;
-    adjustShift.value = 0;
-    status.value = 'w';
-    lineId.value = 0;
-    lineApprove.value = 'w';
-    hrId.value = 0;
-    hrApprove.value = 'w';
   }
 }

@@ -114,32 +114,12 @@ class FormController extends GetxController {
     }
   }
 
-  bool validateForms() {
-    for (var form in formList) {
-      if (form['userIdCreated'] == 0 ||
-          form['organizationId'] == 0 ||
-          form['jobPositionId'] == 0 ||
-          form['userAdm'] == 0 ||
-          form['userLine'] == 0 ||
-          form['userGm'] == 0 ||
-          form['userHr'] == 0 ||
-          form['userDirector'] == 0 ||
-          form['userFat'] == 0) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  Future<void> submitForm() async {
+  Future<void> submitForm(int index) async {
     isLoading.value = true;
     try {
-      if (validateForms()) {
-        await _provider.submitCreate(formList);
-        showSuccessSnackbar('Data berhasil disimpan');
-      } else {
-        showErrorSnackbar('Form harus dilengkapi!');
-      }
+      print(formList[index]);
+      // await _provider.submitCreate(formList);
+      // showSuccessSnackbar('Data berhasil disimpan');
     } catch (e) {
       showErrorSnackbar(e.toString());
     } finally {

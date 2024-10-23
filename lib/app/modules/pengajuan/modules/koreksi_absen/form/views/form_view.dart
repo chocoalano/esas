@@ -1,12 +1,11 @@
+import 'package:esas/app/modules/pengajuan/widget/date_field_widget.dart';
+import 'package:esas/app/modules/pengajuan/widget/dropdown_field_widget.dart';
+import 'package:esas/app/modules/pengajuan/widget/text_field_widget.dart';
+import 'package:esas/app/modules/pengajuan/widget/time_field_widget.dart';
 import 'package:esas/components/btn_action.dart';
-import 'package:esas/components/forms/date_picker.dart';
-import 'package:esas/components/forms/select_options.dart';
-import 'package:esas/components/forms/text_area.dart';
-import 'package:esas/components/forms/time_picker.dart';
 import 'package:esas/components/globat_appbar.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 import 'package:get/get.dart';
 
@@ -17,6 +16,7 @@ class FormView extends GetView<FormController> {
   const FormView({super.key});
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -34,21 +34,25 @@ class FormView extends GetView<FormController> {
           title: 'Form Koreksi Absen',
           act: () => Get.offAllNamed('/pengajuan/koreksi-absen/list'),
         ),
-        body: SingleChildScrollView(
+        body: Form(
+          key: _formKey,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: FormBuilder(
-              key: controller.formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DatePickerComponent(
-                      name: 'date',
-                      selectedDate: controller.selectedDate,
-                      primaryColor: primaryColor,
-                      label: 'Pilih tanggal diajukan',
-                      onChanged: (value) {
-                        controller.selectDate(value);
+            child: Obx(() => ListView(children: [
+                  DateFieldWidget(
+                      controller: controller.dateAdjustment,
+                      hintText: 'Pilih tanggal mulai',
+                      icon: Icons.calendar_today,
+                      context: context,
+                      fillColor: primaryColor.withOpacity(0.1),
+                      borderRadius: 15.0,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                      onDateSelected: (date) {
+                        controller.dateAdjustment.text = date;
+                        controller.fetchAttendanceForDate(
+                            controller.dateAdjustment.text);
                       }),
                   const SizedBox(height: 16),
                   const Divider(),
@@ -61,96 +65,143 @@ class FormView extends GetView<FormController> {
                   const SizedBox(height: 16),
                   const Divider(),
                   const SizedBox(height: 16),
-                  TimePickerComponent(
-                    name: 'time_in',
-                    labelText: 'Pilih Waktu Masuk',
-                    selectedTime: controller.selectedTimeIn,
-                    controller: controller.timeInController,
-                    primaryColor: primaryColor,
-                    isTimeIn: true,
+                  TimeFieldWidget(
+                    controller: controller.timeinAdjustment,
+                    hintText: 'Pilih waktu masuk diajukan',
+                    icon: Icons.access_alarm,
+                    context: context,
+                    fillColor: primaryColor.withOpacity(0.1),
+                    borderRadius: 15.0,
+                    initialTime: TimeOfDay.now(),
+                    onTimeSelected: (value) =>
+                        controller.timeinAdjustment.text = value,
                   ),
                   const SizedBox(height: 16),
-                  TimePickerComponent(
-                    name: 'time_out',
-                    labelText: 'Pilih Waktu Keluar',
-                    selectedTime: controller.selectedTimeOut,
-                    controller: controller.timeOutController,
-                    primaryColor: primaryColor,
-                    isTimeIn: false,
+                  TimeFieldWidget(
+                    controller: controller.timeoutAdjustment,
+                    hintText: 'Pilih waktu pulang diajukan',
+                    icon: Icons.access_alarm,
+                    context: context,
+                    fillColor: primaryColor.withOpacity(0.1),
+                    borderRadius: 15.0,
+                    initialTime: TimeOfDay.now(),
+                    onTimeSelected: (value) =>
+                        controller.timeoutAdjustment.text = value,
                   ),
                   const SizedBox(height: 16),
                   Obx(
-                    () => controller.lineApproval.isNotEmpty
-                        ? DropdownFieldComponent(
-                            label: 'Pilih Line Approval',
-                            items: controller.lineApproval.map((line) {
-                              return DropdownMenuItem<int>(
-                                value: line.id,
-                                child: Text(line.name ?? ''),
-                              );
-                            }).toList(),
-                            value: controller.selectedLine.value,
-                            onChanged: (value) {
-                              controller.selectedLine.value = value!;
-                            },
-                            primaryColor: primaryColor,
-                          )
-                        : const Center(
+                    () => controller.isLoading.isTrue
+                        ? const Center(
                             child: CircularProgressIndicator(
                               color: primaryColor,
                             ),
+                          )
+                        : DropdownFieldWidget(
+                            label: 'Pilih approval LIne',
+                            icon: Icons.account_circle_outlined,
+                            value: controller.lineId.text.isNotEmpty &&
+                                    controller.lineApproval
+                                        .contains(controller.lineId.text)
+                                ? controller.lineId.text
+                                : null, // Ensure value is valid and exists in the list
+                            items: controller.lineApproval.toSet().map((item) {
+                              return DropdownMenuItem<String>(
+                                value: item.id.toString(),
+                                child: SizedBox(
+                                  width: Get.width / 1.5,
+                                  child: Text(
+                                    item.name!,
+                                    overflow: TextOverflow.visible,
+                                    softWrap: true,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                controller.lineId.text = value;
+                              }
+                            },
+                            fillColor: primaryColor.withOpacity(0.1),
+                            borderRadius: 10.0,
                           ),
                   ),
                   const SizedBox(height: 16),
                   Obx(
-                    () => controller.hrApproval.isNotEmpty
-                        ? DropdownFieldComponent(
-                            label: 'Pilih HRD Approval',
-                            items: controller.hrApproval.map((hr) {
-                              return DropdownMenuItem<int>(
-                                value: hr.id,
-                                child: Text(hr.name ?? ''),
-                              );
-                            }).toList(),
-                            value: controller.selectedHrd.value,
-                            onChanged: (value) {
-                              controller.selectedHrd.value = value!;
-                            },
-                            primaryColor: primaryColor,
-                          )
-                        : const Center(
+                    () => controller.isLoading.isTrue
+                        ? const Center(
                             child: CircularProgressIndicator(
                               color: primaryColor,
                             ),
+                          )
+                        : DropdownFieldWidget(
+                            label: 'Pilih approval HR',
+                            icon: Icons.account_circle_outlined,
+                            value: controller.hrId.text.isNotEmpty &&
+                                    controller.hrApproval
+                                        .contains(controller.hrId.text)
+                                ? controller.hrId.text
+                                : null, // Ensure value is valid and exists in the list
+                            items: controller.hrApproval.toSet().map((item) {
+                              return DropdownMenuItem<String>(
+                                value: item.id.toString(),
+                                child: SizedBox(
+                                  width: Get.width / 1.5,
+                                  child: Text(
+                                    item.name!,
+                                    overflow: TextOverflow.visible,
+                                    softWrap: true,
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              if (value != null) {
+                                controller.hrId.text = value;
+                              }
+                            },
+                            fillColor: primaryColor.withOpacity(0.1),
+                            borderRadius: 10.0,
                           ),
                   ),
-                  const SizedBox(height: 16),
-                  TextAreaComponent(
-                    controller: controller.notesController,
-                    labelText: 'Keterangan',
-                    name: 'notes',
-                    notes: controller.notes,
+                  const SizedBox(
+                    height: 16,
                   ),
-                  const SizedBox(height: 20),
-                  BtnAction(
+                  TextFieldWidget(
+                    controller: controller.notes,
+                    label: "Keterangan",
+                    icon: Icons.description,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Keterangan tidak boleh kosong';
+                      }
+                      return null;
+                    },
+                    fillColor:
+                        primaryColor.withOpacity(0.1), // Optional customization
+                    borderRadius: 10.0, // Optional customization
+                  )
+                ])),
+          ),
+        ),
+        bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Obx(() => BtnAction(
                     act: () {
-                      if (controller.formKey.currentState?.saveAndValidate() ??
-                          false) {
+                      if (_formKey.currentState?.validate() ?? false) {
                         controller.submitRequest();
-                      } else {
-                        showErrorSnackbar('Tolong lengkapi form anda!');
                       }
                     },
                     color: primaryColor,
                     icon: Icons.save,
                     isLoading: controller.isLoading,
-                    title: 'Ajukan koreksi absen',
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
+                    title: controller.isLoading.isFalse
+                        ? 'Ajukan permintaan'
+                        : 'proses',
+                  )),
+            )),
       ),
     );
   }

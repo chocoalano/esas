@@ -1,10 +1,10 @@
+import 'package:esas/app/modules/pengajuan/widget/date_field_widget.dart';
+import 'package:esas/app/modules/pengajuan/widget/dropdown_field_widget.dart';
 import 'package:esas/components/btn_action.dart';
 import 'package:esas/components/globat_appbar.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import '../controllers/form_controller.dart';
 
 class FormView extends GetView<FormController> {
@@ -12,6 +12,7 @@ class FormView extends GetView<FormController> {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -29,186 +30,278 @@ class FormView extends GetView<FormController> {
           title: 'Perubahan Shift',
           act: () => Get.offAllNamed('/pengajuan/perubahan-shift/list'),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FormBuilder(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDateField(),
-                const SizedBox(height: 16),
-                Obx(() {
-                  return controller.isLoading.isTrue
-                      ? const Center(child: CircularProgressIndicator())
-                      : Column(
-                          children: [
-                            Obx(() => _buildDropdown(
-                                  name: 'currentGroup',
-                                  label: 'Grup Saat Ini',
-                                  items: controller.groupAbsen.map((group) {
-                                    return DropdownMenuItem<int>(
-                                      value: group.id,
-                                      child: Text(group.name ?? ''),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      controller.currentGroup.value = value;
-                                    }
-                                  },
-                                  value: controller
-                                      .currentGroup, // Observe changes
-                                )),
-                            const SizedBox(height: 10),
-                            Obx(() => _buildDropdown(
-                                  name: 'currentShift',
-                                  label: 'Shift Saat Ini',
-                                  items: controller.shiftModel.map((shift) {
-                                    return DropdownMenuItem<int>(
-                                      value: shift.id,
-                                      child: Text(shift.type ?? ''),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      controller.currentShift.value = value;
-                                    }
-                                  },
-                                  value: controller
-                                      .currentShift, // Observe changes
-                                )),
-                            const SizedBox(height: 10),
-                            Obx(() => _buildDropdown(
-                                  name: 'adjustShift',
-                                  label: 'Shift Diajukan',
-                                  items: controller.shiftModel.map((shift) {
-                                    return DropdownMenuItem<int>(
-                                      value: shift.id,
-                                      child: Text(shift.type ?? ''),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      controller.adjustShift.value = value;
-                                    }
-                                  },
-                                  value:
-                                      controller.adjustShift, // Observe changes
-                                )),
-                            const SizedBox(height: 10),
-                            Obx(() => _buildDropdown(
-                                  name: 'lineId',
-                                  label: 'Approval line',
-                                  items: controller.lineOptions.map((line) {
-                                    return DropdownMenuItem<int>(
-                                      value: line.id,
-                                      child: Text(line.name ?? ''),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      controller.lineId.value = value;
-                                    }
-                                  },
-                                  value: controller.lineId, // Observe changes
-                                )),
-                            const SizedBox(height: 10),
-                            Obx(() => _buildDropdown(
-                                  name: 'hrId',
-                                  label: 'Approval HRD',
-                                  items: controller.hrdOptions.map((hr) {
-                                    return DropdownMenuItem<int>(
-                                      value: hr.id,
-                                      child: Text(hr.name ?? ''),
-                                    );
-                                  }).toList(),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      controller.hrId.value = value;
-                                    }
-                                  },
-                                  value: controller.hrId, // Observe changes
-                                )),
-                          ],
-                        );
-                }),
-                const SizedBox(height: 20),
-                BtnAction(
-                  act: () => controller.submitForm(),
-                  color: primaryColor,
-                  icon: Icons.save_alt_outlined,
-                  isLoading: controller.isLoading,
-                  title: 'Ajukan sekarang',
-                ),
-              ],
-            ),
-          ),
-        ),
+        body: Form(
+            key: _formKey,
+            child: Obx(() => Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(children: [
+                    DateFieldWidget(
+                      controller: controller.date,
+                      hintText: 'Pilih tanggal',
+                      icon: Icons.calendar_today,
+                      context: context,
+                      fillColor: primaryColor.withOpacity(0.1),
+                      borderRadius: 10.0,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                      onDateSelected: (date) {
+                        controller.date.text = date;
+                        controller.fetchCurrentShift(date);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Obx(() {
+                      return controller.isLoading.isTrue
+                          ? const Center(child: CircularProgressIndicator())
+                          : Column(
+                              children: [
+                                Obx(
+                                  () => controller.isLoading.isTrue
+                                      ? const Center(
+                                          child: CircularProgressIndicator(
+                                            color: primaryColor,
+                                          ),
+                                        )
+                                      : DropdownFieldWidget(
+                                          label: 'Pilih group saat ini',
+                                          icon: Icons.account_circle_outlined,
+                                          value: controller.currentGroup.text
+                                                      .isNotEmpty &&
+                                                  controller.groupAbsen
+                                                      .contains(controller
+                                                          .currentGroup.text)
+                                              ? controller.currentGroup.text
+                                              : null, // Ensure value is valid and exists in the list
+                                          items: controller.groupAbsen
+                                              .toSet()
+                                              .map((item) {
+                                            return DropdownMenuItem<String>(
+                                              value: item.id.toString(),
+                                              child: SizedBox(
+                                                width: Get.width / 1.5,
+                                                child: Text(
+                                                  item.name!,
+                                                  overflow:
+                                                      TextOverflow.visible,
+                                                  softWrap: true,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            if (value != null) {
+                                              controller.currentGroup.text =
+                                                  value;
+                                            }
+                                          },
+                                          fillColor:
+                                              primaryColor.withOpacity(0.1),
+                                          borderRadius: 10.0,
+                                        ),
+                                ),
+                                const SizedBox(height: 10),
+                                Obx(
+                                  () => controller.isLoading.isTrue
+                                      ? const Center(
+                                          child: CircularProgressIndicator(
+                                            color: primaryColor,
+                                          ),
+                                        )
+                                      : DropdownFieldWidget(
+                                          label: 'Pilih shift saat ini',
+                                          icon: Icons.account_circle_outlined,
+                                          value: controller.currentShift.text
+                                                      .isNotEmpty &&
+                                                  controller.shiftModel
+                                                      .contains(controller
+                                                          .currentShift.text)
+                                              ? controller.currentShift.text
+                                              : null, // Ensure value is valid and exists in the list
+                                          items: controller.shiftModel
+                                              .toSet()
+                                              .map((item) {
+                                            return DropdownMenuItem<String>(
+                                              value: item.id.toString(),
+                                              child: SizedBox(
+                                                width: Get.width / 1.5,
+                                                child: Text(
+                                                  item.type!,
+                                                  overflow:
+                                                      TextOverflow.visible,
+                                                  softWrap: true,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            if (value != null) {
+                                              controller.currentShift.text =
+                                                  value;
+                                            }
+                                          },
+                                          fillColor:
+                                              primaryColor.withOpacity(0.1),
+                                          borderRadius: 10.0,
+                                        ),
+                                ),
+                                const SizedBox(height: 10),
+                                Obx(
+                                  () => controller.isLoading.isTrue
+                                      ? const Center(
+                                          child: CircularProgressIndicator(
+                                            color: primaryColor,
+                                          ),
+                                        )
+                                      : DropdownFieldWidget(
+                                          label: 'Pilih shift diajukan',
+                                          icon: Icons.account_circle_outlined,
+                                          value: controller.adjustShift.text
+                                                      .isNotEmpty &&
+                                                  controller.shiftModel
+                                                      .contains(controller
+                                                          .adjustShift.text)
+                                              ? controller.adjustShift.text
+                                              : null, // Ensure value is valid and exists in the list
+                                          items: controller.shiftModel
+                                              .toSet()
+                                              .map((item) {
+                                            return DropdownMenuItem<String>(
+                                              value: item.id.toString(),
+                                              child: SizedBox(
+                                                width: Get.width / 1.5,
+                                                child: Text(
+                                                  item.type!,
+                                                  overflow:
+                                                      TextOverflow.visible,
+                                                  softWrap: true,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            if (value != null) {
+                                              controller.adjustShift.text =
+                                                  value;
+                                            }
+                                          },
+                                          fillColor:
+                                              primaryColor.withOpacity(0.1),
+                                          borderRadius: 10.0,
+                                        ),
+                                ),
+                                const SizedBox(height: 10),
+                                Obx(
+                                  () => controller.isLoading.isTrue
+                                      ? const Center(
+                                          child: CircularProgressIndicator(
+                                            color: primaryColor,
+                                          ),
+                                        )
+                                      : DropdownFieldWidget(
+                                          label: 'Pilih approval line',
+                                          icon: Icons.account_circle_outlined,
+                                          value: controller
+                                                      .lineId.text.isNotEmpty &&
+                                                  controller.lineOptions
+                                                      .contains(controller
+                                                          .lineId.text)
+                                              ? controller.lineId.text
+                                              : null, // Ensure value is valid and exists in the list
+                                          items: controller.lineOptions
+                                              .toSet()
+                                              .map((item) {
+                                            return DropdownMenuItem<String>(
+                                              value: item.id.toString(),
+                                              child: SizedBox(
+                                                width: Get.width / 1.5,
+                                                child: Text(
+                                                  item.name!,
+                                                  overflow:
+                                                      TextOverflow.visible,
+                                                  softWrap: true,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            if (value != null) {
+                                              controller.lineId.text = value;
+                                            }
+                                          },
+                                          fillColor:
+                                              primaryColor.withOpacity(0.1),
+                                          borderRadius: 10.0,
+                                        ),
+                                ),
+                                const SizedBox(height: 10),
+                                Obx(
+                                  () => controller.isLoading.isTrue
+                                      ? const Center(
+                                          child: CircularProgressIndicator(
+                                            color: primaryColor,
+                                          ),
+                                        )
+                                      : DropdownFieldWidget(
+                                          label: 'Pilih approval HR',
+                                          icon: Icons.account_circle_outlined,
+                                          value: controller
+                                                      .hrId.text.isNotEmpty &&
+                                                  controller.hrdOptions
+                                                      .contains(
+                                                          controller.hrId.text)
+                                              ? controller.hrId.text
+                                              : null, // Ensure value is valid and exists in the list
+                                          items: controller.hrdOptions
+                                              .toSet()
+                                              .map((item) {
+                                            return DropdownMenuItem<String>(
+                                              value: item.id.toString(),
+                                              child: SizedBox(
+                                                width: Get.width / 1.5,
+                                                child: Text(
+                                                  item.name!,
+                                                  overflow:
+                                                      TextOverflow.visible,
+                                                  softWrap: true,
+                                                ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            if (value != null) {
+                                              controller.hrId.text = value;
+                                            }
+                                          },
+                                          fillColor:
+                                              primaryColor.withOpacity(0.1),
+                                          borderRadius: 10.0,
+                                        ),
+                                ),
+                              ],
+                            );
+                    }),
+                  ]),
+                ))),
+        bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Obx(() => BtnAction(
+                    act: () {
+                      if (_formKey.currentState?.validate() ?? false) {
+                        controller.submitForm();
+                      }
+                    },
+                    color: primaryColor,
+                    icon: Icons.save,
+                    isLoading: controller.isLoading,
+                    title: controller.isLoading.isFalse
+                        ? 'Ajukan permintaan'
+                        : 'proses',
+                  )),
+            )),
       ),
     );
-  }
-
-  Widget _buildDateField() {
-    return FormBuilderDateTimePicker(
-      name: 'date',
-      inputType: InputType.date,
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
-        fillColor: primaryColor.withOpacity(0.1),
-        filled: true,
-        labelText: 'Pilih tanggal diajukan',
-        prefixIcon: const Icon(Icons.calendar_month),
-      ),
-      format: DateFormat('yyyy-MM-dd'),
-      onChanged: (value) {
-        if (value != null) {
-          controller.date.value = DateFormat('yyyy-MM-dd').format(value);
-          controller.fetchCurrentShift();
-        }
-      },
-    );
-  }
-
-  Widget _buildDropdown({
-    required String name,
-    required String label,
-    required List<DropdownMenuItem<int>> items,
-    required Function(int?) onChanged,
-    required Rx<int> value, // Bind the value directly to the observable
-  }) {
-    // Filter items to ensure there's a match with the current value
-    final filteredItems =
-        items.where((item) => item.value == value.value).isNotEmpty
-            ? items
-            : [
-                DropdownMenuItem<int>(
-                  value: null,
-                  child: Text('Pilih $label'),
-                ),
-                ...items
-              ];
-
-    return Obx(() {
-      return DropdownButtonFormField<int>(
-        value: filteredItems
-            .firstWhere((item) => item.value == value.value,
-                orElse: () => filteredItems[0])
-            .value,
-        decoration: InputDecoration(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          ),
-          fillColor: primaryColor.withOpacity(0.1),
-          filled: true,
-          labelText: label,
-        ),
-        items: filteredItems,
-        onChanged: onChanged,
-      );
-    });
   }
 }

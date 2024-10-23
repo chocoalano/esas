@@ -11,32 +11,41 @@ import 'package:get/get.dart';
 class FormController extends GetxController {
   final ApiCuti provider = Get.put(ApiCuti());
   final Storage storage = Get.put(Storage());
-  var startDate = ''.obs;
-  var endDate = ''.obs;
-  var startTime = TimeOfDay.now().obs;
-  var endTime = TimeOfDay.now().obs;
-  var category = 'full'.obs;
-  var type = 'cuti tahunan'.obs;
-  var description = ''.obs;
-  var userApproved = 'w'.obs;
-  var userLine = 0.obs;
-  var lineApproved = 'w'.obs;
-  var userHr = 0.obs;
-  var hrgaApproved = 'w'.obs;
 
   var isLoading = false.obs;
 
-  final timeInController = TextEditingController();
-  final timeOutController = TextEditingController();
-  final notesController = TextEditingController();
-  var lineApproval = <LineModel>[].obs;
-  var hrApproval = <HrdModel>[].obs;
+  late final TextEditingController startDate;
+  late final TextEditingController endDate;
+  late final TextEditingController startTime;
+  late final TextEditingController endTime;
+  late final TextEditingController category;
+  late final TextEditingController type;
+  late final TextEditingController description;
+  late final TextEditingController userLine;
+  late final TextEditingController userHr;
+  late final TextEditingController notes;
+
+  var listLineApproval = <LineModel>[].obs;
+  var listHrApproval = <HrdModel>[].obs;
 
   @override
   void onInit() {
     super.onInit();
+    startDate = TextEditingController();
+    endDate = TextEditingController();
+    startTime = TextEditingController();
+    endTime = TextEditingController();
+    category = TextEditingController();
+    type = TextEditingController();
+    description = TextEditingController();
+    userLine = TextEditingController();
+    userHr = TextEditingController();
+    notes = TextEditingController();
     // Fetch initial approval data on init
     _kelengkapanForm();
+
+    category.text = cutiCategories[0];
+    type.text = cutiTypes[0];
   }
 
   final List<String> cutiTypes = [
@@ -55,6 +64,7 @@ class FormController extends GetxController {
     'cuti keguguran',
     'cuti ibadah haji',
   ];
+  final List<String> cutiCategories = ['half', 'full', 'suddenly'];
 
   // Fetch attendance revision data from the provider
   Future<void> _kelengkapanForm() async {
@@ -79,7 +89,7 @@ class FormController extends GetxController {
     // Handling line approval data
     final lineApprovalData = response['line'];
     if (lineApprovalData is List) {
-      lineApproval.assignAll(
+      listLineApproval.assignAll(
           lineApprovalData.map((item) => LineModel.fromJson(item)).toList());
     } else {
       showErrorSnackbar('Unexpected format for lineApprovalData');
@@ -88,7 +98,7 @@ class FormController extends GetxController {
     // Handling HR approval data
     final hrApprovalData = response['hrga'];
     if (hrApprovalData is List) {
-      hrApproval.assignAll(
+      listHrApproval.assignAll(
           hrApprovalData.map((item) => HrdModel.fromJson(item)).toList());
     } else {
       showErrorSnackbar('Unexpected format for hrApprovalData');
@@ -96,47 +106,28 @@ class FormController extends GetxController {
   }
 
   Future<void> submitForm() async {
-    if (_validateFields()) {
-      isLoading(true);
-      try {
-        final Map<String, dynamic> datapost = {
-          'userId': 328,
-          'startDate': startDate.value.toString(),
-          'endDate': endDate.value.toString(),
-          'startTime': formatTime(startTime.value),
-          'endTime': formatTime(endTime.value),
-          'category': category.value.toString(),
-          'type': type.value.toString(),
-          'description': description.value.toString(),
-          'userApproved': userApproved.value.toString(),
-          'userLine': userLine.value.toString(),
-          'lineApproved': lineApproved.value.toString(),
-          'userHr': userHr.value.toString(),
-          'hrgaApproved': hrgaApproved.value.toString(),
-        };
-        await provider.submitCreate(datapost);
-        showSuccessSnackbar('Data berhasil tersimpan');
-      } catch (e) {
-        showErrorSnackbar(e.toString());
-      } finally {
-        isLoading(false);
-      }
-    } else {
-      showErrorSnackbar('Lengkapi dulu form anda!');
+    isLoading(true);
+    try {
+      final Map<String, dynamic> datapost = {
+        'startDate': startDate.text,
+        'endDate': endDate.text,
+        'startTime': startTime.text,
+        'endTime': endTime.text,
+        'category': category.text,
+        'type': type.text,
+        'description': notes.text,
+        'userApproved': 'y',
+        'userLine': userLine.text,
+        'lineApproved': 'w',
+        'userHr': userHr.text,
+        'hrgaApproved': 'w',
+      };
+      await provider.submitCreate(datapost);
+      showSuccessSnackbar('Data berhasil tersimpan');
+    } catch (e) {
+      showErrorSnackbar(e.toString());
+    } finally {
+      isLoading(false);
     }
-  }
-
-  bool _validateFields() {
-    return storage.currentAccountId.value > 0 &&
-        startDate.value.isNotEmpty &&
-        endDate.value.isNotEmpty &&
-        category.value.isNotEmpty &&
-        type.value.isNotEmpty &&
-        description.value.isNotEmpty &&
-        userApproved.value.isNotEmpty &&
-        userLine.value > 0 &&
-        lineApproved.value.isNotEmpty &&
-        userHr.value > 0 &&
-        hrgaApproved.value.isNotEmpty;
   }
 }

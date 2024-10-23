@@ -5,9 +5,7 @@ import 'package:esas/app/data/line_model.dart';
 import 'package:esas/app/networks/api/pengajuan/api_koreksi_absen.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../models/attendance_model.dart';
 
@@ -17,36 +15,27 @@ class FormController extends GetxController {
   var lineApproval = <LineModel>[].obs;
   var hrApproval = <HrdModel>[].obs;
   var attendance = AttendanceModel().obs;
-  var selectedDate = ''.obs;
-  var selectedTimeIn = TimeOfDay.now().obs;
-  var selectedTimeOut = TimeOfDay.now().obs;
-  var notes = ''.obs;
+
   var isLoading = false.obs;
 
-  final timeInController = TextEditingController();
-  final timeOutController = TextEditingController();
-  final notesController = TextEditingController();
-
-  GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
-
-  RxInt selectedLine = 0.obs;
-  RxInt selectedHrd = 0.obs;
+  late final TextEditingController dateAdjustment;
+  late final TextEditingController timeinAdjustment;
+  late final TextEditingController timeoutAdjustment;
+  late final TextEditingController notes;
+  late final TextEditingController lineId;
+  late final TextEditingController hrId;
 
   @override
   void onInit() {
     super.onInit();
+    dateAdjustment = TextEditingController();
+    timeinAdjustment = TextEditingController();
+    timeoutAdjustment = TextEditingController();
+    notes = TextEditingController();
+    lineId = TextEditingController();
+    hrId = TextEditingController();
     // Fetch initial approval data on init
     getApproval();
-  }
-
-  // Method to select a Line for approval
-  void selectLine(LineModel? line) {
-    selectedLine.value = line?.id ?? 0;
-  }
-
-  // Method to select HR for approval
-  void selectHrd(HrdModel? hr) {
-    selectedHrd.value = hr?.id ?? 0;
   }
 
   // Helper function to safely parse double values
@@ -58,16 +47,8 @@ class FormController extends GetxController {
     attendance.value = AttendanceModel.fromJson(json);
   }
 
-  // Fetch attendance data based on selected date
-  Future<void> selectDate(pickedDate) async {
-    if (pickedDate != null) {
-      selectedDate.value = DateFormat('yyyy-MM-dd').format(pickedDate);
-      await _fetchAttendanceForDate(selectedDate.value);
-    }
-  }
-
   // Fetch attendance revision data from the provider
-  Future<void> _fetchAttendanceForDate(String date) async {
+  Future<void> fetchAttendanceForDate(String date) async {
     _setLoading(true);
     try {
       final response = await provider.fetchRevision(date);
@@ -78,56 +59,38 @@ class FormController extends GetxController {
         showErrorSnackbar('Unexpected response format');
       }
     } catch (e) {
-      showErrorSnackbar(e.toString());
+      dateAdjustment.text = '';
+      showErrorSnackbar(
+          'Data absensi pada tanggal yang dipilih, tidak ditemukan!');
     } finally {
       _setLoading(false);
     }
   }
 
-  // Select time using TimePicker
-  Future<void> selectTime(BuildContext context, bool isTimeIn) async {
-    final pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (pickedTime != null) {
-      if (isTimeIn) {
-        selectedTimeIn.value = pickedTime;
-        timeInController.text = formatTime(pickedTime);
-      } else {
-        selectedTimeOut.value = pickedTime;
-        timeOutController.text = formatTime(pickedTime);
-      }
-    }
-  }
-
   // Submit attendance correction request
   Future<void> submitRequest() async {
-    if (formKey.currentState?.saveAndValidate() ?? false) {
-      final dataPost = {
-        'userId': 328,
-        'dateAdjustment': selectedDate.value,
-        'timeinAdjustment': formatTime(selectedTimeIn.value),
-        'timeoutAdjustment': formatTime(selectedTimeOut.value),
-        'notes': notes.value,
-        'status': 'w',
-        'lineId': selectedLine.value,
-        'hrId': selectedHrd.value,
-      };
+    final dataPost = {
+      'dateAdjustment': dateAdjustment.text,
+      'timeinAdjustment': timeinAdjustment.text,
+      'timeoutAdjustment': timeoutAdjustment.text,
+      'notes': notes.text,
+      'status': 'w',
+      'lineId': lineId.text,
+      'hrId': hrId.text,
+    };
 
-      _setLoading(true);
-      try {
-        final response = await provider.submitCreate(dataPost);
-        if (response != null) {
-          showSuccessSnackbar('Data berhasil ditambahkan');
-        } else {
-          showErrorSnackbar('Submission failed.');
-        }
-      } catch (e) {
-        showErrorSnackbar(e.toString());
-      } finally {
-        _setLoading(false);
+    _setLoading(true);
+    try {
+      final response = await provider.submitCreate(dataPost);
+      if (response != null) {
+        showSuccessSnackbar('Data berhasil ditambahkan');
+      } else {
+        showErrorSnackbar('Submission failed.');
       }
+    } catch (e) {
+      showErrorSnackbar(e.toString());
+    } finally {
+      _setLoading(false);
     }
   }
 

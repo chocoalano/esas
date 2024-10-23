@@ -11,6 +11,7 @@ import '../controllers/form_controller.dart';
 class FormCard extends StatelessWidget {
   final int index;
   final VoidCallback onRemove;
+  final VoidCallback onSave;
   final ValueChanged<int?> onUserChange;
 
   const FormCard({
@@ -18,6 +19,7 @@ class FormCard extends StatelessWidget {
     required this.index,
     required this.onRemove,
     required this.onUserChange,
+    required this.onSave,
   });
 
   @override

@@ -22,25 +22,29 @@ class FormView extends GetView<FormController> {
         }
       },
       child: Scaffold(
-        backgroundColor: bgColor,
-        appBar: _buildAppBar(),
-        body: Obx(
-          () => ListView(
-            padding: const EdgeInsets.all(8.0),
-            children: [
-              ..._buildFormList(),
-              const SizedBox(height: 20),
-              BtnAction(
-                act: controller.submitForm,
-                color: primaryColor,
-                icon: Icons.save_alt_outlined,
-                isLoading: controller.isLoading,
-                title: 'Ajukan sekarang',
-              ),
-            ],
-          ),
-        ),
-      ),
+          backgroundColor: bgColor,
+          appBar: _buildAppBar(),
+          body: Obx(() {
+            return ListView.builder(
+              itemCount: controller.formList.length,
+              itemBuilder: (context, index) {
+                if (controller.isLoading.isTrue) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      color: primaryColor,
+                    ),
+                  );
+                } else {
+                  return FormCard(
+                    index: index,
+                    onRemove: () => controller.removeForm(index),
+                    onSave: () => controller.submitForm(index),
+                    onUserChange: (value) => controller.fetchUserData(index),
+                  );
+                }
+              },
+            );
+          })),
     );
   }
 
@@ -60,18 +64,5 @@ class FormView extends GetView<FormController> {
         ),
       ],
     );
-  }
-
-  List<Widget> _buildFormList() {
-    return List.generate(controller.formList.length, (index) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        child: FormCard(
-          index: index,
-          onRemove: () => controller.removeForm(index),
-          onUserChange: (value) => controller.fetchUserData(value!),
-        ),
-      );
-    });
   }
 }
