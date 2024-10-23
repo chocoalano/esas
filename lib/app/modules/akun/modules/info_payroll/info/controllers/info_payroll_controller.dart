@@ -9,6 +9,7 @@ import '../../../../models/account_model.dart';
 class InfoPayrollController extends GetxController {
   final ApiAuth provider = Get.find<ApiAuth>();
   var isloading = false.obs;
+  var visibilityBanner = true.obs;
   var accountModel = AccountModel(
           account: Account(employe: Employe(), salary: Salary(), bank: Bank()))
       .obs;
@@ -34,5 +35,9 @@ class InfoPayrollController extends GetxController {
     } finally {
       isloading(false);
     }
+  }
+
+  void setBanner() {
+    visibilityBanner.value = !visibilityBanner.value;
   }
 }

@@ -1,4 +1,3 @@
-import 'package:esas/components/btn_action.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 
@@ -56,23 +55,12 @@ class InfoKeluargaView extends GetView<InfoKeluargaController> {
                 return FormCard(
                   index: index,
                   onRemove: () => controller.removeForm(index),
+                  onSave: () => controller.saveForm(index),
                 );
               }
             },
           );
         }),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SizedBox(
-            width: double.infinity, // Mengisi lebar penuh
-            child: BtnAction(
-                act: () => controller.saveProfile(),
-                color: primaryColor,
-                icon: Icons.save_as_outlined,
-                isLoading: controller.isLoading,
-                title: 'Simpan data'),
-          ),
-        ),
       ),
     );
   }

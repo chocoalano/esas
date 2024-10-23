@@ -91,17 +91,30 @@ class InfoKontakDaruratController extends GetxController {
     }
   }
 
-  // Simpan profil ke server
-  Future<void> saveProfile() async {
-    isLoading(true);
-    try {
-      await apiKontakDarurat.saveSubmit(formData);
-      getProfile();
-      showSuccessSnackbar('Data berhasil diperbarui');
-    } catch (e) {
-      showErrorSnackbar('Error: $e');
-    } finally {
-      isLoading(false);
+  // // Simpan profil ke server
+  Future<void> saveForm(int index) async {
+    final dataToSave = formData[index];
+    if (dataToSave['name'] != '' &&
+        dataToSave['relationship'] != '' &&
+        dataToSave['phone'] != '' &&
+        dataToSave['profession'] != '') {
+      isLoading(true);
+      try {
+        final response = await apiKontakDarurat.saveSubmit(formData);
+        if (response.statusCode == 200) {
+          getProfile();
+          showSuccessSnackbar('Data berhasil diperbarui');
+        } else {
+          showErrorSnackbar('Error: ${response.body}');
+        }
+      } catch (e) {
+        showErrorSnackbar('Error: $e');
+      } finally {
+        isLoading(false);
+      }
+    } else {
+      showErrorSnackbar(
+          'Form tidak valid, pastikan anda menghisi form dengan benar!');
     }
   }
 }

@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 class InfoPersonalController extends GetxController {
   final ApiAuth provider = Get.put(ApiAuth());
   var isloading = false.obs;
+  var isBanner = true.obs;
   var imageData = ''.obs;
   final TextEditingController name = TextEditingController();
   final TextEditingController nik = TextEditingController();
@@ -105,6 +106,10 @@ class InfoPersonalController extends GetxController {
     if (pickedDate != null) {
       datebirth.text = DateFormat('yyyy-MM-dd').format(pickedDate);
     }
+  }
+
+  void showBanner() {
+    isBanner.value = !isBanner.value;
   }
 
   @override

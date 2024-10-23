@@ -58,6 +58,33 @@ class InfoKeluargaController extends GetxController {
     }
   }
 
+  Future<void> saveForm(int index) async {
+    final dataToSave = formData[index];
+    if (dataToSave['fullname'] != '' &&
+        dataToSave['relationship'] != '' &&
+        dataToSave['birthdate'] != '' &&
+        dataToSave['marital_status'] != '' &&
+        dataToSave['job'] != '') {
+      isLoading(true);
+      try {
+        final response = await apiFamily.saveSubmit(formData);
+        if (response.statusCode == 200) {
+          getProfile();
+          showSuccessSnackbar('Data berhasil diperbarui');
+        } else {
+          showErrorSnackbar('Error: ${response.body}');
+        }
+      } catch (e) {
+        showErrorSnackbar('Error: $e');
+      } finally {
+        isLoading(false);
+      }
+    } else {
+      showErrorSnackbar(
+          'Form tidak valid, pastikan anda menghisi form dengan benar!');
+    }
+  }
+
   // Update form berdasarkan key dan value
   void updateForm(int index, String key, dynamic value) {
     formData[index][key] = value;
@@ -86,24 +113,6 @@ class InfoKeluargaController extends GetxController {
         }
       } else {
         showErrorSnackbar('Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      showErrorSnackbar('Error: $e');
-    } finally {
-      isLoading(false);
-    }
-  }
-
-  // Simpan profil ke server
-  Future<void> saveProfile() async {
-    isLoading(true);
-    try {
-      final response = await apiFamily.saveSubmit(formData);
-      if (response.statusCode == 200) {
-        getProfile();
-        showSuccessSnackbar('Data berhasil diperbarui');
-      } else {
-        showErrorSnackbar('Error: ${response.body}');
       }
     } catch (e) {
       showErrorSnackbar('Error: $e');

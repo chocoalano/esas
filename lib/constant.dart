@@ -85,6 +85,26 @@ String limitString(String text, int maxLength) {
   return limitedText[0].toUpperCase() + limitedText.substring(1).toLowerCase();
 }
 
+String jenisKelamin(String text) {
+  if (text == 'm') {
+    return 'Pria';
+  } else {
+    return 'Wanita';
+  }
+}
+
+String statusPernikahan(String text) {
+  if (text == 'widow') {
+    return 'Janda';
+  } else if (text == 'widower') {
+    return 'Duda';
+  } else if (text == 'single') {
+    return 'Lajang';
+  } else {
+    return 'Menikah';
+  }
+}
+
 String textString(String type) {
   switch (type) {
     case 'cuti':

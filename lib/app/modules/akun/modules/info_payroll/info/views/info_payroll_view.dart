@@ -1,4 +1,5 @@
 import 'package:card_loading/card_loading.dart';
+import 'package:esas/components/alert_banner.dart';
 import 'package:esas/components/globat_appbar.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class InfoPayrollView extends GetView<InfoPayrollController> {
           children: [
             Center(
               child: CreditCardUi(
-                cardHolderFullName: data.account!.bank!.bankAccountHolder!,
+                cardHolderFullName: data.account!.bank!.bankAccountHolder ?? '',
                 cardNumber: '',
                 validFrom: '00/00',
                 validThru: '00/00',
@@ -98,16 +99,31 @@ class InfoPayrollView extends GetView<InfoPayrollController> {
                   const SizedBox(
                     height: 10,
                   ),
-                  _buildInfoRow('Nama bank', data.account!.bank!.bankName),
                   _buildInfoRow(
-                      'No. Rekening', data.account!.bank!.bankAccount),
+                      'Nama bank', data.account!.bank!.bankName ?? ''),
                   _buildInfoRow(
-                      'An. Bank', data.account!.bank!.bankAccountHolder),
+                      'No. Rekening', data.account!.bank!.bankAccount ?? ''),
+                  _buildInfoRow(
+                      'An. Bank', data.account!.bank!.bankAccountHolder ?? ''),
                 ],
               ),
             ),
             const SizedBox(
               height: 30,
+            ),
+            AlertBanner(
+              act: controller.setBanner,
+              color: infoColor,
+              msg:
+                  'Jika terdapat ketidak sesuaian data, silahkan hubungi Dept. HR!',
+              show: controller.visibilityBanner,
+            ),
+            Obx(
+              () => controller.visibilityBanner.isTrue
+                  ? const SizedBox(
+                      height: 30,
+                    )
+                  : const SizedBox.shrink(),
             ),
             Container(
               decoration: BoxDecoration(
@@ -132,15 +148,15 @@ class InfoPayrollView extends GetView<InfoPayrollController> {
                   _buildInfoRow(
                       'Gaji pokok',
                       formatRupiah(
-                          data.account!.salary!.basicSalary.toDouble())),
+                          (data.account!.salary!.basicSalary ?? 0).toDouble())),
                   _buildInfoRow('Tipe waktu pembayaran',
-                      data.account!.salary!.salaryType),
+                      data.account!.salary!.salaryType ?? ''),
                   _buildInfoRow('Jadwal pembayaran',
-                      data.account!.salary!.paymentSchedule),
+                      data.account!.salary!.paymentSchedule ?? ''),
                   _buildInfoRow('Aturan pembayaran lembur',
-                      data.account!.salary!.overtimeSettings),
-                  _buildInfoRow(
-                      'Mata uang pembayaran', data.account!.salary!.currency),
+                      data.account!.salary!.overtimeSettings ?? ''),
+                  _buildInfoRow('Mata uang pembayaran',
+                      data.account!.salary!.currency ?? ''),
                 ],
               ),
             ),

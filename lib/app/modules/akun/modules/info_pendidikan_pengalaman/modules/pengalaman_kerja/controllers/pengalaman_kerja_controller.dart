@@ -99,19 +99,28 @@ class PengalamanKerjaController extends GetxController {
   }
 
   // Simpan profil ke server
-  Future<void> saveProfile() async {
-    isLoading(true);
-    try {
-      final response = await apiRepositories.saveSubmit(formData, 'p_kerja');
-      if (response.statusCode == 200) {
-        showSuccessSnackbar('Data berhasil diperbarui');
-      } else {
-        showErrorSnackbar('Error: $response');
+  Future<void> saveProfile(int index) async {
+    final dataToSave = formData[index];
+    if (dataToSave['company'] != '' &&
+        dataToSave['position'] != '' &&
+        dataToSave['from'] != '' &&
+        dataToSave['to'] != '' &&
+        dataToSave['length_of_service'] != '') {
+      isLoading(true);
+      try {
+        final response = await apiRepositories.saveSubmit(formData, 'p_kerja');
+        if (response.statusCode == 200) {
+          showSuccessSnackbar('Data berhasil diperbarui');
+        } else {
+          showErrorSnackbar('Error: $response');
+        }
+      } catch (e) {
+        showErrorSnackbar('Error: $e');
+      } finally {
+        isLoading(false);
       }
-    } catch (e) {
-      showErrorSnackbar('Error: $e');
-    } finally {
-      isLoading(false);
+    } else {
+      showErrorSnackbar('Form tidak valid, pastikan form input anda valid!');
     }
   }
 }

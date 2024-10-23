@@ -8,8 +8,14 @@ import 'package:get/get.dart';
 class FormCard extends StatefulWidget {
   final int index;
   final VoidCallback onRemove;
+  final VoidCallback onSave;
 
-  const FormCard({super.key, required this.index, required this.onRemove});
+  const FormCard({
+    super.key,
+    required this.index,
+    required this.onRemove,
+    required this.onSave,
+  });
 
   @override
   _FormCardState createState() => _FormCardState();
@@ -20,6 +26,7 @@ class _FormCardState extends State<FormCard> {
   late final TextEditingController _phoneController;
   late final TextEditingController _professionController;
 
+  final _formKey = GlobalKey<FormState>();
   final InfoKontakDaruratController _controller = Get.find();
 
   @override
@@ -60,7 +67,6 @@ class _FormCardState extends State<FormCard> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the current relationship value
     final relationshipValue = _getValidRelationshipValue(
       _controller.formData[widget.index]['relationship'],
     );
@@ -69,39 +75,61 @@ class _FormCardState extends State<FormCard> {
       margin: const EdgeInsets.all(10),
       child: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            _buildRemoveButton(),
-            const SizedBox(height: 10),
-            _buildTextField(_nameController, 'Nama', Icons.account_box),
-            const SizedBox(height: 10),
-            _buildDropdownField(
-              value: relationshipValue,
-              items: const [
-                DropdownMenuItem(value: 'wife', child: Text('Istri')),
-                DropdownMenuItem(value: 'husband', child: Text('Suami')),
-                DropdownMenuItem(value: 'mother', child: Text('Ibu')),
-                DropdownMenuItem(value: 'father', child: Text('Ayah')),
-                DropdownMenuItem(
-                    value: 'brother', child: Text('Saudara Laki-laki')),
-                DropdownMenuItem(
-                    value: 'sister', child: Text('Saudara Perempuan')),
-                DropdownMenuItem(value: 'child', child: Text('Anak')),
-              ],
-              onChanged: (value) {
-                if (value != null) {
-                  _updateForm('relationship', value);
-                }
-              },
-            ),
-            const SizedBox(height: 10),
-            _buildTextField(
-                _phoneController, 'Telpon/HP', Icons.phone_android_outlined),
-            const SizedBox(height: 10),
-            _buildTextField(
-                _professionController, 'Profesi', Icons.work_history_outlined),
-            const SizedBox(height: 10),
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              _buildRemoveButton(),
+              const SizedBox(height: 10),
+              _buildTextField(
+                _nameController,
+                'Nama',
+                Icons.account_box,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Nama tidak boleh kosong'
+                    : null,
+              ),
+              const SizedBox(height: 10),
+              _buildDropdownField(
+                value: relationshipValue,
+                items: const [
+                  DropdownMenuItem(value: 'wife', child: Text('Istri')),
+                  DropdownMenuItem(value: 'husband', child: Text('Suami')),
+                  DropdownMenuItem(value: 'mother', child: Text('Ibu')),
+                  DropdownMenuItem(value: 'father', child: Text('Ayah')),
+                  DropdownMenuItem(
+                      value: 'brother', child: Text('Saudara Laki-laki')),
+                  DropdownMenuItem(
+                      value: 'sister', child: Text('Saudara Perempuan')),
+                  DropdownMenuItem(value: 'child', child: Text('Anak')),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    _updateForm('relationship', value);
+                  }
+                },
+              ),
+              const SizedBox(height: 10),
+              _buildTextField(
+                _phoneController,
+                'Telepon/HP',
+                Icons.phone_android_outlined,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Telepon/HP tidak boleh kosong'
+                    : null,
+              ),
+              const SizedBox(height: 10),
+              _buildTextField(
+                _professionController,
+                'Profesi',
+                Icons.work_history_outlined,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Profesi tidak boleh kosong'
+                    : null,
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
@@ -113,6 +141,14 @@ class _FormCardState extends State<FormCard> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         IconButton(
+          onPressed: () {
+            if (_formKey.currentState?.validate() ?? false) {
+              widget.onSave();
+            }
+          },
+          icon: const Icon(Icons.save_alt_outlined, color: primaryColor),
+        ),
+        IconButton(
           onPressed: widget.onRemove,
           icon: const Icon(Icons.remove_circle_outline, color: dangerColor),
         ),
@@ -122,10 +158,15 @@ class _FormCardState extends State<FormCard> {
 
   // Reusable Widget for TextField
   Widget _buildTextField(
-      TextEditingController controller, String label, IconData icon) {
-    return TextField(
+    TextEditingController controller,
+    String label,
+    IconData icon, {
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
       controller: controller,
       decoration: _inputDecoration(label, icon),
+      validator: validator,
     );
   }
 
@@ -141,6 +182,9 @@ class _FormCardState extends State<FormCard> {
       onChanged: onChanged,
       decoration:
           _inputDecoration('Pilih hubungan', Icons.account_box_outlined),
+      validator: (value) => value == null || value.isEmpty
+          ? 'Field ini tidak boleh kosong'
+          : null,
     );
   }
 

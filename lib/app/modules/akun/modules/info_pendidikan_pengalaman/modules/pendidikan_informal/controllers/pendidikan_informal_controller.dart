@@ -15,7 +15,7 @@ class PendidikanInformalController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    addForm(); // Menambahkan form kosong pada saat inisialisasi
+    addForm();
     getProfile();
   }
 
@@ -108,19 +108,33 @@ class PendidikanInformalController extends GetxController {
   }
 
   // Simpan profil ke server
-  Future<void> saveProfile() async {
-    isLoading(true);
-    try {
-      final response = await apiRepositories.saveSubmit(formData, 'p_informal');
-      if (response.statusCode == 200) {
-        showSuccessSnackbar('Data berhasil diperbarui');
-      } else {
-        showErrorSnackbar('Error: $response');
+  Future<void> saveProfile(int index) async {
+    final dataToSave = formData[index];
+    if (dataToSave['name'] != '' &&
+        dataToSave['start'] != '' &&
+        dataToSave['finish'] != '' &&
+        dataToSave['expired'] != '' &&
+        dataToSave['type'] != '' &&
+        dataToSave['duration'] != '' &&
+        dataToSave['fee'] != '' &&
+        dataToSave['description'] != '' &&
+        dataToSave['certification'] != '') {
+      isLoading(true);
+      try {
+        final response =
+            await apiRepositories.saveSubmit(formData, 'p_informal');
+        if (response.statusCode == 200) {
+          showSuccessSnackbar('Data berhasil diperbarui');
+        } else {
+          showErrorSnackbar('Error: $response');
+        }
+      } catch (e) {
+        showErrorSnackbar('Error: $e');
+      } finally {
+        isLoading(false);
       }
-    } catch (e) {
-      showErrorSnackbar('Error: $e');
-    } finally {
-      isLoading(false);
+    } else {
+      showErrorSnackbar('Form tidak valid, pastikan form input anda valid!');
     }
   }
 }

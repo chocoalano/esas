@@ -7,19 +7,24 @@ import '../controllers/info_keluarga_controller.dart';
 class FormCard extends StatefulWidget {
   final int index;
   final VoidCallback onRemove;
+  final VoidCallback onSave;
 
-  const FormCard({super.key, required this.index, required this.onRemove});
+  const FormCard(
+      {super.key,
+      required this.index,
+      required this.onRemove,
+      required this.onSave});
 
   @override
-  FormCardState createState() => FormCardState(); // Mengubah nama kelas state
+  FormCardState createState() => FormCardState();
 }
 
 class FormCardState extends State<FormCard> {
-  // Mengubah nama kelas state menjadi publik
   late final TextEditingController _nameController;
   late final TextEditingController _birthdateController;
   late final TextEditingController _jobController;
 
+  final _formKey = GlobalKey<FormState>();
   final InfoKeluargaController _controller = Get.find();
 
   @override
@@ -63,56 +68,78 @@ class FormCardState extends State<FormCard> {
       _controller.formData[widget.index]['marital_status'],
     );
 
-    return Card(
-      margin: const EdgeInsets.all(10),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            _buildRemoveButton(),
-            const SizedBox(height: 10),
-            _buildTextField(_nameController, 'Nama', Icons.account_box),
-            const SizedBox(height: 10),
-            _buildDropdownField(
-              value: relationshipValue,
-              items: const [
-                DropdownMenuItem(value: 'wife', child: Text('Istri')),
-                DropdownMenuItem(value: 'husband', child: Text('Suami')),
-                DropdownMenuItem(value: 'mother', child: Text('Ibu')),
-                DropdownMenuItem(value: 'father', child: Text('Ayah')),
-                DropdownMenuItem(
-                    value: 'brother', child: Text('Saudara Laki-laki')),
-                DropdownMenuItem(
-                    value: 'sister', child: Text('Saudara Perempuan')),
-                DropdownMenuItem(value: 'child', child: Text('Anak')),
-              ],
-              onChanged: (value) => _updateDropdown('relationship', value),
-              icon: Icons.family_restroom_outlined,
-            ),
-            const SizedBox(height: 10),
-            _buildDatePicker(
-              controller: _birthdateController,
-              hintText: 'Pilih tanggal lahir',
-              icon: Icons.calendar_today,
-              context: context,
-            ),
-            const SizedBox(height: 10),
-            _buildDropdownField(
-              value: maritalStatusValue,
-              items: const [
-                DropdownMenuItem(value: 'single', child: Text('Lajang')),
-                DropdownMenuItem(value: 'marriade', child: Text('Menikah')),
-                DropdownMenuItem(value: 'widow', child: Text('Janda')),
-                DropdownMenuItem(value: 'widower', child: Text('Duda')),
-              ],
-              onChanged: (value) => _updateDropdown('marital_status', value),
-              icon: Icons.female_outlined,
-            ),
-            const SizedBox(height: 10),
-            _buildTextField(
-                _jobController, 'Profesi', Icons.work_history_outlined),
-            const SizedBox(height: 10),
-          ],
+    return Form(
+      key: _formKey,
+      child: Card(
+        margin: const EdgeInsets.all(10),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              _buildActionButton(),
+              const SizedBox(height: 10),
+              _buildTextField(
+                _nameController,
+                'Nama',
+                Icons.account_box,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Nama tidak boleh kosong';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+              _buildDropdownField(
+                value: relationshipValue,
+                items: const [
+                  DropdownMenuItem(value: 'wife', child: Text('Istri')),
+                  DropdownMenuItem(value: 'husband', child: Text('Suami')),
+                  DropdownMenuItem(value: 'mother', child: Text('Ibu')),
+                  DropdownMenuItem(value: 'father', child: Text('Ayah')),
+                  DropdownMenuItem(
+                      value: 'brother', child: Text('Saudara Laki-laki')),
+                  DropdownMenuItem(
+                      value: 'sister', child: Text('Saudara Perempuan')),
+                  DropdownMenuItem(value: 'child', child: Text('Anak')),
+                ],
+                onChanged: (value) => _updateDropdown('relationship', value),
+                icon: Icons.family_restroom_outlined,
+              ),
+              const SizedBox(height: 10),
+              _buildDatePicker(
+                controller: _birthdateController,
+                hintText: 'Pilih tanggal lahir',
+                icon: Icons.calendar_today,
+                context: context,
+              ),
+              const SizedBox(height: 10),
+              _buildDropdownField(
+                value: maritalStatusValue,
+                items: const [
+                  DropdownMenuItem(value: 'single', child: Text('Lajang')),
+                  DropdownMenuItem(value: 'marriade', child: Text('Menikah')),
+                  DropdownMenuItem(value: 'widow', child: Text('Janda')),
+                  DropdownMenuItem(value: 'widower', child: Text('Duda')),
+                ],
+                onChanged: (value) => _updateDropdown('marital_status', value),
+                icon: Icons.female_outlined,
+              ),
+              const SizedBox(height: 10),
+              _buildTextField(
+                _jobController,
+                'Profesi',
+                Icons.work_history_outlined,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Profesi tidak boleh kosong';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
@@ -124,10 +151,18 @@ class FormCardState extends State<FormCard> {
     }
   }
 
-  Widget _buildRemoveButton() {
+  Widget _buildActionButton() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        IconButton(
+          onPressed: () {
+            if (_formKey.currentState?.validate() ?? false) {
+              widget.onSave();
+            }
+          },
+          icon: const Icon(Icons.save_alt_outlined, color: primaryColor),
+        ),
         IconButton(
           onPressed: widget.onRemove,
           icon: const Icon(Icons.remove_circle_outline, color: dangerColor),
@@ -137,10 +172,15 @@ class FormCardState extends State<FormCard> {
   }
 
   Widget _buildTextField(
-      TextEditingController controller, String label, IconData icon) {
-    return TextField(
+    TextEditingController controller,
+    String label,
+    IconData icon, {
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
       controller: controller,
       decoration: _inputDecoration(label, icon),
+      validator: validator,
     );
   }
 
@@ -166,9 +206,15 @@ class FormCardState extends State<FormCard> {
         }
       },
       child: AbsorbPointer(
-        child: TextField(
+        child: TextFormField(
           controller: controller,
           decoration: _inputDecoration(hintText, icon),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return 'Tanggal lahir tidak boleh kosong';
+            }
+            return null;
+          },
         ),
       ),
     );
@@ -185,6 +231,12 @@ class FormCardState extends State<FormCard> {
       items: items,
       onChanged: onChanged,
       decoration: _inputDecoration('Pilih', icon),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Field ini tidak boleh kosong';
+        }
+        return null;
+      },
     );
   }
 

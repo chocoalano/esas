@@ -5,11 +5,23 @@ import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../widget/action_button_widget.dart';
+import '../../widget/checked_field_widget.dart';
+import '../../widget/date_field_widget.dart';
+import '../../widget/dropdown_field_widget.dart';
+import '../../widget/text_field_widget.dart';
+
 class FormCard extends StatefulWidget {
   final int index;
   final VoidCallback onRemove;
+  final VoidCallback onSave;
 
-  const FormCard({super.key, required this.index, required this.onRemove});
+  const FormCard({
+    super.key,
+    required this.index,
+    required this.onRemove,
+    required this.onSave,
+  });
 
   @override
   _FormCardState createState() => _FormCardState();
@@ -21,6 +33,8 @@ class _FormCardState extends State<FormCard> {
   late final TextEditingController _startController;
   late final TextEditingController _finishController;
   late final TextEditingController _descriptionController;
+
+  final _formKey = GlobalKey<FormState>();
 
   final AkunPendidikanFormalController _controller = Get.find();
 
@@ -62,6 +76,14 @@ class _FormCardState extends State<FormCard> {
     _controller.updateForm(widget.index, key, value);
   }
 
+  void _handleSave() {
+    _controller.saveProfile(widget.index);
+  }
+
+  void _handleRemove() {
+    _controller.removeForm(widget.index);
+  }
+
   @override
   void dispose() {
     _institutionController.dispose();
@@ -78,147 +100,140 @@ class _FormCardState extends State<FormCard> {
     final majorsValue =
         _getValidMajorsValue(_controller.formData[widget.index]['majors']);
 
-    return Card(
-      margin: const EdgeInsets.all(10),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            _buildRemoveButton(),
-            const SizedBox(height: 10),
-            _buildTextField(_institutionController, 'Nama', Icons.account_box),
-            const SizedBox(height: 10),
-            _buildDropdownField(
-              value: majorsValue,
-              items: const [
-                DropdownMenuItem(value: 'SD', child: Text('SD')),
-                DropdownMenuItem(value: 'SMP', child: Text('SMP')),
-                DropdownMenuItem(value: 'SMA/SLTA', child: Text('SMA/SLTA')),
-                DropdownMenuItem(value: 'D1', child: Text('D1')),
-                DropdownMenuItem(value: 'D2', child: Text('D2')),
-                DropdownMenuItem(value: 'D3', child: Text('D3')),
-                DropdownMenuItem(value: 'D4', child: Text('D4')),
-                DropdownMenuItem(value: 'S1', child: Text('S1')),
-                DropdownMenuItem(value: 'S2', child: Text('S2')),
-                DropdownMenuItem(value: 'S3', child: Text('S3')),
-              ],
-              onChanged: (value) {
-                if (value != null) {
-                  _updateForm('majors', value);
-                }
-              },
-            ),
-            const SizedBox(height: 10),
-            _buildTextField(
-                _scoreController, 'Skor/IPK', Icons.phone_android_outlined),
-            const SizedBox(height: 10),
-            _buildDatePicker(
-                _startController, 'Pilih tanggal mulai', Icons.calendar_today),
-            const SizedBox(height: 10),
-            _buildDatePicker(_finishController, 'Pilih tanggal selesai',
-                Icons.calendar_today),
-            const SizedBox(height: 10),
-            _buildTextField(_descriptionController, 'Deskripsi',
-                Icons.description_outlined),
-            const SizedBox(height: 10),
-            _buildCheckedField(
-              isChecked:
-                  _controller.formData[widget.index]['certification'] ?? false,
-              label: 'Apakah pendidikan ini tersertifikasi?',
-              icon: Icons.check_box,
-              onChanged: (value) {
-                _updateForm('certification', value.toString());
-              },
-            ),
-          ],
+    return Form(
+      key: _formKey,
+      child: Card(
+        margin: const EdgeInsets.all(10),
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              ActionButtonWidget(
+                formKey: _formKey,
+                onSave: _handleSave,
+                onRemove: _handleRemove,
+                saveIconColor: primaryColor,
+                removeIconColor: dangerColor,
+              ),
+              const SizedBox(height: 10),
+              TextFieldWidget(
+                controller: _institutionController,
+                label: "Nama",
+                icon: Icons.account_box,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Nama tidak boleh kosong';
+                  }
+                  return null;
+                },
+                fillColor:
+                    primaryColor.withOpacity(0.1), // Optional customization
+                borderRadius: 10.0, // Optional customization
+              ),
+              const SizedBox(height: 10),
+              DropdownFieldWidget(
+                value: majorsValue,
+                items: const [
+                  DropdownMenuItem(value: 'SD', child: Text('SD')),
+                  DropdownMenuItem(value: 'SMP', child: Text('SMP')),
+                  DropdownMenuItem(value: 'SMA/SLTA', child: Text('SMA/SLTA')),
+                  DropdownMenuItem(value: 'D1', child: Text('D1')),
+                  DropdownMenuItem(value: 'D2', child: Text('D2')),
+                  DropdownMenuItem(value: 'D3', child: Text('D3')),
+                  DropdownMenuItem(value: 'D4', child: Text('D4')),
+                  DropdownMenuItem(value: 'S1', child: Text('S1')),
+                  DropdownMenuItem(value: 'S2', child: Text('S2')),
+                  DropdownMenuItem(value: 'S3', child: Text('S3')),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    _updateForm('majors', value);
+                  }
+                },
+                fillColor: primaryColor.withOpacity(0.1),
+                borderRadius: 10.0,
+              ),
+              const SizedBox(height: 10),
+              TextFieldWidget(
+                controller: _scoreController,
+                label: "Skor/IPK",
+                icon: Icons.phone_android_outlined,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Skor/IPK tidak boleh kosong';
+                  }
+                  return null;
+                },
+                fillColor:
+                    primaryColor.withOpacity(0.1), // Optional customization
+                borderRadius: 10.0, // Optional customization
+              ),
+              const SizedBox(height: 10),
+              DateFieldWidget(
+                controller: _startController,
+                hintText: 'Tanggal Mulai',
+                icon: Icons.calendar_today,
+                context: context,
+                fillColor: primaryColor.withOpacity(0.1),
+                borderRadius: 15.0,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+                onDateSelected: (date) {
+                  _updateForm('start', date);
+                },
+              ),
+              const SizedBox(height: 10),
+              DateFieldWidget(
+                controller: _finishController,
+                hintText: 'Tanggal Selesai',
+                icon: Icons.calendar_today,
+                context: context,
+                fillColor: primaryColor.withOpacity(0.1),
+                borderRadius: 15.0,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+                onDateSelected: (date) {
+                  _updateForm('start', date);
+                },
+              ),
+              const SizedBox(height: 10),
+              TextFieldWidget(
+                controller: _descriptionController,
+                label: "Deskripsi",
+                icon: Icons.description_outlined,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Deskripsi tidak boleh kosong';
+                  }
+                  return null;
+                },
+                fillColor:
+                    primaryColor.withOpacity(0.1), // Optional customization
+                borderRadius: 10.0, // Optional customization
+              ),
+              const SizedBox(height: 10),
+              CheckedFieldWidget(
+                isChecked: _controller.formData[widget.index]
+                            ['certification'] ==
+                        'true'
+                    ? true
+                    : false,
+                label: 'Apakah pendidikan ini tersertifikasi?',
+                icon: Icons.verified_user,
+                onChanged: (bool? value) {
+                  _updateForm('certification', value.toString());
+                },
+                activeColor: primaryColor,
+                checkColor: Colors.white,
+                iconColor: primaryColor,
+                padding: const EdgeInsets.symmetric(vertical: 0.0),
+              ),
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  // Reusable Widget for Remove Button
-  Widget _buildRemoveButton() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        IconButton(
-          onPressed: widget.onRemove,
-          icon: const Icon(Icons.remove_circle_outline, color: dangerColor),
-        ),
-      ],
-    );
-  }
-
-  // Reusable Widget for TextField
-  Widget _buildTextField(
-      TextEditingController controller, String label, IconData icon) {
-    return TextField(
-      controller: controller,
-      decoration: _inputDecoration(label, icon),
-    );
-  }
-
-  // Reusable Widget for DropdownField
-  Widget _buildDropdownField({
-    required String? value,
-    required List<DropdownMenuItem<String>> items,
-    required ValueChanged<String?> onChanged,
-  }) {
-    return DropdownButtonFormField<String>(
-      value: value,
-      items: items,
-      onChanged: onChanged,
-      decoration: _inputDecoration('Pilih jurusan', Icons.school),
-    );
-  }
-
-  // Reusable Widget for DatePickerInput
-  Widget _buildDatePicker(
-      TextEditingController controller, String hintText, IconData icon) {
-    return TextField(
-      controller: controller,
-      decoration: _inputDecoration(hintText, icon),
-      readOnly: true,
-      onTap: () async {
-        DateTime? picked = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(1900),
-          lastDate: DateTime(2100),
-        );
-        if (picked != null) {
-          controller.text = picked.toIso8601String().substring(0, 10);
-        }
-      },
-    );
-  }
-
-  // Reusable Widget for CheckedField
-  Widget _buildCheckedField({
-    required bool isChecked,
-    required String label,
-    required IconData icon,
-    required ValueChanged<bool?> onChanged,
-  }) {
-    return CheckboxListTile(
-      value: isChecked,
-      title: Text(label),
-      secondary: Icon(icon),
-      onChanged: onChanged,
-    );
-  }
-
-  // Reusable InputDecoration
-  InputDecoration _inputDecoration(String label, IconData icon) {
-    return InputDecoration(
-      labelText: label,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: BorderSide.none,
-      ),
-      fillColor: primaryColor.withOpacity(0.1),
-      filled: true,
-      prefixIcon: Icon(icon),
     );
   }
 
