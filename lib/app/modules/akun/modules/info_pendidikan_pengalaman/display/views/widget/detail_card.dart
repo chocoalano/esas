@@ -8,14 +8,11 @@ class DetailCard {
     return _buildDetailCard(
       title: 'Data Pendidikan ${index + 1}',
       details: [
-        _DetailRow(
-            title: 'Instansi',
-            value: education.institution ?? 'Tidak tersedia'),
+        _DetailRow(title: 'Instansi', value: education.institution),
         _DetailRow(
             title: 'Tahun Masuk & Keluar',
             value: '${education.start} - ${education.finish}'),
-        _DetailRow(
-            title: 'Tingkatan', value: education.majors ?? 'Tidak tersedia'),
+        _DetailRow(title: 'Tingkatan', value: education.majors),
         _DetailRow(
             title: 'Apakah Lulus?',
             value: education.certification == 1 ? 'Ya' : 'Tidak'),
