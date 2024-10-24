@@ -1,4 +1,3 @@
-import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -23,7 +22,7 @@ class Empcard extends StatelessWidget {
                     backgroundColor: Colors.grey.shade200,
                     child: ClipOval(
                       child: Image.network(
-                        '$baseUrlImg/${controller.img.value}',
+                        controller.img.value,
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,

@@ -1,4 +1,3 @@
-import 'package:esas/constant.dart'; // Assuming this contains the base URL
 import 'package:flutter/material.dart';
 
 class PhotoBox extends StatelessWidget {
@@ -19,7 +18,7 @@ class PhotoBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         child: photoUrl.isNotEmpty
             ? Image.network(
-                '$baseUrlImg/$photoUrl', // Full image URL
+                photoUrl, // Full image URL
                 fit: BoxFit
                     .cover, // Ensures the image fits properly within the box
                 errorBuilder: (context, error, stackTrace) {

@@ -100,7 +100,7 @@ class AkunView extends GetView<AkunController> {
         border: Border.all(color: primaryColor, width: 4),
       ),
       child: Obx(() {
-        final imageUrl = '$baseUrlImg/${controller.imageData.value}';
+        final imageUrl = controller.imageData.value;
         return CircleAvatar(
           radius: 60,
           backgroundColor: Colors.grey.shade200,

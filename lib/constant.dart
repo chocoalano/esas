@@ -3,9 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 // const baseUrlApi = 'https://api.sinergiabadisentosa.com';
-// const baseUrlImg = 'https://api.sinergiabadisentosa.com/files';
 const baseUrlApi = 'http://172.16.0.117:3333';
-const baseUrlImg = 'http://172.16.0.117:3333/files';
 
 const primaryColor = Color(0xFF079246);
 const secondaryColor = Color(0xFF92C13F);
