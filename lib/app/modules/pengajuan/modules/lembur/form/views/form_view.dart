@@ -54,8 +54,9 @@ class FormView extends GetView<FormController> {
                             label: 'Pilih approval adm',
                             icon: Icons.account_circle_outlined,
                             value: controller.userAdm.text.isNotEmpty &&
-                                    controller.listAdm
-                                        .contains(controller.userAdm.text)
+                                    controller.listAdm.any((item) =>
+                                        item.id.toString() ==
+                                        controller.userAdm.text)
                                 ? controller.userAdm.text
                                 : null, // Ensure value is valid and exists in the list
                             items: controller.listAdm.toSet().map((item) {
@@ -86,8 +87,9 @@ class FormView extends GetView<FormController> {
                             label: 'Pilih approval line',
                             icon: Icons.account_circle_outlined,
                             value: controller.userLine.text.isNotEmpty &&
-                                    controller.listAdm
-                                        .contains(controller.userLine.text)
+                                    controller.listAdm.any((item) =>
+                                        item.id.toString() ==
+                                        controller.userLine.text)
                                 ? controller.userLine.text
                                 : null, // Ensure value is valid and exists in the list
                             items: controller.listLine.toSet().map((item) {
@@ -118,8 +120,9 @@ class FormView extends GetView<FormController> {
                             label: 'Pilih approval GM',
                             icon: Icons.account_circle_outlined,
                             value: controller.userGm.text.isNotEmpty &&
-                                    controller.listAdm
-                                        .contains(controller.userGm.text)
+                                    controller.listAdm.any((item) =>
+                                        item.id.toString() ==
+                                        controller.userGm.text)
                                 ? controller.userGm.text
                                 : null, // Ensure value is valid and exists in the list
                             items: controller.listGm.toSet().map((item) {
@@ -150,8 +153,9 @@ class FormView extends GetView<FormController> {
                             label: 'Pilih approval HR',
                             icon: Icons.account_circle_outlined,
                             value: controller.userHr.text.isNotEmpty &&
-                                    controller.listAdm
-                                        .contains(controller.userHr.text)
+                                    controller.listAdm.any((item) =>
+                                        item.id.toString() ==
+                                        controller.userHr.text)
                                 ? controller.userHr.text
                                 : null, // Ensure value is valid and exists in the list
                             items: controller.listHrd.toSet().map((item) {
@@ -182,8 +186,9 @@ class FormView extends GetView<FormController> {
                             label: 'Pilih approval Director',
                             icon: Icons.account_circle_outlined,
                             value: controller.userDirector.text.isNotEmpty &&
-                                    controller.listAdm
-                                        .contains(controller.userDirector.text)
+                                    controller.listAdm.any((item) =>
+                                        item.id.toString() ==
+                                        controller.userDirector.text)
                                 ? controller.userDirector.text
                                 : null, // Ensure value is valid and exists in the list
                             items: controller.listDirektur.toSet().map((item) {
@@ -214,8 +219,9 @@ class FormView extends GetView<FormController> {
                             label: 'Pilih approval FAT',
                             icon: Icons.account_circle_outlined,
                             value: controller.userFat.text.isNotEmpty &&
-                                    controller.listAdm
-                                        .contains(controller.userFat.text)
+                                    controller.listAdm.any((item) =>
+                                        item.id.toString() ==
+                                        controller.userFat.text)
                                 ? controller.userFat.text
                                 : null, // Ensure value is valid and exists in the list
                             items: controller.listFat.toSet().map((item) {

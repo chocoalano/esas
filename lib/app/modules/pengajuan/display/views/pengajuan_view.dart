@@ -1,6 +1,7 @@
 import 'package:esas/components/BottomNavigation/bot_nav_view.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 
@@ -10,61 +11,74 @@ class PengajuanView extends GetView<PengajuanController> {
   const PengajuanView({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: bgColor,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: primaryColor,
-        title: const Text(
-          'Pengajuan',
-          style: TextStyle(color: bgColor),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return;
+        }
+        if (context.mounted) {
+          // Tampilkan dialog konfirmasi keluar (opsional)
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: bgColor,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: primaryColor,
+          title: const Text(
+            'Pengajuan',
+            style: TextStyle(color: bgColor),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 25),
-              const Text(
-                'Ajukan untuk',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 25),
+                const Text(
+                  'Ajukan untuk',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              _buildPengajuanOption(
-                context,
-                icon: Icons.location_on,
-                text: 'Koreksi Absensi',
-                onTap: () => Get.offAllNamed('/pengajuan/koreksi-absen/list'),
-              ),
-              _buildPengajuanOption(
-                context,
-                icon: Icons.swap_horiz,
-                text: 'Perubahan Shift',
-                onTap: () => Get.offAllNamed('/pengajuan/perubahan-shift/list'),
-              ),
-              _buildPengajuanOption(
-                context,
-                icon: Icons.timer,
-                text: 'Lembur',
-                onTap: () => Get.offAllNamed('/pengajuan/lembur/list'),
-              ),
-              _buildPengajuanOption(
-                context,
-                icon: Icons.watch_later,
-                text: 'Cuti',
-                onTap: () => Get.offAllNamed('/pengajuan/cuti/list'),
-              ),
-            ],
+                const SizedBox(height: 16),
+                _buildPengajuanOption(
+                  context,
+                  icon: Icons.location_on,
+                  text: 'Koreksi Absensi',
+                  onTap: () => Get.offAllNamed('/pengajuan/koreksi-absen/list'),
+                ),
+                _buildPengajuanOption(
+                  context,
+                  icon: Icons.swap_horiz,
+                  text: 'Perubahan Shift',
+                  onTap: () =>
+                      Get.offAllNamed('/pengajuan/perubahan-shift/list'),
+                ),
+                _buildPengajuanOption(
+                  context,
+                  icon: Icons.timer,
+                  text: 'Lembur',
+                  onTap: () => Get.offAllNamed('/pengajuan/lembur/list'),
+                ),
+                _buildPengajuanOption(
+                  context,
+                  icon: Icons.watch_later,
+                  text: 'Cuti',
+                  onTap: () => Get.offAllNamed('/pengajuan/cuti/list'),
+                ),
+              ],
+            ),
           ),
         ),
+        bottomNavigationBar: BotNavView(),
       ),
-      bottomNavigationBar: BotNavView(),
     );
   }
 

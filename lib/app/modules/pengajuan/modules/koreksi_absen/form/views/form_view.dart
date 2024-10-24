@@ -43,7 +43,7 @@ class FormView extends GetView<FormController> {
             child: Obx(() => ListView(children: [
                   DateFieldWidget(
                       controller: controller.dateAdjustment,
-                      hintText: 'Pilih tanggal mulai',
+                      hintText: 'Pilih tanggal absen',
                       icon: Icons.calendar_today,
                       context: context,
                       fillColor: primaryColor.withOpacity(0.1),

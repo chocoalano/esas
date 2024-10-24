@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:esas/components/BottomNavigation/bot_nav_view.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../controllers/akun_controller.dart';
@@ -13,23 +14,34 @@ class AkunView extends GetView<AkunController> {
   Widget build(BuildContext context) {
     controller.getProfileImg();
 
-    return Scaffold(
-      backgroundColor: bgColor,
-      appBar: _buildAppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildProfileSection(),
-            const SizedBox(height: 20),
-            _buildSection('Info saya', _infoSayaOptions()),
-            _buildSection('Support', _supportOptions()),
-            _buildSection('Pengaturan', _settingsOptions()),
-          ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          return;
+        }
+        if (context.mounted) {
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: bgColor,
+        appBar: _buildAppBar(),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProfileSection(),
+              const SizedBox(height: 20),
+              _buildSection('Info saya', _infoSayaOptions()),
+              _buildSection('Support', _supportOptions()),
+              _buildSection('Pengaturan', _settingsOptions()),
+            ],
+          ),
         ),
+        bottomNavigationBar: BotNavView(),
       ),
-      bottomNavigationBar: BotNavView(),
     );
   }
 

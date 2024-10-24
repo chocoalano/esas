@@ -1,5 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/constant.dart'; // Assuming this contains the base URL
 import 'package:flutter/material.dart';
 
 class PhotoBox extends StatelessWidget {
@@ -13,17 +12,33 @@ class PhotoBox extends StatelessWidget {
       width: 120,
       height: 120,
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: Colors.grey.shade200, // Background color for image box
         borderRadius: BorderRadius.circular(8),
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(8),
-        child: CachedNetworkImage(
-          imageUrl: photoUrl.isNotEmpty ? '$baseUrlImg/$photoUrl' : '',
-          placeholder: (context, url) => const CircularProgressIndicator(),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
-          fit: BoxFit.cover,
-        ),
+        child: photoUrl.isNotEmpty
+            ? Image.network(
+                '$baseUrlImg/$photoUrl', // Full image URL
+                fit: BoxFit
+                    .cover, // Ensures the image fits properly within the box
+                errorBuilder: (context, error, stackTrace) {
+                  return _placeholderImage(); // Placeholder when image fails to load
+                },
+              )
+            : _placeholderImage(), // Placeholder when URL is empty
+      ),
+    );
+  }
+
+  // Placeholder widget if image URL is empty or invalid
+  Widget _placeholderImage() {
+    return Container(
+      color: Colors.grey.shade300, // Background color for the placeholder
+      child: const Icon(
+        Icons.image, // Icon to indicate missing image
+        size: 50,
+        color: Colors.grey,
       ),
     );
   }
