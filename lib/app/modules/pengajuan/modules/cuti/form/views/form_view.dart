@@ -1,3 +1,5 @@
+// ignore_for_file: collection_methods_unrelated_type
+
 import 'package:esas/app/modules/pengajuan/widget/date_field_widget.dart';
 import 'package:esas/app/modules/pengajuan/widget/dropdown_field_widget.dart';
 import 'package:esas/app/modules/pengajuan/widget/text_field_widget.dart';
@@ -15,7 +17,7 @@ class FormCutiView extends GetView<FormController> {
   const FormCutiView({super.key});
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -34,7 +36,7 @@ class FormCutiView extends GetView<FormController> {
           act: () => Get.offAllNamed('/pengajuan/cuti/list'),
         ),
         body: Form(
-          key: _formKey,
+          key: formKey,
           child: Obx(() {
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -256,7 +258,7 @@ class FormCutiView extends GetView<FormController> {
               width: double.infinity,
               child: Obx(() => BtnAction(
                     act: () {
-                      if (_formKey.currentState?.validate() ?? false) {
+                      if (formKey.currentState?.validate() ?? false) {
                         controller.submitForm();
                       }
                     },
@@ -269,40 +271,6 @@ class FormCutiView extends GetView<FormController> {
                   )),
             )),
       ),
-    );
-  }
-
-  Widget _buildDropdown(
-      String label, Rx<String> controllerValue, List<String> items) {
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
-        fillColor: primaryColor.withOpacity(0.1),
-        filled: true,
-      ),
-      value: controllerValue.value.isNotEmpty
-          ? controllerValue.value
-          : null, // Gunakan null jika belum ada nilai awal
-      items: items.map((String item) {
-        return DropdownMenuItem<String>(
-          value: item,
-          child: SizedBox(
-            width: Get.width / 1.5,
-            child: Text(
-              item,
-              overflow: TextOverflow.visible,
-              softWrap: true,
-            ),
-          ),
-        );
-      }).toList(),
-      onChanged: (value) {
-        controllerValue.value = value!;
-      },
     );
   }
 }

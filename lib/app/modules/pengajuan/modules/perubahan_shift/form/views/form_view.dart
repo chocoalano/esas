@@ -1,3 +1,5 @@
+// ignore_for_file: collection_methods_unrelated_type
+
 import 'package:esas/app/modules/pengajuan/widget/date_field_widget.dart';
 import 'package:esas/app/modules/pengajuan/widget/dropdown_field_widget.dart';
 import 'package:esas/components/btn_action.dart';
@@ -12,7 +14,7 @@ class FormView extends GetView<FormController> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -31,7 +33,7 @@ class FormView extends GetView<FormController> {
           act: () => Get.offAllNamed('/pengajuan/perubahan-shift/list'),
         ),
         body: Form(
-            key: _formKey,
+            key: formKey,
             child: Obx(() => Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(children: [
@@ -289,7 +291,7 @@ class FormView extends GetView<FormController> {
               width: double.infinity,
               child: Obx(() => BtnAction(
                     act: () {
-                      if (_formKey.currentState?.validate() ?? false) {
+                      if (formKey.currentState?.validate() ?? false) {
                         controller.submitForm();
                       }
                     },

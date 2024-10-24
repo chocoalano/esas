@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 
@@ -72,7 +74,7 @@ class DetailCard {
             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             const Divider(),
             const SizedBox(height: 8),
-            ...details.map((detail) => detail.build()).toList(),
+            ...details.map((detail) => detail.build()),
           ],
         ),
       ),

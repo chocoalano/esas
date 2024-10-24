@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:esas/constant.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:esas/app/modules/pengajuan/modules/lembur/models/list_adm_model.dart';
 import 'package:esas/app/modules/pengajuan/modules/lembur/models/list_direktur_model.dart';
@@ -14,8 +15,6 @@ import '../../models/list_user_model.dart';
 
 class FormController extends GetxController {
   final ApiLembur _provider = ApiLembur();
-
-  var formList = <Map<String, dynamic>>[].obs;
   var listUser = <ListUserModel>[].obs;
   var listOrg = <ListOrgModel>[].obs;
   var listPosition = <ListPositionModel>[].obs;
@@ -28,34 +27,32 @@ class FormController extends GetxController {
   var listFat = <ListFatModel>[].obs;
   var isLoading = false.obs;
 
-  final RxString selectedDate = ''.obs;
+  // Observables untuk data form
+  late final TextEditingController userIdCreated;
+  late final TextEditingController organizationId;
+  late final TextEditingController jobPositionId;
+  late final TextEditingController overtimeDayStatus;
+  late final TextEditingController dateSpl;
+
+  late final TextEditingController dateOvertimeAt;
+  late final TextEditingController userAdm;
+  late final TextEditingController userLine;
+  late final TextEditingController userGm;
+  late final TextEditingController userHr;
+  late final TextEditingController userDirector;
+  late final TextEditingController userFat;
 
   @override
   void onInit() {
     super.onInit();
-    addForm();
-  }
-
-  void addForm() {
     _fetchFormData();
-    formList.add({
-      'userIdCreated': 0,
-      'organizationId': 0,
-      'jobPositionId': 0,
-      'overtimeDayStatus': false,
-      'dateSpl': formatDate(DateTime.now()),
-      'dateOvertimeAt': formatDate(DateTime.now()),
-      'userAdm': 0,
-      'userLine': 0,
-      'userGm': 0,
-      'userHr': 0,
-      'userDirector': 0,
-      'userFat': 0,
-    });
-  }
-
-  void removeForm(int index) {
-    formList.removeAt(index);
+    dateOvertimeAt = TextEditingController();
+    userAdm = TextEditingController();
+    userLine = TextEditingController();
+    userGm = TextEditingController();
+    userHr = TextEditingController();
+    userDirector = TextEditingController();
+    userFat = TextEditingController();
   }
 
   Future<void> _fetchFormData() async {
@@ -71,10 +68,10 @@ class FormController extends GetxController {
     }
   }
 
-  Future<void> fetchUserData(int userId) async {
+  Future<void> fetchUserData() async {
     isLoading.value = true;
     try {
-      final response = await _provider.fetchUserForms(userId);
+      final response = await _provider.fetchUserForms();
       final data = jsonDecode(response.body) as Map<String, dynamic>;
       _handleFetchUserChangeOptions(data);
     } catch (e) {
@@ -114,12 +111,21 @@ class FormController extends GetxController {
     }
   }
 
-  Future<void> submitForm(int index) async {
+  Future<void> submitForm() async {
     isLoading.value = true;
     try {
-      print(formList[index]);
-      // await _provider.submitCreate(formList);
-      // showSuccessSnackbar('Data berhasil disimpan');
+      Map<String, dynamic> formObj = {
+        'dateOvertimeAt': dateOvertimeAt.text,
+        'userAdm': userAdm.text,
+        'userLine': userLine.text,
+        'userGm': userGm.text,
+        'userHr': userHr.text,
+        'userDirector': userDirector.text,
+        'userFat': userFat.text,
+      };
+      await _provider.submitCreate(formObj);
+      showSuccessSnackbar('Data berhasil disimpan');
+      Get.toNamed('pengajuan/lembur/list');
     } catch (e) {
       showErrorSnackbar(e.toString());
     } finally {

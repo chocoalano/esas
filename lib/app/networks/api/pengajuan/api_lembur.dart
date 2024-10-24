@@ -24,17 +24,16 @@ class ApiLembur extends BaseHttpService {
     return await getRequest('$prefix/lembur/list');
   }
 
-  Future<dynamic> fetchUserForms(int userId) async {
-    return await getRequest('$prefix/lembur/list?userId=$userId');
+  Future<dynamic> fetchUserForms() async {
+    return await getRequest('$prefix/lembur/list?userId=0');
   }
 
   Future<dynamic> fetchApproval(String date) async {
     return await getRequest('$prefix/lembur/list?date=$date');
   }
 
-  Future<dynamic> submitCreate(List<Map<String, dynamic>> dataPost) async {
-    Map<String, dynamic> payload = {'datapost': dataPost};
-    return await postRequest('$prefix/lembur/list', payload);
+  Future<dynamic> submitCreate(Map<String, dynamic> dataPost) async {
+    return await postRequest('$prefix/lembur/add', dataPost);
   }
 
   Future<dynamic> approval(int id, String status, String tableName) async {
