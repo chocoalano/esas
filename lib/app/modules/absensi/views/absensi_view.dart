@@ -1,3 +1,4 @@
+import 'package:esas/components/photo_box.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -155,7 +156,7 @@ class AbsensiView extends StatelessWidget {
     Get.bottomSheet(
       Container(
         width: Get.width,
-        height: Get.height / 3.2,
+        height: Get.height / 1.8,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -174,6 +175,10 @@ class AbsensiView extends StatelessWidget {
               _buildInfoStatusRow('Status Jam masuk', item.statusIn ?? ''),
               _buildInfoRow('Jam pulang', formatTimeSting(item.timeOut)),
               _buildInfoStatusRow('Status Jam pulang', item.statusOut ?? ''),
+              const SizedBox(height: 10),
+              const Divider(),
+              const SizedBox(height: 10),
+              _buildPhotoSection(item)
             ],
           ),
         ),
@@ -191,6 +196,40 @@ class AbsensiView extends StatelessWidget {
         IconButton(
           onPressed: () => Get.back(),
           icon: const Icon(Icons.close_outlined),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPhotoSection(var item) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Center(
+          child: Column(
+            children: [
+              const Text(
+                'In',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              PhotoBox(
+                photoUrl: item.photoIn ?? '',
+              ),
+            ],
+          ),
+        ),
+        Center(
+          child: Column(
+            children: [
+              const Text(
+                'Out',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              PhotoBox(
+                photoUrl: item.photoOut ?? '',
+              ),
+            ],
+          ),
         ),
       ],
     );

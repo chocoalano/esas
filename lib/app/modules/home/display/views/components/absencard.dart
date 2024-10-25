@@ -12,6 +12,7 @@ class Absencard extends StatelessWidget {
   Widget build(BuildContext context) {
     final GpsController gpsC = Get.put(GpsController());
     final AbsensiController absensiC = Get.put(AbsensiController());
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -26,12 +27,13 @@ class Absencard extends StatelessWidget {
           _buildAbsenceTime(absensiC),
           const SizedBox(height: 20),
           Center(
-              child: Obx(
-            () => gpsC.isWithinRange.isFalse
-                ? Text(
-                    "Jarak anda dengan lokasi absen adalah ${gpsC.currentDistance.round()} m")
-                : _buildActionButtons(gpsC, absensiC),
-          )),
+            child: Obx(
+              () => gpsC.isWithinRange.isFalse
+                  ? Text(
+                      "Jarak anda dengan lokasi absen adalah ${gpsC.currentDistance.round()} m")
+                  : _buildActionButtons(gpsC, absensiC),
+            ),
+          ),
           const SizedBox(height: 20),
           _buildViewAbsenceButton(),
         ],
@@ -61,72 +63,79 @@ class Absencard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Obx(() => Text(
-              absensiC.timeIn.value,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            )),
-        Obx(() => Text(
-              absensiC.timeOut.value,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            )),
+        Obx(() => _buildTimeText(absensiC.timeIn.value,
+            absensiC.statusIn.value == 'late' ? false : true)),
+        Obx(() => _buildTimeText(absensiC.timeOut.value,
+            absensiC.statusOut.value == 'late' ? false : true)),
       ],
+    );
+  }
+
+  Widget _buildTimeText(String time, bool status) {
+    return Text(
+      time,
+      style: TextStyle(
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+          color: status ? Colors.black : dangerColor),
     );
   }
 
   Widget _buildViewAbsenceButton() {
     return TextButton(
+      onPressed: () => Get.offAllNamed('/beranda/absen'),
       child: const Text(
         "Riwayat Absensi",
         style: TextStyle(fontSize: 13, color: primaryColor),
       ),
-      onPressed: () => Get.offAllNamed('/beranda/absen'),
     );
   }
 
   Widget _buildActionButtons(GpsController gpsC, AbsensiController absensiC) {
-    return Obx(() => Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildAbsenceInButton(gpsC, absensiC),
-            _buildAbsenceOutButton(gpsC, absensiC),
-          ],
-        ));
-  }
-
-  Widget _buildAbsenceInButton(GpsController gpsC, AbsensiController absensiC) {
-    return ElevatedButton.icon(
-      onPressed: gpsC.isWithinRange.value || absensiC.btnIn.isFalse
-          ? () => Get.offAllNamed('/beranda/absen/photo',
-              arguments: {'initial': 'in'})
-          : null,
-      icon: const Icon(Icons.login, color: bgColor),
-      label: const Text('Absen Masuk', style: TextStyle(color: bgColor)),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: primaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _buildAbsenceButton(
+          label: 'Absen Masuk',
+          icon: Icons.login,
+          isVisible: absensiC.btnIn.isFalse,
+          onPressed: gpsC.isWithinRange.value
+              ? () => Get.offAllNamed('/beranda/absen/photo',
+                  arguments: {'initial': 'in'})
+              : null,
         ),
-      ),
+        _buildAbsenceButton(
+          label: 'Absen Pulang',
+          icon: Icons.logout,
+          isVisible: absensiC.btnOut.isFalse,
+          onPressed: gpsC.isWithinRange.value
+              ? () => Get.offAllNamed('/beranda/absen/photo',
+                  arguments: {'initial': 'out'})
+              : null,
+        ),
+      ],
     );
   }
 
-  Widget _buildAbsenceOutButton(
-      GpsController controller, AbsensiController absensiC) {
-    return ElevatedButton.icon(
-      onPressed: controller.isWithinRange.value || absensiC.btnOut.isFalse
-          ? () => Get.offAllNamed('/beranda/absen/photo',
-              arguments: {'initial': 'out'})
-          : null,
-      icon: const Icon(Icons.logout, color: bgColor),
-      label: const Text('Absen Pulang', style: TextStyle(color: bgColor)),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: primaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-      ),
-    );
+  Widget _buildAbsenceButton({
+    required String label,
+    required IconData icon,
+    required bool isVisible,
+    required VoidCallback? onPressed,
+  }) {
+    return isVisible
+        ? ElevatedButton.icon(
+            onPressed: onPressed,
+            icon: Icon(icon, color: bgColor),
+            label: Text(label, style: const TextStyle(color: bgColor)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          )
+        : const SizedBox.shrink();
   }
 }

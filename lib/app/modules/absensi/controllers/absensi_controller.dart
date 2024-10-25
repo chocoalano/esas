@@ -15,6 +15,8 @@ class AbsensiController extends GetxController {
 
   var timeIn = '--:--:--'.obs;
   var timeOut = '--:--:--'.obs;
+  var statusIn = ''.obs;
+  var statusOut = ''.obs;
 
   var shifts = <Shift>[].obs;
   Rx<int?> selectedShift = Rx<int?>(null);
@@ -25,11 +27,13 @@ class AbsensiController extends GetxController {
       final response = await apiRepository.fetchCurrentAbsen();
       if (response.statusCode == 200) {
         final fetch = jsonDecode(response.body) as Map<String, dynamic>;
-        btnIn(fetch['timeIn'] != null ? true : false);
-        btnOut(fetch['timeOut'] != null ? true : false);
+        btnIn.value = fetch['timeIn'] != null ? true : false;
+        btnOut.value = fetch['timeOut'] != null ? true : false;
 
         timeIn(fetch['timeIn'] ?? '--:--:--');
         timeOut(fetch['timeOut'] ?? '--:--:--');
+        statusIn(fetch['statusIn'] ?? '');
+        statusOut(fetch['statusOut'] ?? '');
       }
     } on SocketException catch (_) {
       showErrorSnackbar('Waktu jaringan habis. Silahkan coba dilain waktu.');

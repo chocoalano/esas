@@ -6,13 +6,13 @@ import 'package:esas/app/modules/pengajuan/widget/text_field_widget.dart';
 import 'package:esas/app/modules/pengajuan/widget/time_field_widget.dart';
 import 'package:esas/components/btn_action.dart';
 import 'package:esas/components/globat_appbar.dart';
+import 'package:esas/components/photo_box.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
 import '../controllers/form_controller.dart';
-import 'components/photo_box.dart';
 
 class FormView extends GetView<FormController> {
   const FormView({super.key});
