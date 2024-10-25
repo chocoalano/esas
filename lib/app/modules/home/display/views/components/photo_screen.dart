@@ -12,6 +12,7 @@ class PhotoScreen extends StatelessWidget {
     final PhotoController controller = Get.find<PhotoController>();
 
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Obx(() {
         if (!controller.isCameraInitialized.value) {
           return const Center(child: CircularProgressIndicator());
@@ -19,9 +20,14 @@ class PhotoScreen extends StatelessWidget {
           return const Center(child: Text('Camera not available'));
         } else {
           return Stack(
-            fit: StackFit.expand,
             children: [
-              CameraPreview(controller.cameraController!),
+              Center(
+                child: AspectRatio(
+                  aspectRatio: controller.cameraController!.value.aspectRatio /
+                      3, // Maintain camera's aspect ratio
+                  child: CameraPreview(controller.cameraController!),
+                ),
+              ),
               Positioned(
                 bottom: 30,
                 left: 0,
