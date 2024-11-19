@@ -46,11 +46,14 @@ class HomeController extends GetxController {
     try {
       final response = await apiAuthRepository.getProfile();
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
-      // print(fetch);
+      if (kDebugMode) {
+        print(fetch);
+      }
       storage.setStorageAuth(fetch);
       nama(fetch['account']['name'] ?? '');
       jabatan(fetch['account']['employe']['job']['name'] ?? '');
-      img.value = fetch['account']['image'] ?? '';
+      img.value = fetch['account']['image'] ??
+          'https://res.cloudinary.com/dqta7pszj/image/upload/v1731985782/users-profile/pmce5gbr2wx2dockusyu.png';
     } catch (e) {
       showErrorSnackbar(e.toString());
       logout();
