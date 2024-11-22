@@ -17,6 +17,7 @@ class FormController extends GetxController {
   var attendance = AttendanceModel().obs;
 
   var isLoading = false.obs;
+  var buttonAllow = false.obs;
 
   late final TextEditingController dateAdjustment;
   late final TextEditingController timeinAdjustment;
@@ -55,6 +56,7 @@ class FormController extends GetxController {
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
       if (response != null) {
         updateAttendance(fetch);
+        buttonAllow(true);
       } else {
         showErrorSnackbar('Unexpected response format');
       }

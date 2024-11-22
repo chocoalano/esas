@@ -190,19 +190,35 @@ class FormView extends GetView<FormController> {
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
               width: double.infinity,
-              child: Obx(() => BtnAction(
-                    act: () {
-                      if (formKey.currentState?.validate() ?? false) {
-                        controller.submitRequest();
-                      }
-                    },
-                    color: primaryColor,
-                    icon: Icons.save,
-                    isLoading: controller.isLoading,
-                    title: controller.isLoading.isFalse
-                        ? 'Ajukan permintaan'
-                        : 'proses',
-                  )),
+              child: Obx(() => controller.buttonAllow.isTrue
+                  ? BtnAction(
+                      act: () {
+                        if (formKey.currentState?.validate() ?? false) {
+                          controller.submitRequest();
+                        }
+                      },
+                      color: primaryColor,
+                      icon: Icons.save,
+                      isLoading: controller.isLoading,
+                      title: controller.isLoading.isFalse
+                          ? 'Ajukan permintaan'
+                          : 'proses',
+                    )
+                  : const MaterialBanner(
+                      elevation: 0,
+                      padding: EdgeInsets.all(10),
+                      content: Text(
+                        'Anda hanya bisa melakukan koreksi absen pada waktu dimana anda telah melakukan absen sebelumnya!',
+                        style: TextStyle(color: Colors.white, fontSize: 13),
+                      ),
+                      backgroundColor: primaryColor,
+                      actions: [
+                        Icon(
+                          Icons.info,
+                          color: Colors.white,
+                        )
+                      ],
+                    )),
             )),
       ),
     );

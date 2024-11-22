@@ -13,6 +13,8 @@ const infoColor = Colors.blue;
 const bgColor = Colors.white;
 
 const defaultPadding = 16.0;
+const imgDefault =
+    'https://res.cloudinary.com/dqta7pszj/image/upload/v1731985782/users-profile/pmce5gbr2wx2dockusyu.png';
 
 Future<bool?> showBackDialog() {
   return Get.dialog<bool>(

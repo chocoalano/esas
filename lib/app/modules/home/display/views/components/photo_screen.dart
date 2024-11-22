@@ -19,41 +19,49 @@ class PhotoScreen extends StatelessWidget {
         } else if (controller.cameraController == null) {
           return const Center(child: Text('Camera not available'));
         } else {
-          return Stack(
-            children: [
-              Center(
-                child: AspectRatio(
-                  aspectRatio: controller.cameraController!.value.aspectRatio /
-                      3, // Maintain camera's aspect ratio
-                  child: CameraPreview(controller.cameraController!),
-                ),
-              ),
-              Positioned(
-                bottom: 30,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: GestureDetector(
-                    onTap: () async {
-                      await controller.capturePhoto();
-                    },
-                    child: Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.8),
-                      ),
-                      child: const Icon(
-                        Icons.camera_alt,
-                        color: Colors.black,
-                        size: 30,
-                      ),
-                    ),
+          return Transform.scale(
+            scaleX: -1,
+            child: Stack(
+              children: [
+                Center(
+                  child: AspectRatio(
+                    aspectRatio:
+                        controller.cameraController!.value.aspectRatio /
+                            3, // Maintain camera's aspect ratio
+                    child: CameraPreview(controller.cameraController!),
                   ),
                 ),
-              ),
-            ],
+                Positioned(
+                  bottom: 30,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Obx(() => controller.isLoadingApi.isTrue
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : GestureDetector(
+                            onTap: () async {
+                              await controller.capturePhoto();
+                            },
+                            child: Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white.withOpacity(0.8),
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt,
+                                color: Colors.black,
+                                size: 30,
+                              ),
+                            ),
+                          )),
+                  ),
+                ),
+              ],
+            ),
           );
         }
       }),

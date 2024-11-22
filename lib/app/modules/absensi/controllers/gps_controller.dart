@@ -10,6 +10,7 @@ class GpsController extends GetxController {
   final ApiAbsen provider = ApiAbsen();
   var isWithinRange = false.obs;
   var currentDistance = 0.0.obs;
+  var isMockedLocation = false.obs;
 
   RxDouble targetLatitude = 0.0.obs;
   RxDouble targetLongitude = 0.0.obs;
@@ -52,6 +53,7 @@ class GpsController extends GetxController {
       rangeLimit(fetch['radius'] != null
           ? double.tryParse(fetch['radius'].toString()) ?? 0.0
           : 0.0);
+
       // Start location stream only if valid data is present
       if (targetLatitude.value != 0.0 &&
           targetLongitude.value != 0.0 &&
@@ -74,7 +76,7 @@ class GpsController extends GetxController {
         accuracy: LocationAccuracy.high,
         distanceFilter: 1,
       ),
-    ).listen((Position position) {
+    ).listen((Position position) async {
       // Menghitung jarak antara posisi saat ini dan target
       final distance = Geolocator.distanceBetween(
         position.latitude,
@@ -82,17 +84,24 @@ class GpsController extends GetxController {
         targetLatitude.value,
         targetLongitude.value,
       );
+
+      // Periksa apakah lokasi menggunakan mock
+      final mockDetected = await isMockLocation(position);
+
       // Memperbarui jarak saat ini dan status apakah dalam jangkauan
       currentDistance.value = distance;
       isWithinRange.value = distance <= rangeLimit.value;
+      isMockedLocation.value = mockDetected;
+
+      if (mockDetected) {
+        showErrorSnackbar('Fake GPS terdeteksi! Harap matikan lokasi palsu.');
+        positionStream?.cancel(); // Stop stream to prevent further updates
+      }
     });
   }
 
   Future<bool> isMockLocation(Position position) async {
-    // Periksa apakah perangkat menggunakan lokasi palsu
-    if (await Geolocator.isLocationServiceEnabled()) {
-      return position.isMocked;
-    }
-    return false;
+    // Properti isMocked mendeteksi lokasi palsu
+    return position.isMocked;
   }
 }

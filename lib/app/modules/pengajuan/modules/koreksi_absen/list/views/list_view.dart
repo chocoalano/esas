@@ -148,7 +148,7 @@ class ListKoreksiAbsenView extends GetView<ListController> {
         width: Get.width,
         height: item.lineId == currentUserId || item.hrId == currentUserId
             ? Get.height / 2
-            : Get.height / 3.2,
+            : Get.height / 2.5,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),

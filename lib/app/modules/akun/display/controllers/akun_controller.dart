@@ -22,7 +22,7 @@ class AkunController extends GetxController {
       final response = await provider.getProfile();
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
       var parse = fetch['account'];
-      imageData.value = parse['image'];
+      imageData.value = parse['image'] ?? imgDefault;
       nameData.value = parse['name'];
       nikData.value = parse['nik'];
       positionData.value = parse['employe']['org']['name'];

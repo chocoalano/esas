@@ -123,7 +123,8 @@ class KaryawanView extends GetView<KaryawanController> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buildSubtitleRow('Jabatan', user.employe!.job!.name!),
+                      buildSubtitleRow(
+                          'Jabatan', user.employe?.job?.name! ?? ''),
                       buildSubtitleRow('Telp/HP', user.phone!)
                     ],
                   ),
@@ -207,8 +208,8 @@ class KaryawanView extends GetView<KaryawanController> {
               _buildInfoRow('Tanggal Lahir', formatDate(item.datebirth)),
               _buildInfoRow('Gol. Darah', item.blood.toUpperCase() ?? ''),
               _buildInfoRow('Agama', item.religion ?? ''),
-              _buildInfoRow(
-                  'Status pernikahan', statusPernikahan(item.maritalStatus)),
+              _buildInfoRow('Status pernikahan',
+                  statusPernikahan(item.maritalStatus ?? '')),
               _buildInfoRow('Departemen', item.employe.org.name ?? ''),
               _buildInfoRow('Jabatan', item.employe.job.name ?? ''),
               _buildInfoRow('Level', item.employe.lvl.name ?? ''),

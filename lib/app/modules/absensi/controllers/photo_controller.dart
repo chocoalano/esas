@@ -18,6 +18,7 @@ class PhotoController extends GetxController {
   var isCameraInitialized = false.obs;
   var capturedImagePath = ''.obs;
 
+  var isLoadingApi = false.obs;
   var isWithinRange = false.obs;
   var currentDistance = 0.0.obs;
   var curLatitude = 0.0.obs;
@@ -42,14 +43,15 @@ class PhotoController extends GetxController {
   Future<void> _initializeCamera() async {
     try {
       final cameras = await availableCameras();
-      // Pilih kamera depan (biasanya kamera depan berada di posisi terakhir)
       CameraDescription? frontCamera = cameras.firstWhere(
         (camera) => camera.lensDirection == CameraLensDirection.front,
-        orElse: () =>
-            cameras.first, // Jika tidak ada kamera depan, gunakan yang pertama
+        orElse: () => cameras.first,
       );
-      cameraController = CameraController(frontCamera, ResolutionPreset.high,
-          enableAudio: false);
+      cameraController = CameraController(
+        frontCamera,
+        ResolutionPreset.high,
+        enableAudio: false,
+      );
       await cameraController!.initialize();
       isCameraInitialized.value = true;
     } catch (e) {
@@ -93,6 +95,7 @@ class PhotoController extends GetxController {
   }
 
   Future<void> capturePhoto() async {
+    isLoadingApi(true);
     try {
       await _getCurrentLocation();
       if (cameraController == null || !cameraController!.value.isInitialized) {
@@ -120,12 +123,15 @@ class PhotoController extends GetxController {
         await apiRepository.saveSubmit(datapost, file);
         absensiC.fetchCurrentAttendance();
         Get.offAllNamed('/beranda');
+        isLoadingApi(false);
       } catch (e) {
         showErrorSnackbar(e.toString());
         Get.offAllNamed('/beranda');
+        isLoadingApi(false);
       }
     } catch (e) {
       showErrorSnackbar('Failed to capture or upload photo: ${e.toString()}');
+      isLoadingApi(false);
     }
   }
 }

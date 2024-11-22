@@ -52,8 +52,7 @@ class HomeController extends GetxController {
       storage.setStorageAuth(fetch);
       nama(fetch['account']['name'] ?? '');
       jabatan(fetch['account']['employe']['job']['name'] ?? '');
-      img.value = fetch['account']['image'] ??
-          'https://res.cloudinary.com/dqta7pszj/image/upload/v1731985782/users-profile/pmce5gbr2wx2dockusyu.png';
+      img.value = fetch['account']['image'] ?? imgDefault;
     } catch (e) {
       showErrorSnackbar(e.toString());
       logout();
@@ -74,8 +73,8 @@ class HomeController extends GetxController {
         print(
             'Terjadi kesalahan pada controller home dengan pesan : ${e.toString()}');
       }
-      // showErrorSnackbar(
-      //     'Terjadi kesalahan pada controller home dengan pesan : ${e.toString()}');
+      showErrorSnackbar(
+          'Terjadi kejalahan ketika memuat jadwal absensi dengan pesan : ${e.toString()}');
     }
   }
 }
