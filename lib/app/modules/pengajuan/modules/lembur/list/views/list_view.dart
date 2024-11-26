@@ -195,12 +195,13 @@ class ListLemburView extends GetView<ListController> {
               buildInfoRowApprove(
                   'Status FAT', approvalString(item.fatApproved ?? 'w')),
               const SizedBox(height: 20),
-              if (item.userAdm == currentUserId ||
-                  item.userLine == currentUserId ||
-                  item.userGm == currentUserId ||
-                  item.userHr == currentUserId ||
-                  item.userDirector == currentUserId ||
-                  item.userFat == currentUserId)
+              if (item.userAdm == currentUserId && item.adminApproved == 'w' ||
+                  item.userLine == currentUserId && item.lineApproved == 'w' ||
+                  item.userGm == currentUserId && item.gmApproved == 'w' ||
+                  item.userHr == currentUserId && item.hrgaApproved == 'w' ||
+                  item.userDirector == currentUserId &&
+                      item.directorApproved == 'w' ||
+                  item.userFat == currentUserId && item.fatApproved == 'w')
                 Row(
                   children: [
                     Expanded(

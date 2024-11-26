@@ -4,6 +4,7 @@ import 'package:esas/app/data/shift_model.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/constant.dart';
 import 'package:esas/services/notif_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 class AbsensiController extends GetxController {
@@ -38,6 +39,9 @@ class AbsensiController extends GetxController {
     } on SocketException catch (_) {
       showErrorSnackbar('Waktu jaringan habis. Silahkan coba dilain waktu.');
     } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
       notifService.showNotification(
           'Absensi', 'Anda belum melakukan absen hari ini');
     } finally {

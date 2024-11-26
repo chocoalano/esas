@@ -195,7 +195,8 @@ class ListPerubahanShiftView extends GetView<ListController> {
               const SizedBox(height: 20),
 
               // Displaying approval buttons
-              if (item.lineId == currentUserId || item.hrId == currentUserId)
+              if (item.lineId == currentUserId && item.lineApprove == 'w' ||
+                  item.hrId == currentUserId && item.hrApprove == 'w')
                 Row(
                   children: [
                     Expanded(

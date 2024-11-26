@@ -1,11 +1,11 @@
 import 'package:esas/app/modules/inbox/controllers/inbox_controller.dart';
+import 'package:esas/app/modules/inbox/views/pages/persetujuan_list.dart';
 import 'package:esas/components/BottomNavigation/bot_nav_view.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'pages/notifications.dart';
-import 'pages/persetujuan.dart';
+import 'pages/notification_list.dart';
 
 class InboxView extends GetView<InboxController> {
   const InboxView({super.key});
@@ -53,8 +53,8 @@ class InboxView extends GetView<InboxController> {
           child: TabBarView(
             controller: controller.tabController,
             children: const [
-              Notifications(),
-              Persetujuan(),
+              NotificationList(),
+              PersetujuanList(),
             ],
           ),
         ),

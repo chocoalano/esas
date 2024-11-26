@@ -73,8 +73,6 @@ class HomeController extends GetxController {
         print(
             'Terjadi kesalahan pada controller home dengan pesan : ${e.toString()}');
       }
-      showErrorSnackbar(
-          'Terjadi kejalahan ketika memuat jadwal absensi dengan pesan : ${e.toString()}');
     }
   }
 }

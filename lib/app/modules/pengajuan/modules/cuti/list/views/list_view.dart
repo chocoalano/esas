@@ -72,7 +72,8 @@ class ListCutiView extends GetView<ListController> {
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(item.user?.name ?? 'No Name'),
+                              Text(limitString(
+                                  item.user!.name ?? 'No Name', 50)),
                               IconButton(
                                   onPressed: () =>
                                       _showDetails(item, currentUserId),
@@ -177,8 +178,8 @@ class ListCutiView extends GetView<ListController> {
               _buildInfoRow(
                   'Status HRGA', approvalString(item.hrgaApproved ?? 'w')),
               const SizedBox(height: 20),
-              if (item.userLine == currentUserId ||
-                  item.userHr == currentUserId)
+              if (item.userLine == currentUserId && item.lineApproved == 'w' ||
+                  item.userHr == currentUserId && item.hrgaApproved == 'w')
                 Row(
                   children: [
                     Expanded(

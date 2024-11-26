@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:esas/app/data/notification_model.dart';
-import 'package:esas/app/data/pengajuan_model.dart';
+import 'package:esas/app/data/inbox/notification/notification_model.dart';
+import 'package:esas/app/data/inbox/pengajuan/pengajuan_model.dart';
+import 'package:flutter/foundation.dart';
 import '../base_http_services.dart';
 
 class ApiInbox extends BaseHttpService {
@@ -10,22 +11,30 @@ class ApiInbox extends BaseHttpService {
     final response = await getRequest(
         '$prefix/notification/list?page=$page&limit=$limit&type=pengajuan');
     final data = jsonDecode(response.body);
-    if (data['data'] != null && data['data'].length > 0) {
+    if (kDebugMode) {
+      print(data['notifications']);
+    }
+    if (data['notifications']['data'] != null &&
+        data['notifications']['data'].length > 0) {
       return List<PengajuanModel>.from(
-          data['data'].map((e) => PengajuanModel.fromJson(e)));
+          data['notifications']['data'].map((e) => PengajuanModel.fromJson(e)));
     } else {
       return [];
     }
   }
 
-  Future<List<NotificationModel>> fetchPaginateNotification(
+  Future<List<NotificationListModel>> fetchPaginateNotification(
       int page, int limit) async {
     final response = await getRequest(
         '$prefix/notification/list?page=$page&limit=$limit&type=');
     final data = jsonDecode(response.body);
-    if (data['data'] != null && data['data'].length > 0) {
-      return List<NotificationModel>.from(data['notifications']['data']
-          .map((e) => NotificationModel.fromJson(e)));
+    if (kDebugMode) {
+      print(data['notifications']['data']);
+    }
+    if (data['notifications']['data'] != null &&
+        data['notifications']['data'].length > 0) {
+      return List<NotificationListModel>.from(data['notifications']['data']
+          .map((e) => NotificationListModel.fromJson(e)));
     } else {
       return [];
     }

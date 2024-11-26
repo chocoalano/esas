@@ -190,7 +190,8 @@ class ListKoreksiAbsenView extends GetView<ListController> {
               buildInfoRowApprove(
                   'Approve HR', approvalString(item.hrApprove!)),
               const SizedBox(height: 20),
-              if (item.lineId == currentUserId || item.hrId == currentUserId)
+              if (item.lineId == currentUserId && item.lineApprove == 'w' ||
+                  item.hrId == currentUserId && item.hrApprove == 'w')
                 Row(
                   children: [
                     Expanded(
