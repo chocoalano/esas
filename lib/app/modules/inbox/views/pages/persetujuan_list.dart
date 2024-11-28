@@ -117,15 +117,22 @@ class _PersetujuanListState extends State<PersetujuanList> {
               _buildRowText(
                   'Tgl. diajukan: ',
                   notification.tablename == 'cuti'
-                      ? formatDate(notification.cuti.startDate).toString()
+                      ? notification.cuti?.startDate != null
+                          ? formatDate(notification.cuti.startDate).toString()
+                          : ''
                       : notification.tablename == 'lembur'
-                          ? formatDate(notification.lembur.dateSpl).toString()
-                          : notification.tablename == 'perubahan-shift'
-                              ? formatDate(notification.perubahanShift.date)
+                          ? notification.lembur?.dateSpl != null
+                              ? formatDate(notification.lembur.dateSpl)
                                   .toString()
+                              : ''
+                          : notification.tablename == 'perubahan-shift'
+                              ? notification.perubahanShift?.date != null
+                                  ? formatDate(notification.perubahanShift.date)
+                                      .toString()
+                                  : ''
                               : notification.tablename == 'koreksi-absensi'
                                   ? formatDate(notification
-                                          .koreksiAbsen.dateAdjustment)
+                                          .koreksiAbsen?.dateAdjustment)
                                       .toString()
                                   : 'Unknow'),
               const SizedBox(
@@ -140,9 +147,9 @@ class _PersetujuanListState extends State<PersetujuanList> {
                 padding: const EdgeInsets.all(20),
                 child: Text(
                   notification.tablename == 'cuti'
-                      ? notification.cuti.description
+                      ? notification.cuti?.description ?? ''
                       : notification.tablename == 'koreksi-absensi'
-                          ? notification.koreksiAbsen.notes
+                          ? notification.koreksiAbsen?.notes ?? ''
                           : 'Unknow',
                 ),
               ),
