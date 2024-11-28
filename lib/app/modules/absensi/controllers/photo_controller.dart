@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/constant.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
@@ -99,7 +100,7 @@ class PhotoController extends GetxController {
     try {
       await _getCurrentLocation();
       if (cameraController == null || !cameraController!.value.isInitialized) {
-        showErrorSnackbar('camera not initialized!');
+        showErrorSnackbar('Kamera gagal dimuat!');
         return;
       }
       final directory = await getApplicationDocumentsDirectory();
@@ -130,7 +131,11 @@ class PhotoController extends GetxController {
         isLoadingApi(false);
       }
     } catch (e) {
-      showErrorSnackbar('Failed to capture or upload photo: ${e.toString()}');
+      if (kDebugMode) {
+        print(e.toString());
+      }
+      showErrorSnackbar(
+          'Gagal mengambil atau mengunggah foto, pastikan esas mendapatkan izin untuk mengakses kamera. silahkan periksa akses izin aplikasi pada aperangkat anda!');
       isLoadingApi(false);
     }
   }

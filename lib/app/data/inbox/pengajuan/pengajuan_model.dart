@@ -20,7 +20,7 @@ String pengajuanModelToJson(List<PengajuanModel> data) =>
 class PengajuanModel {
   String tablename;
   int id;
-  int userCreated;
+  int? userCreated;
   int user1;
   int user2;
   dynamic user3;
@@ -33,7 +33,7 @@ class PengajuanModel {
   dynamic status4;
   dynamic status5;
   dynamic status6;
-  UserModel user;
+  UserModel? user;
   CutiModel? cuti;
   PerubahanShiftModel? perubahanShift;
   LemburModel? lembur;
@@ -78,7 +78,7 @@ class PengajuanModel {
         status4: json["status4"],
         status5: json["status5"],
         status6: json["status6"],
-        user: UserModel.fromJson(json["user"]),
+        user: json["user"] != null ? UserModel.fromJson(json["user"]) : null,
         cuti: json["cuti"] != null ? CutiModel.fromJson(json["cuti"]) : null,
         perubahanShift: json["perubahanShift"] != null
             ? PerubahanShiftModel.fromJson(json["perubahanShift"])
@@ -107,7 +107,7 @@ class PengajuanModel {
         "status4": status4,
         "status5": status5,
         "status6": status6,
-        "user": user.toJson(),
+        "user": user?.toJson(),
         "cuti": cuti?.toJson(),
         "perubahanShift": perubahanShift?.toJson(),
         "lembur": lembur?.toJson(),

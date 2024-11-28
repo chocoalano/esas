@@ -35,6 +35,7 @@ class ListController extends GetxController {
   Future<void> approval(int id, String tablename, String status) async {
     try {
       await provider.approval(id, status, tablename);
+      refreshData();
     } catch (e) {
       showErrorSnackbar('Error: $e');
     }
