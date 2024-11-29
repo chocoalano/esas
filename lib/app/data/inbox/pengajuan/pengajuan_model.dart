@@ -4,12 +4,11 @@
 
 import 'dart:convert';
 
+import 'package:esas/app/data/permit/korabs_model.dart';
+import 'package:esas/app/data/permit/lembur_model.dart';
+import 'package:esas/app/data/permit/list_cuti_model.dart';
+import 'package:esas/app/data/permit/perubahan_shift_model.dart';
 import 'package:esas/app/data/user/user_model.dart';
-
-import '../cuti_model.dart';
-import '../koreksi_absen_model.dart';
-import '../lembur_model.dart';
-import '../perubahan_shift_model.dart';
 
 List<PengajuanModel> pengajuanModelFromJson(String str) =>
     List<PengajuanModel>.from(
@@ -35,8 +34,8 @@ class PengajuanModel {
   dynamic status5;
   dynamic status6;
   UserModel? user;
-  CutiModel? cuti;
-  PerubahanShiftModel? perubahanShift;
+  ListCutiModel? cuti;
+  ListPerubahanShifyModel? perubahanShift;
   LemburModel? lembur;
   KoreksiAbsenModel? koreksiAbsen;
 
@@ -80,9 +79,10 @@ class PengajuanModel {
         status5: json["status5"],
         status6: json["status6"],
         user: json["user"] != null ? UserModel.fromJson(json["user"]) : null,
-        cuti: json["cuti"] != null ? CutiModel.fromJson(json["cuti"]) : null,
+        cuti:
+            json["cuti"] != null ? ListCutiModel.fromJson(json["cuti"]) : null,
         perubahanShift: json["perubahanShift"] != null
-            ? PerubahanShiftModel.fromJson(json["perubahanShift"])
+            ? ListPerubahanShifyModel.fromJson(json["perubahanShift"])
             : null,
         lembur: json["lembur"] != null
             ? LemburModel.fromJson(json["lembur"])
