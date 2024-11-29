@@ -1,4 +1,4 @@
-import 'package:esas/app/data/attendance_model.dart';
+import 'package:esas/app/data/presence/attendance_model.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/foundation.dart';

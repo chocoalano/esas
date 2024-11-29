@@ -2,7 +2,7 @@ import 'package:esas/app/networks/api/pengajuan/api_lembur.dart';
 import 'package:esas/constant.dart';
 import 'package:get/get.dart';
 
-import '../../../../../../data/lembur_model.dart';
+import '../../../../../../data/permit/lembur_model.dart';
 
 class ListController extends GetxController {
   final ApiLembur provider = ApiLembur();

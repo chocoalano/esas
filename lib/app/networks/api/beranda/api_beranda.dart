@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:esas/app/data/anouncement_model.dart';
+import 'package:esas/app/data/administrations/anouncement_model.dart';
 
 import '../../base_http_services.dart';
 

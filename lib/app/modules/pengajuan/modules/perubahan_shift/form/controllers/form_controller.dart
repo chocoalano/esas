@@ -5,8 +5,8 @@ import 'package:esas/app/networks/api/pengajuan/api_perubahan_shift.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../../../data/group_absensi_model.dart';
-import '../../../../../../data/group_shift_model.dart';
+import '../../../../../../data/presence/group_absensi_model.dart';
+import '../../../../../../data/presence/group_shift_model.dart';
 
 class FormController extends GetxController {
   final ApiPerubahanShift provider = Get.put(ApiPerubahanShift());

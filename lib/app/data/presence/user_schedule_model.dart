@@ -4,8 +4,8 @@
 
 import 'dart:convert';
 
-import 'package:esas/app/data/group_absensi_model.dart';
-import 'package:esas/app/data/time_model.dart';
+import 'package:esas/app/data/presence/group_absensi_model.dart';
+import 'package:esas/app/data/presence/time_model.dart';
 import 'package:esas/app/data/user/user_model.dart';
 
 AccountScheduleModel accountScheduleModelFromJson(String str) =>

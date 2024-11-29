@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 
 import '../../../absensi/controllers/absensi_controller.dart';
 import '../../../absensi/controllers/gps_controller.dart';
-import '../../../../data/user_schedule_model.dart';
+import '../../../../data/presence/user_schedule_model.dart';
 
 class HomeController extends GetxController {
   final ApiBeranda apiBeranda = Get.put(ApiBeranda());

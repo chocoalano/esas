@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:esas/app/data/perubahan_shift_model.dart';
+import 'package:esas/app/data/permit/perubahan_shift_model.dart';
 import 'package:esas/services/storage.dart';
 import 'package:get/get.dart';
 import '../../base_http_services.dart';

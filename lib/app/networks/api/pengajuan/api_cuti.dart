@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:esas/app/data/list_cuti_model.dart';
+import 'package:esas/app/data/permit/list_cuti_model.dart';
 import '../../base_http_services.dart';
 
 class ApiCuti extends BaseHttpService {
