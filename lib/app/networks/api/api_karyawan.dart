@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:esas/app/data/user_model.dart';
+import 'package:esas/app/data/user/user_model.dart';
 import '../base_http_services.dart';
 
 class ApiKaryawan extends BaseHttpService {

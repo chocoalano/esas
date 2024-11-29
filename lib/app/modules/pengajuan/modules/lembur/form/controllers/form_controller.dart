@@ -1,30 +1,23 @@
 import 'dart:convert';
+import 'package:esas/app/data/org_model.dart';
+import 'package:esas/app/data/user/user_model.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:esas/app/modules/pengajuan/modules/lembur/models/list_adm_model.dart';
-import 'package:esas/app/modules/pengajuan/modules/lembur/models/list_direktur_model.dart';
-import 'package:esas/app/modules/pengajuan/modules/lembur/models/list_fat_model.dart';
-import 'package:esas/app/modules/pengajuan/modules/lembur/models/list_gm_model.dart';
-import 'package:esas/app/modules/pengajuan/modules/lembur/models/list_hrd_model.dart';
-import 'package:esas/app/modules/pengajuan/modules/lembur/models/list_line_model.dart';
 import 'package:esas/app/networks/api/pengajuan/api_lembur.dart';
-import '../../models/list_org_model.dart';
-import '../../models/list_position_model.dart';
-import '../../models/list_user_model.dart';
 
 class FormController extends GetxController {
   final ApiLembur _provider = ApiLembur();
-  var listUser = <ListUserModel>[].obs;
-  var listOrg = <ListOrgModel>[].obs;
-  var listPosition = <ListPositionModel>[].obs;
+  var listUser = <UserModel>[].obs;
+  var listOrg = <OrgModel>[].obs;
+  var listPosition = <OrgModel>[].obs;
 
-  var listAdm = <ListAdmModel>[].obs;
-  var listLine = <ListLineModel>[].obs;
-  var listGm = <ListGmModel>[].obs;
-  var listHrd = <ListHrdModel>[].obs;
-  var listDirektur = <ListDirekturModel>[].obs;
-  var listFat = <ListFatModel>[].obs;
+  var listAdm = <UserModel>[].obs;
+  var listLine = <UserModel>[].obs;
+  var listGm = <UserModel>[].obs;
+  var listHrd = <UserModel>[].obs;
+  var listDirektur = <UserModel>[].obs;
+  var listFat = <UserModel>[].obs;
   var isLoading = false.obs;
 
   // Observables untuk data form
@@ -82,22 +75,19 @@ class FormController extends GetxController {
   }
 
   void _handleFetchOptions(Map<String, dynamic> data) {
-    _assignListData<ListUserModel>(
-        'users', data, listUser, ListUserModel.fromJson);
-    _assignListData<ListOrgModel>('dept', data, listOrg, ListOrgModel.fromJson);
-    _assignListData<ListPositionModel>(
-        'pos', data, listPosition, ListPositionModel.fromJson);
+    _assignListData<UserModel>('users', data, listUser, UserModel.fromJson);
+    _assignListData<OrgModel>('dept', data, listOrg, OrgModel.fromJson);
+    _assignListData<OrgModel>('pos', data, listPosition, OrgModel.fromJson);
   }
 
   void _handleFetchUserChangeOptions(Map<String, dynamic> data) {
-    _assignListData<ListAdmModel>('adm', data, listAdm, ListAdmModel.fromJson);
-    _assignListData<ListLineModel>(
-        'line', data, listLine, ListLineModel.fromJson);
-    _assignListData<ListGmModel>('gm', data, listGm, ListGmModel.fromJson);
-    _assignListData<ListHrdModel>('hr', data, listHrd, ListHrdModel.fromJson);
-    _assignListData<ListDirekturModel>(
-        'director', data, listDirektur, ListDirekturModel.fromJson);
-    _assignListData<ListFatModel>('fat', data, listFat, ListFatModel.fromJson);
+    _assignListData<UserModel>('adm', data, listAdm, UserModel.fromJson);
+    _assignListData<UserModel>('line', data, listLine, UserModel.fromJson);
+    _assignListData<UserModel>('gm', data, listGm, UserModel.fromJson);
+    _assignListData<UserModel>('hr', data, listHrd, UserModel.fromJson);
+    _assignListData<UserModel>(
+        'director', data, listDirektur, UserModel.fromJson);
+    _assignListData<UserModel>('fat', data, listFat, UserModel.fromJson);
   }
 
   void _assignListData<T>(String key, Map<String, dynamic> data, RxList<T> list,

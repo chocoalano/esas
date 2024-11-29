@@ -1,19 +1,17 @@
 import 'dart:convert';
 
-import 'package:esas/app/data/hrd_model.dart';
-import 'package:esas/app/data/line_model.dart';
+import 'package:esas/app/data/attendance_model.dart';
+import 'package:esas/app/data/user/user_model.dart';
 import 'package:esas/app/networks/api/pengajuan/api_koreksi_absen.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../models/attendance_model.dart';
-
 class FormController extends GetxController {
   final ApiKoreksiAbsen provider = Get.put(ApiKoreksiAbsen());
 
-  var lineApproval = <LineModel>[].obs;
-  var hrApproval = <HrdModel>[].obs;
+  var lineApproval = <UserModel>[].obs;
+  var hrApproval = <UserModel>[].obs;
   var attendance = AttendanceModel().obs;
 
   var isLoading = false.obs;
@@ -115,7 +113,7 @@ class FormController extends GetxController {
     final lineApprovalData = response['line'];
     if (lineApprovalData is List) {
       lineApproval.assignAll(
-          lineApprovalData.map((item) => LineModel.fromJson(item)).toList());
+          lineApprovalData.map((item) => UserModel.fromJson(item)).toList());
     } else {
       showErrorSnackbar('Unexpected format for lineApprovalData');
     }
@@ -124,7 +122,7 @@ class FormController extends GetxController {
     final hrApprovalData = response['hrga'];
     if (hrApprovalData is List) {
       hrApproval.assignAll(
-          hrApprovalData.map((item) => HrdModel.fromJson(item)).toList());
+          hrApprovalData.map((item) => UserModel.fromJson(item)).toList());
     } else {
       showErrorSnackbar('Unexpected format for hrApprovalData');
     }

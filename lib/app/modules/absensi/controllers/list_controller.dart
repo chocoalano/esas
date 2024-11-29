@@ -10,7 +10,7 @@ class ListController extends GetxController {
   int page = 1;
   var filter = (DateTime.now().month).toString().obs;
   var hasMore = true.obs;
-  var list = <Attendance>[].obs;
+  var list = <AttendanceModel>[].obs;
 
   final List<Map<String, String>> months = [
     {'nama': 'January', 'value': '1'},
@@ -30,7 +30,7 @@ class ListController extends GetxController {
   Future loadMoreList() async {
     try {
       isLoading(true);
-      List<Attendance> response =
+      List<AttendanceModel> response =
           await provider.fetchPaginate(page, limit, filter.value);
       if (response.length < limit) {
         hasMore.value = false;

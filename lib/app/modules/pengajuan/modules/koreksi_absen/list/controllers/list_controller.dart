@@ -1,7 +1,7 @@
 import 'package:esas/app/networks/api/pengajuan/api_koreksi_absen.dart';
 import 'package:esas/constant.dart';
 import 'package:get/get.dart';
-import '../../models/korabs_model.dart';
+import '../../../../../../data/korabs_model.dart';
 
 class ListController extends GetxController {
   final ApiKoreksiAbsen provider = ApiKoreksiAbsen();

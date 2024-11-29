@@ -4,11 +4,12 @@
 
 import 'dart:convert';
 
+import 'package:esas/app/data/user/user_model.dart';
+
 import '../cuti_model.dart';
 import '../koreksi_absen_model.dart';
 import '../lembur_model.dart';
 import '../perubahan_shift_model.dart';
-import '../user_model.dart';
 
 List<PengajuanModel> pengajuanModelFromJson(String str) =>
     List<PengajuanModel>.from(

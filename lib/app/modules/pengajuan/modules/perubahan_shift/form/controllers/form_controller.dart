@@ -1,13 +1,12 @@
 import 'dart:convert';
 
-import 'package:esas/app/modules/pengajuan/modules/perubahan_shift/models/hrd_options_model.dart';
-import 'package:esas/app/modules/pengajuan/modules/perubahan_shift/models/line_options_model.dart';
+import 'package:esas/app/data/user/user_model.dart';
 import 'package:esas/app/networks/api/pengajuan/api_perubahan_shift.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../models/group_absensi_model.dart';
-import '../../models/shift_model.dart';
+import '../../../../../../data/group_absensi_model.dart';
+import '../../../../../../data/group_shift_model.dart';
 
 class FormController extends GetxController {
   final ApiPerubahanShift provider = Get.put(ApiPerubahanShift());
@@ -15,8 +14,8 @@ class FormController extends GetxController {
 
   var groupAbsen = <GroupAbsensiModel>[].obs;
   var shiftModel = <GroupShiftModel>[].obs;
-  var hrdOptions = <HrdOptionsModel>[].obs;
-  var lineOptions = <LineOptionsModel>[].obs;
+  var hrdOptions = <UserModel>[].obs;
+  var lineOptions = <UserModel>[].obs;
 
   // Observables untuk data form
   late final TextEditingController date;
@@ -82,15 +81,15 @@ class FormController extends GetxController {
     }
     final hrdData = response['HrdOptions'];
     if (hrdData is List) {
-      hrdOptions.assignAll(
-          hrdData.map((item) => HrdOptionsModel.fromJson(item)).toList());
+      hrdOptions
+          .assignAll(hrdData.map((item) => UserModel.fromJson(item)).toList());
     } else {
       showErrorSnackbar('Unexpected format for lineApprovalData');
     }
     final lineData = response['lineOptions'];
     if (lineData is List) {
-      lineOptions.assignAll(
-          lineData.map((item) => LineOptionsModel.fromJson(item)).toList());
+      lineOptions
+          .assignAll(lineData.map((item) => UserModel.fromJson(item)).toList());
     } else {
       showErrorSnackbar('Unexpected format for lineApprovalData');
     }

@@ -1,4 +1,4 @@
-import 'package:esas/app/data/user_model.dart';
+import 'package:esas/app/data/user/user_model.dart';
 import 'package:esas/app/networks/api/api_karyawan.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';

@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import '../user_model.dart';
+import 'package:esas/app/data/user/user_model.dart';
 
 List<NotificationListModel> notificationListModelFromJson(String str) =>
     List<NotificationListModel>.from(

@@ -2,7 +2,7 @@ import 'package:esas/app/networks/api/pengajuan/api_perubahan_shift.dart';
 import 'package:esas/constant.dart';
 import 'package:get/get.dart';
 
-import '../../models/perubahan_shift_model.dart';
+import '../../../../../../data/perubahan_shift_model.dart';
 
 class ListController extends GetxController {
   final ApiPerubahanShift provider = Get.put(ApiPerubahanShift());

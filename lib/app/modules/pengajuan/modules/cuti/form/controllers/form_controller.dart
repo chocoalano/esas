@@ -1,7 +1,6 @@
 import 'dart:convert';
 
-import 'package:esas/app/data/hrd_model.dart';
-import 'package:esas/app/data/line_model.dart';
+import 'package:esas/app/data/user/user_model.dart';
 import 'package:esas/app/networks/api/pengajuan/api_cuti.dart';
 import 'package:esas/constant.dart';
 import 'package:esas/services/storage.dart';
@@ -25,8 +24,8 @@ class FormController extends GetxController {
   late final TextEditingController userHr;
   late final TextEditingController notes;
 
-  var listLineApproval = <LineModel>[].obs;
-  var listHrApproval = <HrdModel>[].obs;
+  var listLineApproval = <UserModel>[].obs;
+  var listHrApproval = <UserModel>[].obs;
 
   @override
   void onInit() {
@@ -90,7 +89,7 @@ class FormController extends GetxController {
     final lineApprovalData = response['line'];
     if (lineApprovalData is List) {
       listLineApproval.assignAll(
-          lineApprovalData.map((item) => LineModel.fromJson(item)).toList());
+          lineApprovalData.map((item) => UserModel.fromJson(item)).toList());
     } else {
       showErrorSnackbar('Unexpected format for lineApprovalData');
     }
@@ -99,7 +98,7 @@ class FormController extends GetxController {
     final hrApprovalData = response['hrga'];
     if (hrApprovalData is List) {
       listHrApproval.assignAll(
-          hrApprovalData.map((item) => HrdModel.fromJson(item)).toList());
+          hrApprovalData.map((item) => UserModel.fromJson(item)).toList());
     } else {
       showErrorSnackbar('Unexpected format for hrApprovalData');
     }

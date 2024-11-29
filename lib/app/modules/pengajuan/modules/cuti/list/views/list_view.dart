@@ -141,7 +141,7 @@ class ListCutiView extends GetView<ListController> {
         width: Get.width,
         height: item.userLine == currentUserId || item.userHr == currentUserId
             ? Get.height / 2
-            : Get.height / 3.2,
+            : Get.height / 2.8,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),

@@ -125,7 +125,7 @@ class KaryawanView extends GetView<KaryawanController> {
                     children: [
                       buildSubtitleRow(
                           'Jabatan', user.employe?.job?.name! ?? ''),
-                      buildSubtitleRow('Telp/HP', user.phone!)
+                      buildSubtitleRow('Telp/HP', user.phone ?? '')
                     ],
                   ),
                   onTap: () => _showDetails(user),

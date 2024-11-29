@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:esas/app/modules/pengajuan/modules/lembur/models/list_lembur_model.dart';
+import 'package:esas/app/data/lembur_model.dart';
 import 'package:esas/services/storage.dart';
 import 'package:get/get.dart';
 import '../../base_http_services.dart';
@@ -8,13 +8,12 @@ class ApiLembur extends BaseHttpService {
   final Storage storage = Get.find<Storage>();
   final prefix = "/mobile";
 
-  Future<List<ListLemburModel>> fetchPaginate(int page, int limit) async {
+  Future<List<LemburModel>> fetchPaginate(int page, int limit) async {
     final response =
         await getRequest('$prefix/lembur/list?page=$page&limit=$limit');
     final data = jsonDecode(response.body)['list']['data'];
     if (data != null && data.length > 0) {
-      return List<ListLemburModel>.from(
-          data.map((e) => ListLemburModel.fromJson(e)));
+      return List<LemburModel>.from(data.map((e) => LemburModel.fromJson(e)));
     } else {
       return [];
     }

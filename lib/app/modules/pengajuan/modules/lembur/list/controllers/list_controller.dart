@@ -2,19 +2,18 @@ import 'package:esas/app/networks/api/pengajuan/api_lembur.dart';
 import 'package:esas/constant.dart';
 import 'package:get/get.dart';
 
-import '../../models/list_lembur_model.dart';
+import '../../../../../../data/lembur_model.dart';
 
 class ListController extends GetxController {
   final ApiLembur provider = ApiLembur();
   final int _limit = 15;
   int _page = 1;
   var hasMore = true.obs;
-  var list = <ListLemburModel>[].obs;
+  var list = <LemburModel>[].obs;
 
   Future loadMoreList() async {
     try {
-      List<ListLemburModel> response =
-          await provider.fetchPaginate(_page, _limit);
+      List<LemburModel> response = await provider.fetchPaginate(_page, _limit);
       if (response.length < _limit) {
         hasMore.value = false;
       }

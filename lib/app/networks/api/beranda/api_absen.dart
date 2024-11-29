@@ -19,14 +19,14 @@ class ApiAbsen extends BaseHttpService {
     return await getRequest('/web/time-all');
   }
 
-  Future<List<Attendance>> fetchPaginate(
+  Future<List<AttendanceModel>> fetchPaginate(
       int page, int limit, String filter) async {
     final response = await getRequest(
         '$prefix/attendance/list?page=$page&limit=$limit&search=$filter');
     final data = jsonDecode(response.body);
     if (data['data'] != null && data['data'].length > 0) {
-      return List<Attendance>.from(
-          data['data'].map((e) => Attendance.fromJson(e)));
+      return List<AttendanceModel>.from(
+          data['data'].map((e) => AttendanceModel.fromJson(e)));
     } else {
       return [];
     }

@@ -1,4 +1,6 @@
-class Attendance {
+import 'package:esas/app/data/user/user_model.dart';
+
+class AttendanceModel {
   int? id;
   String? nik;
   int? scheduleGroupAttendancesId;
@@ -15,9 +17,9 @@ class Attendance {
   String? statusOut;
   DateTime? createdAt;
   DateTime? updatedAt;
-  User? user;
+  UserModel? user;
 
-  Attendance({
+  AttendanceModel({
     this.id,
     this.nik,
     this.scheduleGroupAttendancesId,
@@ -37,7 +39,8 @@ class Attendance {
     this.user,
   });
 
-  factory Attendance.fromJson(Map<String, dynamic> json) => Attendance(
+  factory AttendanceModel.fromJson(Map<String, dynamic> json) =>
+      AttendanceModel(
         id: json["id"],
         nik: json["nik"],
         scheduleGroupAttendancesId: json["scheduleGroupAttendancesId"],
@@ -58,7 +61,7 @@ class Attendance {
         updatedAt: json["updatedAt"] != null
             ? DateTime.parse(json["updatedAt"])
             : null,
-        user: json["user"] != null ? User.fromJson(json["user"]) : null,
+        user: json["user"] != null ? UserModel.fromJson(json["user"]) : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -81,85 +84,5 @@ class Attendance {
         "createdAt": createdAt?.toIso8601String(),
         "updatedAt": updatedAt?.toIso8601String(),
         "user": user?.toJson(),
-      };
-}
-
-class User {
-  int? id;
-  String? name;
-  String? nik;
-  String? email;
-  String? phone;
-  String? placebirth;
-  DateTime? datebirth;
-  String? gender;
-  dynamic blood;
-  dynamic maritalStatus;
-  String? religion;
-  dynamic image;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  dynamic deletedAt;
-
-  User({
-    this.id,
-    this.name,
-    this.nik,
-    this.email,
-    this.phone,
-    this.placebirth,
-    this.datebirth,
-    this.gender,
-    this.blood,
-    this.maritalStatus,
-    this.religion,
-    this.image,
-    this.createdAt,
-    this.updatedAt,
-    this.deletedAt,
-  });
-
-  factory User.fromJson(Map<String, dynamic> json) => User(
-        id: json["id"],
-        name: json["name"],
-        nik: json["nik"],
-        email: json["email"],
-        phone: json["phone"],
-        placebirth: json["placebirth"],
-        datebirth: json["datebirth"] != null
-            ? DateTime.parse(json["datebirth"])
-            : null,
-        gender: json["gender"],
-        blood: json["blood"],
-        maritalStatus: json["maritalStatus"],
-        religion: json["religion"],
-        image: json["image"],
-        createdAt: json["createdAt"] != null
-            ? DateTime.parse(json["createdAt"])
-            : null,
-        updatedAt: json["updatedAt"] != null
-            ? DateTime.parse(json["updatedAt"])
-            : null,
-        deletedAt: json["deletedAt"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "nik": nik,
-        "email": email,
-        "phone": phone,
-        "placebirth": placebirth,
-        "datebirth": datebirth != null
-            ? "${datebirth!.year.toString().padLeft(4, '0')}-${datebirth!.month.toString().padLeft(2, '0')}-${datebirth!.day.toString().padLeft(2, '0')}"
-            : null,
-        "gender": gender,
-        "blood": blood,
-        "maritalStatus": maritalStatus,
-        "religion": religion,
-        "image": image,
-        "createdAt": createdAt?.toIso8601String(),
-        "updatedAt": updatedAt?.toIso8601String(),
-        "deletedAt": deletedAt,
       };
 }
