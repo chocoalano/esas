@@ -1,7 +1,5 @@
 import 'dart:convert';
-
-import 'package:esas/app/modules/home/models/anouncement_detail_model.dart';
-import 'package:esas/app/modules/home/models/anouncement_model.dart';
+import 'package:esas/app/data/anouncement_model.dart';
 
 import '../../base_http_services.dart';
 
@@ -24,9 +22,9 @@ class ApiBeranda extends BaseHttpService {
     }
   }
 
-  Future<AnouncementDetailModel> announcementRequestDetail(int id) async {
+  Future<AnouncementModel> announcementRequestDetail(int id) async {
     final response = await getRequest('$prefix/announcement/detail/$id');
     final data = jsonDecode(response.body);
-    return AnouncementDetailModel.fromJson(data);
+    return AnouncementModel.fromJson(data);
   }
 }

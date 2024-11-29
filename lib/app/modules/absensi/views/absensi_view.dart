@@ -13,7 +13,7 @@ class AbsensiView extends StatelessWidget {
     final ScrollController scrollController = ScrollController();
 
     // Load data saat widget diinisialisasi
-    controller.loadMoreList();
+    controller.loadMoreList(controller.filter.value.toString());
 
     // Mengatur penanganan refresh
     Future<void> onRefresh() async {
@@ -24,9 +24,7 @@ class AbsensiView extends StatelessWidget {
     void onScroll() {
       if (scrollController.position.pixels ==
           scrollController.position.maxScrollExtent) {
-        if (controller.hasMore.value) {
-          controller.loadMoreList();
-        }
+        controller.loadMoreList(controller.filter.value.toString());
       }
     }
 
@@ -44,9 +42,56 @@ class AbsensiView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: primaryColor,
-          title: const Text(
-            'Data Absensi',
-            style: TextStyle(color: bgColor),
+          title: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Obx(
+              () => Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: bgColor.withOpacity(0.1), // Latar belakang dropdown
+                  borderRadius: BorderRadius.circular(10), // Sudut melengkung
+                  border: Border.all(color: primaryColor, width: 1), // Border
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.calendar_month,
+                        color: bgColor), // Ikon di sebelah kiri
+                    const SizedBox(width: 8), // Jarak antara ikon dan dropdown
+                    Expanded(
+                      child: DropdownButton<String>(
+                        value: controller.filter.value
+                            .toString(), // Nilai saat ini
+                        icon: const Icon(Icons.arrow_drop_down,
+                            color: bgColor), // Ikon dropdown
+                        dropdownColor:
+                            primaryColor, // Warna dropdown saat dibuka
+                        style: const TextStyle(
+                          color: bgColor,
+                          fontSize: 16, // Gaya teks opsi
+                        ),
+                        isExpanded: true, // Dropdown memenuhi lebar container
+                        underline:
+                            const SizedBox(), // Menghilangkan garis bawah bawaan
+                        items: controller.months.map<DropdownMenuItem<String>>(
+                          (Map<String, String> month) {
+                            return DropdownMenuItem<String>(
+                              value: month['value'],
+                              child: Text(
+                                month['nama']!,
+                                style: const TextStyle(
+                                    fontSize: 16), // Gaya teks opsi
+                              ),
+                            );
+                          },
+                        ).toList(),
+                        onChanged: (String? newValue) => controller
+                            .calendarSelected(int.tryParse(newValue!) ?? 0),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
           centerTitle: true,
           leading: IconButton(
@@ -64,9 +109,7 @@ class AbsensiView extends StatelessWidget {
           child: Obx(() {
             return ListView.builder(
               controller: scrollController,
-              itemCount: controller.hasMore.value
-                  ? controller.list.length + 1
-                  : controller.list.length,
+              itemCount: controller.list.length,
               itemBuilder: (context, index) {
                 if (index < controller.list.length) {
                   final item = controller.list[index];
@@ -84,24 +127,15 @@ class AbsensiView extends StatelessWidget {
 
   Widget _buildListTile(var item) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(3.0),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(color: const Color.fromARGB(255, 209, 209, 209)),
           borderRadius: BorderRadius.circular(10),
         ),
         child: ListTile(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(item.user?.name ?? 'No Name'),
-              IconButton(
-                onPressed: () => _showDetails(item),
-                icon: const Icon(Icons.info_outline, color: primaryColor),
-              ),
-            ],
-          ),
-          subtitle: _buildSubtitle(item),
+          title: _buildSubtitle(item),
+          onTap: () => _showDetails(item),
         ),
       ),
     );
@@ -110,17 +144,37 @@ class AbsensiView extends StatelessWidget {
   Widget _buildSubtitle(var item) {
     return Column(
       children: [
-        _buildInfoRow('NIK', item.user?.nik ?? ''),
-        _buildInfoRow('Tanggal', formatDate(item.date)),
-        _buildInfoRow('Jam masuk', formatTimeSting(item.timeIn)),
-        _buildInfoStatusRow('Status Jam masuk', item.statusIn ?? ''),
-        _buildInfoRow('Jam pulang', formatTimeSting(item.timeOut)),
-        _buildInfoStatusRow('Status Jam pulang', item.statusOut ?? ''),
+        _buildInfoRow(
+            item.date != null ? formatDate(item.date) : '',
+            item.timeIn != null ? formatTimeSting(item.timeIn) : '00:00',
+            item.statusIn ?? '',
+            item.timeOut != null ? formatTimeSting(item.timeOut) : '00:00',
+            item.statusOut ?? ''),
       ],
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String valueIn, String statusIn,
+      String valueOut, String statusOut) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          valueIn,
+          style:
+              TextStyle(color: statusIn == 'late' ? dangerColor : Colors.black),
+        ),
+        Text(
+          valueOut,
+          style: TextStyle(
+              color: statusOut == 'late' ? Colors.black : dangerColor),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoDetailRow(String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -169,11 +223,11 @@ class AbsensiView extends StatelessWidget {
               _buildDetailHeader(),
               const Divider(),
               const SizedBox(height: 10),
-              _buildInfoRow('NIK', item.user?.nik ?? ''),
-              _buildInfoRow('Tanggal', formatDate(item.date)),
-              _buildInfoRow('Jam masuk', formatTimeSting(item.timeIn)),
+              _buildInfoDetailRow('NIK', item.user?.nik ?? ''),
+              _buildInfoDetailRow('Tanggal', formatDate(item.date)),
+              _buildInfoDetailRow('Jam masuk', formatTimeSting(item.timeIn)),
               _buildInfoStatusRow('Status Jam masuk', item.statusIn ?? ''),
-              _buildInfoRow('Jam pulang', formatTimeSting(item.timeOut)),
+              _buildInfoDetailRow('Jam pulang', formatTimeSting(item.timeOut)),
               _buildInfoStatusRow('Status Jam pulang', item.statusOut ?? ''),
               const SizedBox(height: 10),
               const Divider(),

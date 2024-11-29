@@ -124,6 +124,7 @@ class PhotoController extends GetxController {
         await apiRepository.saveSubmit(datapost, file);
         absensiC.fetchCurrentAttendance();
         Get.offAllNamed('/beranda');
+        showSuccessSnackbar('Data berhasil disimpan');
         isLoadingApi(false);
       } catch (e) {
         showErrorSnackbar(e.toString());

@@ -1,4 +1,4 @@
-import 'package:esas/app/modules/home/models/anouncement_model.dart';
+import 'package:esas/app/data/anouncement_model.dart';
 import 'package:esas/app/networks/api/beranda/api_beranda.dart';
 import 'package:esas/constant.dart';
 import 'package:get/get.dart';
