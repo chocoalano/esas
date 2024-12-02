@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:esas/app/data/presence/attendance_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../../base_http_services.dart';
 
@@ -24,7 +25,9 @@ class ApiAbsen extends BaseHttpService {
     final response = await getRequest(
         '$prefix/attendance/list?page=$page&limit=$limit&search=$filter');
     final data = jsonDecode(response.body);
-    print(data);
+    if (kDebugMode) {
+      print(data);
+    }
     if (data['data'] != null && data['data'].length > 0) {
       return List<AttendanceModel>.from(
           data['data'].map((e) => AttendanceModel.fromJson(e)));

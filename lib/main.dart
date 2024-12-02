@@ -26,7 +26,6 @@ Future<void> main() async {
 
   // Set up GetX dependency injection
   Get.put(BotNavController(), permanent: true);
-
   // Run the app
   runApp(
     GetMaterialApp(
