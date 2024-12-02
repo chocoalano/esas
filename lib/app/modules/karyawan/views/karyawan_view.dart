@@ -172,7 +172,7 @@ class KaryawanView extends GetView<KaryawanController> {
     Get.bottomSheet(
       Container(
         width: Get.width,
-        height: Get.height / 2,
+        height: Get.height / 2.8,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -201,15 +201,15 @@ class KaryawanView extends GetView<KaryawanController> {
               _buildInfoRow('Nama', limitString(item.name ?? '', 30)),
               _buildInfoRow('Email', limitString(item.email ?? '', 30)),
               _buildInfoRow('Telepon/HP', limitString(item.phone ?? '', 30)),
-              _buildInfoRow('Jenis Kelamin',
-                  item.gender == 'm' ? 'Laki-laki' : 'Perempuan'),
-              _buildInfoRow(
-                  'Tempat lahir', limitString(item.placebirth ?? '', 30)),
-              _buildInfoRow('Tanggal Lahir', formatDate(item.datebirth)),
-              _buildInfoRow('Gol. Darah', item.blood.toUpperCase() ?? ''),
-              _buildInfoRow('Agama', item.religion ?? ''),
-              _buildInfoRow('Status pernikahan',
-                  statusPernikahan(item.maritalStatus ?? '')),
+              // _buildInfoRow('Jenis Kelamin',
+              //     item.gender == 'm' ? 'Laki-laki' : 'Perempuan'),
+              // _buildInfoRow(
+              //     'Tempat lahir', limitString(item.placebirth ?? '', 30)),
+              // _buildInfoRow('Tanggal Lahir', formatDate(item.datebirth)),
+              // _buildInfoRow('Gol. Darah', item.blood.toUpperCase() ?? ''),
+              // _buildInfoRow('Agama', item.religion ?? ''),
+              // _buildInfoRow('Status pernikahan',
+              //     statusPernikahan(item.maritalStatus ?? '')),
               _buildInfoRow('Departemen', item.employe.org.name ?? ''),
               _buildInfoRow('Jabatan', item.employe.job.name ?? ''),
               _buildInfoRow('Level', item.employe.lvl.name ?? ''),

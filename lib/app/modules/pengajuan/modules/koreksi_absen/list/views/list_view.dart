@@ -229,7 +229,6 @@ class ListKoreksiAbsenView extends GetView<ListController> {
           ),
         ),
       ),
-      isScrollControlled: true,
     );
   }
 }

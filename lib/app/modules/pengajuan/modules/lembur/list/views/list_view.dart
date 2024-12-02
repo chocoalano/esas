@@ -152,7 +152,7 @@ class ListLemburView extends GetView<ListController> {
                 item.userDirector == currentUserId ||
                 item.userFat == currentUserId
             ? Get.height / 2
-            : Get.height / 2.5,
+            : Get.height / 2.3,
         decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
