@@ -63,7 +63,7 @@ class HomeView extends GetView<HomeController> {
                       Obx(
                         () {
                           final data = controller.userSchedule.value;
-                          if (data.id != null) {
+                          if (data.id != 0) {
                             return const Absencard();
                           } else {
                             return const Center(

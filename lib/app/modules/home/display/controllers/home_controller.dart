@@ -12,14 +12,34 @@ import 'package:get/get.dart';
 
 import '../../../absensi/controllers/absensi_controller.dart';
 import '../../../absensi/controllers/gps_controller.dart';
-import '../../../../data/presence/user_schedule_model.dart';
+import '../../../../data/presence/current_shift_now_model.dart';
 
 class HomeController extends GetxController {
   final ApiBeranda apiBeranda = Get.put(ApiBeranda());
   final ApiAbsen apiAbsenRepository = Get.put(ApiAbsen());
   final ApiAuth apiAuthRepository = Get.put(ApiAuth());
   final Storage storage = Get.put(Storage());
-  var userSchedule = AccountScheduleModel().obs;
+  var userSchedule = CurrentShiftNowModel(
+    id: 0,
+    groupAttendanceId: 0,
+    userId: 0,
+    timeAttendanceId: 0,
+    date: '',
+    status: '',
+    timeId: 0,
+    timeType: '',
+    timeIn: '',
+    timeOut: '',
+    timePattern: '',
+    groupName: '',
+    groupPattern: '',
+    userIdPrimary: 0,
+    userName: '',
+    userNik: '',
+    userEmail: '',
+    userPhone: '',
+    userGender: '',
+  ).obs;
   final gpsC = Get.put(GpsController());
   final absensiC = Get.put(AbsensiController());
   final loginC = Get.put(LoginController());
@@ -66,8 +86,8 @@ class HomeController extends GetxController {
   void fetchScheduleAttendance() async {
     try {
       final response = await apiAbsenRepository.fetchCurrentShift();
-      final fetch = jsonDecode(response.body) as Map<String, dynamic>;
-      userSchedule.value = AccountScheduleModel.fromJson(fetch);
+      final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+      userSchedule.value = CurrentShiftNowModel.fromJson(jsonData);
     } catch (e) {
       if (kDebugMode) {
         print(
