@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 // const baseUrlApi = 'https://api.sinergiabadisentosa.com';
-const baseUrlApi = 'http://172.16.1.16:3333';
+const baseUrlApi = 'http://192.168.1.14:8000/api';
 
 const primaryColor = Color(0xFF079246);
 const secondaryColor = Color(0xFF92C13F);

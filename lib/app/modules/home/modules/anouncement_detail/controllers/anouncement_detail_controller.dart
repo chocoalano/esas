@@ -1,4 +1,4 @@
-import 'package:esas/app/data/administrations/anouncement_model.dart';
+import 'package:esas/app/models/announcement/detail.dart';
 import 'package:esas/app/networks/api/beranda/api_beranda.dart';
 import 'package:esas/constant.dart';
 import 'package:get/get.dart';
@@ -7,7 +7,7 @@ class AnouncementDetailController extends GetxController {
   final ApiBeranda provider = Get.put(ApiBeranda());
   late final int id;
   var isLoading = false.obs;
-  var announcementDetail = AnouncementModel().obs;
+  var announcementDetail = Detail().obs;
 
   @override
   void onInit() {

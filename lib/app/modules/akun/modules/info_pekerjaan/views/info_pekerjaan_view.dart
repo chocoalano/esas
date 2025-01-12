@@ -36,7 +36,7 @@ class InfoPekerjaanView extends GetView<InfoPekerjaanController> {
 
   Widget _buildAttendanceInfo(InfoPekerjaanController controller) {
     return Obx(() {
-      final data = controller.accountModel.value;
+      final data = controller.profile.value;
       if (controller.isloading.isFalse) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,20 +61,15 @@ class InfoPekerjaanView extends GetView<InfoPekerjaanController> {
                   const SizedBox(
                     height: 10,
                   ),
-                  _buildInfoRow('NIP', data.account!.nik!),
-                  _buildInfoRow('Nama', data.account!.name!),
-                  _buildInfoRow('email', data.account!.email!),
+                  _buildInfoRow('NIP', data.nip ?? 'Unknown'),
+                  _buildInfoRow('Nama', data.name ?? 'Unknows'),
                   _buildInfoRow(
-                      'Kantor', data.account!.employe!.company!.name!),
-                  _buildInfoRow('Cabang', data.account!.employe!.branch!.name!),
-                  _buildInfoRow(
-                      'Departemen', data.account!.employe!.org!.name!),
-                  _buildInfoRow('Jabatan', data.account!.employe!.job!.name!),
-                  _buildInfoRow('Level', data.account!.employe!.lvl!.name!),
-                  _buildInfoRow(
-                      'Approval line', data.account!.employe!.appline!.name!),
-                  _buildInfoRow('Approval manager',
-                      data.account!.employe!.appmngr!.name!),
+                      'email', limitString(data.email ?? 'Unknows', 30)),
+                  _buildInfoRow('Kantor', data.company ?? 'Unknows'),
+                  _buildInfoRow('Departemen', data.departement ?? 'Unknows'),
+                  _buildInfoRow('Jabatan', data.position ?? 'Unknows'),
+                  _buildInfoRow('Tgl. Bergabung', formatDate(data.joinDate)),
+                  _buildInfoRow('Tgl. Masuk', formatDate(data.signDate)),
                 ],
               ),
             ),

@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:esas/app/data/permit/korabs_model.dart';
-import 'package:esas/services/storage.dart';
 import 'package:get/get.dart';
 import '../../base_http_services.dart';
 
 class ApiKoreksiAbsen extends BaseHttpService {
-  final Storage storage = Get.find<Storage>();
   final prefix = "/mobile";
 
   Future<List<KoreksiAbsenModel>> fetchPaginate(int page, int limit) async {
@@ -21,7 +19,7 @@ class ApiKoreksiAbsen extends BaseHttpService {
   }
 
   Future<dynamic> fetchSchedule(String date) async {
-    final authId = storage.currentAccountId.value;
+    const authId = 0;
     return await getRequest(
         '$prefix/koreksi-absensi/list?userIdSelected=$authId&date=$date');
   }
@@ -32,7 +30,7 @@ class ApiKoreksiAbsen extends BaseHttpService {
   }
 
   Future<dynamic> fetchApproval() async {
-    final userId = storage.currentAccountId.value;
+    const userId = 0;
     return await getRequest(
         '$prefix/koreksi-absensi/list?userIdSelected=$userId');
   }

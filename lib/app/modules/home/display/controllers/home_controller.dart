@@ -1,51 +1,55 @@
 import 'dart:convert';
 
+import 'package:esas/app/models/auth/user_detail.dart';
+import 'package:esas/app/models/auth/work_schedule.dart';
 import 'package:esas/app/modules/login/controllers/login_controller.dart';
 import 'package:esas/app/networks/api/akun/api_auth.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/app/networks/api/beranda/api_beranda.dart';
 import 'package:esas/constant.dart';
-import 'package:esas/services/storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../absensi/controllers/absensi_controller.dart';
 import '../../../absensi/controllers/gps_controller.dart';
-import '../../../../data/presence/current_shift_now_model.dart';
 
 class HomeController extends GetxController {
   final ApiBeranda apiBeranda = Get.put(ApiBeranda());
   final ApiAbsen apiAbsenRepository = Get.put(ApiAbsen());
   final ApiAuth apiAuthRepository = Get.put(ApiAuth());
-  final Storage storage = Get.put(Storage());
-  var userSchedule = CurrentShiftNowModel(
-    id: 0,
-    groupAttendanceId: 0,
-    userId: 0,
-    timeAttendanceId: 0,
-    date: '',
-    status: '',
-    timeId: 0,
-    timeType: '',
-    timeIn: '',
-    timeOut: '',
-    timePattern: '',
-    groupName: '',
-    groupPattern: '',
-    userIdPrimary: 0,
-    userName: '',
-    userNik: '',
-    userEmail: '',
-    userPhone: '',
-    userGender: '',
+  var userSchedule = WorkSchedule(
+    id: null,
+    userId: null,
+    timeWorkId: null,
+    workDay: null,
+    createdAt: null,
+    updatedAt: null,
+    timeWork: null,
+  ).obs;
+  var userDetail = UserDetail(
+    id: null,
+    companyId: null,
+    name: null,
+    nip: null,
+    email: null,
+    emailVerifiedAt: null,
+    avatar: null,
+    status: null,
+    createdAt: null,
+    updatedAt: null,
+    details: null,
+    address: null,
+    salaries: null,
+    families: null,
+    formalEducations: null,
+    informalEducations: null,
+    workExperiences: null,
+    employee: null,
   ).obs;
   final gpsC = Get.put(GpsController());
   final absensiC = Get.put(AbsensiController());
   final loginC = Get.put(LoginController());
-  var nama = ''.obs;
-  var jabatan = ''.obs;
-  var img = ''.obs;
 
   @override
   void onInit() {
@@ -54,7 +58,7 @@ class HomeController extends GetxController {
       setAccount();
       fetchScheduleAttendance();
       gpsC.checkLocationPermission();
-      absensiC.fetchCurrentAttendance();
+      // absensiC.fetchCurrentAttendance();
     });
   }
 
@@ -66,14 +70,9 @@ class HomeController extends GetxController {
     try {
       final response = await apiAuthRepository.getProfile();
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
-      if (kDebugMode) {
-        print(fetch);
-      }
-      storage.setStorageAuth(fetch);
-      nama(fetch['account']['name'] ?? '');
-      jabatan(fetch['account']['employe']['job']['name'] ?? '');
-      img.value = fetch['account']['image'] ?? imgDefault;
+      userDetail.value = UserDetail.fromJson(fetch['data']);
     } catch (e) {
+      // print(e.toString());
       showErrorSnackbar(e.toString());
       logout();
     }
@@ -87,7 +86,7 @@ class HomeController extends GetxController {
     try {
       final response = await apiAbsenRepository.fetchCurrentShift();
       final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
-      userSchedule.value = CurrentShiftNowModel.fromJson(jsonData);
+      userSchedule.value = WorkSchedule.fromJson(jsonData['data']);
     } catch (e) {
       if (kDebugMode) {
         print(

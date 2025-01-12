@@ -67,12 +67,10 @@ class Anouncement extends StatelessWidget {
                         ),
                         child: ListTile(
                           title: Text(
-                            limitString(announcement.title ?? '', 30),
+                            limitString(announcement.title ?? '', 70),
                             style: const TextStyle(
                                 fontSize: 14, color: Colors.black87),
                           ),
-                          subtitle: HtmlWidget(
-                              limitString(announcement.value ?? '', 30)),
                           trailing: IconButton(
                               onPressed: () => Get.offAllNamed(
                                   '/beranda/anouncement',

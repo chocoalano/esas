@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:esas/app/models/auth/office.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/constant.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,10 +12,20 @@ class GpsController extends GetxController {
   var isWithinRange = false.obs;
   var currentDistance = 0.0.obs;
   var isMockedLocation = false.obs;
+  var office = Office(
+    id: null,
+    name: null,
+    latitude: 0.0,
+    longitude: 0.0,
+    radius: 0,
+    fullAddress: null,
+    createdAt: null,
+    updatedAt: null,
+  ).obs;
 
-  RxDouble targetLatitude = 0.0.obs;
-  RxDouble targetLongitude = 0.0.obs;
-  RxDouble rangeLimit = 0.0.obs;
+  // RxDouble targetLatitude = 0.0.obs;
+  // RxDouble targetLongitude = 0.0.obs;
+  // RxDouble rangeLimit = 0.0.obs;
 
   StreamSubscription<Position>? positionStream;
 
@@ -44,20 +55,12 @@ class GpsController extends GetxController {
     try {
       final response = await provider.fetchLocationAbsen();
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
-      targetLatitude(fetch['latitude'] != null
-          ? double.tryParse(fetch['latitude'].toString()) ?? 0.0
-          : 0.0);
-      targetLongitude(fetch['longitude'] != null
-          ? double.tryParse(fetch['longitude'].toString()) ?? 0.0
-          : 0.0);
-      rangeLimit(fetch['radius'] != null
-          ? double.tryParse(fetch['radius'].toString()) ?? 0.0
-          : 0.0);
+      office.value = Office.fromJson(fetch['data']);
 
       // Start location stream only if valid data is present
-      if (targetLatitude.value != 0.0 &&
-          targetLongitude.value != 0.0 &&
-          rangeLimit.value != 0.0) {
+      if (office.value.latitude != 0.0 &&
+          office.value.longitude != 0.0 &&
+          office.value.radius != 0) {
         _startLocationStream();
       } else {
         showErrorSnackbar('Data lokasi absen tidak berhasil dimuat');
@@ -81,8 +84,8 @@ class GpsController extends GetxController {
       final distance = Geolocator.distanceBetween(
         position.latitude,
         position.longitude,
-        targetLatitude.value,
-        targetLongitude.value,
+        office.value.latitude!,
+        office.value.longitude!,
       );
 
       // Periksa apakah lokasi menggunakan mock
@@ -90,7 +93,7 @@ class GpsController extends GetxController {
 
       // Memperbarui jarak saat ini dan status apakah dalam jangkauan
       currentDistance.value = distance;
-      isWithinRange.value = distance <= rangeLimit.value;
+      isWithinRange.value = distance <= office.value.radius!;
       isMockedLocation.value = mockDetected;
 
       if (mockDetected) {

@@ -1,7 +1,6 @@
 import 'package:esas/components/floating_action_btn.dart';
 import 'package:esas/components/globat_appbar.dart';
 import 'package:esas/constant.dart';
-import 'package:esas/services/storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -13,8 +12,6 @@ class ListCutiView extends GetView<ListController> {
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
-    final Storage storage = Storage();
-    final currentUserId = storage.currentAccountId.value;
     controller.loadMoreList();
 
     // Refresh function
@@ -75,8 +72,7 @@ class ListCutiView extends GetView<ListController> {
                               Text(limitString(
                                   item.user!.name ?? 'No Name', 50)),
                               IconButton(
-                                  onPressed: () =>
-                                      _showDetails(item, currentUserId),
+                                  onPressed: () => _showDetails(item, 0),
                                   icon: const Icon(
                                     Icons.info_outline,
                                     color: primaryColor,

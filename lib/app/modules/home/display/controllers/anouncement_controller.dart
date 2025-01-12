@@ -1,4 +1,4 @@
-import 'package:esas/app/data/administrations/anouncement_model.dart';
+import 'package:esas/app/models/announcement/detail.dart';
 import 'package:esas/app/networks/api/beranda/api_beranda.dart';
 import 'package:esas/constant.dart';
 import 'package:get/get.dart';
@@ -8,12 +8,11 @@ class AnouncementController extends GetxController {
   final int limit = 15;
   int page = 1;
   var hasMore = true.obs;
-  var list = <AnouncementModel>[].obs;
+  var list = <Detail>[].obs;
 
   Future loadMoreList() async {
     try {
-      List<AnouncementModel> response =
-          await provider.announcementRequest(page, limit);
+      List<Detail> response = await provider.announcementRequest(page, limit);
       if (response.length < limit) {
         hasMore.value = false;
       }

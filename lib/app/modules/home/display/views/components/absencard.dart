@@ -1,4 +1,5 @@
 import 'package:esas/app/modules/absensi/controllers/gps_controller.dart';
+import 'package:esas/app/modules/home/display/controllers/home_controller.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,32 +13,87 @@ class Absencard extends StatelessWidget {
   Widget build(BuildContext context) {
     final GpsController gpsC = Get.put(GpsController());
     final AbsensiController absensiC = Get.put(AbsensiController());
-
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _buildHeader(),
-          const SizedBox(height: 20),
-          _buildAbsenceTime(absensiC),
-          const SizedBox(height: 20),
-          Center(
-            child: Obx(
-              () => gpsC.isWithinRange.isFalse
-                  ? Text(
-                      "Jarak anda dengan lokasi absen adalah ${gpsC.currentDistance.round()} m")
-                  : _buildActionButtons(gpsC, absensiC),
-            ),
+    final homeController = Get.put(HomeController());
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey.shade300),
           ),
-          const SizedBox(height: 20),
-          _buildViewAbsenceButton(),
-        ],
-      ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Jadwal kerja sekarang',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+              const Divider(),
+              Obx(() => _buildTextRow('Jadwal Jam kerja',
+                  homeController.userSchedule.value.timeWork?.name ?? '...')),
+              Obx(() => _buildTextRow(
+                  'Jam masuk',
+                  homeController.userSchedule.value.timeWork?.inTime ??
+                      '--:--:--')),
+              Obx(() => _buildTextRow(
+                  'Jam pulang',
+                  homeController.userSchedule.value.timeWork?.outTime ??
+                      '--:--:--')),
+            ],
+          ),
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _buildHeader(),
+              const SizedBox(height: 20),
+              _buildAbsenceTime(absensiC),
+              const SizedBox(height: 20),
+              Center(
+                child: Obx(
+                  () => gpsC.isWithinRange.isFalse
+                      ? Text(
+                          "Jarak anda dengan lokasi absen adalah ${gpsC.currentDistance.round()} m")
+                      : _buildActionButtons(gpsC, absensiC),
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildViewAbsenceButton(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTextRow(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Text(
+          value,
+          style: const TextStyle(fontWeight: FontWeight.w300),
+        ),
+      ],
     );
   }
 

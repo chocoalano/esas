@@ -1,11 +1,8 @@
 import 'dart:convert';
 import 'package:esas/app/data/permit/lembur_model.dart';
-import 'package:esas/services/storage.dart';
-import 'package:get/get.dart';
 import '../../base_http_services.dart';
 
 class ApiLembur extends BaseHttpService {
-  final Storage storage = Get.find<Storage>();
   final prefix = "/mobile";
 
   Future<List<LemburModel>> fetchPaginate(int page, int limit) async {

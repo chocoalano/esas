@@ -3,13 +3,11 @@ import 'dart:convert';
 import 'package:esas/app/data/user/user_model.dart';
 import 'package:esas/app/networks/api/pengajuan/api_cuti.dart';
 import 'package:esas/constant.dart';
-import 'package:esas/services/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FormController extends GetxController {
   final ApiCuti provider = Get.put(ApiCuti());
-  final Storage storage = Get.put(Storage());
 
   var isLoading = false.obs;
 
@@ -69,7 +67,7 @@ class FormController extends GetxController {
   Future<void> _kelengkapanForm() async {
     isLoading(true);
     try {
-      final userId = storage.currentAccountId.value;
+      const userId = 0;
       final response = await provider.fetchApproval(userId);
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
       if (response != null) {

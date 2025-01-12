@@ -1,14 +1,16 @@
 import 'dart:convert';
-import 'package:esas/app/data/user/user_model.dart';
+import 'package:esas/app/models/users/user_view.dart';
+
 import '../base_http_services.dart';
 
 class ApiKaryawan extends BaseHttpService {
-  final prefix = "/mobile";
-  Future<List<UserModel>> fetchList(String search) async {
-    final response = await getRequest('$prefix/users?search=$search');
-    final data = jsonDecode(response.body);
+  final prefix = "/user";
+  Future<List<UserView>> fetchList(int page, int limit, String search) async {
+    final response =
+        await getRequest('$prefix?page=$page&limit=$limit&search=$search');
+    final data = jsonDecode(response.body)['data']['data'];
     if (data != null && data.length > 0) {
-      return List<UserModel>.from(data.map((e) => UserModel.fromJson(e)));
+      return List<UserView>.from(data.map((e) => UserView.fromJson(e)));
     } else {
       return [];
     }

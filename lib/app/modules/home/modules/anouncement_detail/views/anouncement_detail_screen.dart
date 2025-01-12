@@ -35,7 +35,7 @@ class AnouncementDetailScreen extends GetView<AnouncementDetailController> {
                 : Padding(
                     padding: const EdgeInsets.all(30),
                     child: HtmlWidget(
-                        controller.announcementDetail.value.value.toString()),
+                        controller.announcementDetail.value.content.toString()),
                   ),
           )),
     );

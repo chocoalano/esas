@@ -60,47 +60,56 @@ class AkunView extends GetView<AkunController> {
 
   // Build profile section with avatar, name, and position
   Widget _buildProfileSection() {
-    return Center(
-      child: Column(
-        children: [
-          Stack(
+    return Row(
+      children: [
+        Stack(
+          children: [
+            _buildProfileImage(),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: _buildEditButton(),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildProfileImage(),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: _buildEditButton(),
-              ),
+              Obx(() => Text(
+                    controller.profile.value.name ?? '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  )),
+              Obx(() => Text(
+                    controller.profile.value.departement ?? 'Departement ?',
+                    style: const TextStyle(color: Colors.black54),
+                  )),
+              Obx(() => Text(
+                    controller.profile.value.position ?? 'Position ?',
+                    style: const TextStyle(color: Colors.black54),
+                  )),
             ],
           ),
-          const SizedBox(height: 10),
-          Obx(() => Text(
-                controller.nameData.value,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              )),
-          Obx(() => Text(
-                controller.positionData.value,
-                style: const TextStyle(color: Colors.black54),
-              )),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   // Build profile image
   Widget _buildProfileImage() {
     return Container(
-      width: 110,
-      height: 110,
+      width: 70,
+      height: 70,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(color: primaryColor, width: 4),
       ),
       child: Obx(() {
-        final imageUrl = controller.imageData.value;
+        final imageUrl = controller.profile.value.avatar ?? '';
         return CircleAvatar(
           radius: 60,
           backgroundColor: Colors.grey.shade200,
@@ -183,8 +192,6 @@ class AkunView extends GetView<AkunController> {
           () => controller.movePage('/info-personal')),
       _buildOption(Icons.work, 'Info pekerjaan',
           () => controller.movePage('/info-pekerjaan')),
-      _buildOption(Icons.phone, 'Info kontak darurat',
-          () => controller.movePage('/info-kontak-darurat')),
       _buildOption(Icons.groups_2_outlined, 'Info keluarga',
           () => controller.movePage('/info-keluarga')),
       _buildOption(

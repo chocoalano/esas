@@ -31,15 +31,15 @@ class ApiAuth extends BaseHttpService {
   }
 
   Future<dynamic> getProfile() async {
-    return await getRequest('/user-auth');
+    return await getRequest('/auth/profile');
   }
 
   Future<dynamic> submitLogin(Map<String, dynamic> datapost) async {
-    return await postRequest('/login', datapost);
+    return await postRequest('/auth/login', datapost);
   }
 
-  Future<dynamic> submitLogout() async {
-    return await getRequest('/logout');
+  Future<dynamic> submitLogout(Map<String, dynamic> datapost) async {
+    return await postRequest("/auth/logout", datapost);
   }
 
   Future<dynamic> saveSubmitBank(Map<String, dynamic> datapost) async {

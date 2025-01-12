@@ -1,7 +1,6 @@
 // ignore_for_file: library_prefixes
 
 import 'package:esas/constant.dart';
-import 'package:esas/services/storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -9,7 +8,6 @@ import 'notif_service.dart';
 
 class NotificationController extends GetxController {
   final NotifService notifService = Get.put(NotifService());
-  final Storage storage = Get.put(Storage());
   late IO.Socket socket;
 
   @override
@@ -50,9 +48,7 @@ class NotificationController extends GetxController {
   }
 
   void _checkAndShowNotification(Map<String, dynamic> item) {
-    if (storage.currentAccountId.value == item['to']) {
-      notifService.showNotification(item['title'], item['message']);
-    }
+    notifService.showNotification(item['title'], item['message']);
   }
 
   void _handlePayload(Map<String, dynamic> data) {
@@ -77,10 +73,8 @@ class NotificationController extends GetxController {
 
     if (validRoles.containsKey(data['type'])) {
       for (var roleId in validRoles[data['type']]!) {
-        if (storage.currentAccountId.value == roleId) {
-          notifService.showNotification(title, message);
-          break;
-        }
+        notifService.showNotification(title, message);
+        break;
       }
     } else if (kDebugMode) {
       print(payload);

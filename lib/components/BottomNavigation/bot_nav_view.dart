@@ -20,15 +20,15 @@ class BotNavView extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.people),
-              label: 'Karyawan',
+              label: 'Tim',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.file_open),
               label: 'Pengajuan',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.storage_rounded),
-              label: 'Inbox',
+              icon: Icon(Icons.notifications_active),
+              label: 'Info',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.account_circle),

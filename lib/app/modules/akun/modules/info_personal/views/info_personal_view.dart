@@ -60,21 +60,37 @@ class InfoPersonalView extends GetView<InfoPersonalController> {
                   const SizedBox(
                     height: 10,
                   ),
-                  _buildInfoRow('Nama', limitString(controller.name.text, 20)),
-                  _buildInfoRow('NIP', controller.nik.text),
                   _buildInfoRow(
-                      'Email', limitString(controller.email.text, 30)),
-                  _buildInfoRow('Tlp/HP', controller.phone.text),
-                  _buildInfoRow('Tempat lahir',
-                      limitString(controller.placebirth.text, 30)),
-                  _buildInfoRow('Tanggal lahir', controller.datebirth.text),
+                      'Nama',
+                      limitString(
+                          controller.profile.value.name ?? 'Unknown', 20)),
                   _buildInfoRow(
-                      'Jenis Kelamin', jenisKelamin(controller.gender.text)),
+                      'NIP', controller.profile.value.nip ?? 'Unknown'),
                   _buildInfoRow(
-                      'Gol. Darah', controller.blood.text.toUpperCase()),
-                  _buildInfoRow('Status pernikahan',
-                      statusPernikahan(controller.maritalStatus.text)),
-                  _buildInfoRow('Agama', controller.religion.text),
+                      'Email',
+                      limitString(
+                          controller.profile.value.email ?? 'Unknown', 30)),
+                  _buildInfoRow(
+                      'Tlp/HP', controller.profile.value.phone ?? 'Unknown'),
+                  _buildInfoRow(
+                      'Tempat lahir',
+                      limitString(
+                          controller.profile.value.placebirth ?? 'Unknown',
+                          30)),
+                  _buildInfoRow(
+                      'Tanggal lahir',
+                      formatDate(controller.profile.value.datebirth) ??
+                          'Unknown'),
+                  _buildInfoRow('Jenis Kelamin',
+                      jenisKelamin(controller.profile.value.gender ?? 'm')),
+                  _buildInfoRow('Gol. Darah',
+                      controller.profile.value.blood ?? 'Unknown'),
+                  _buildInfoRow(
+                      'Status pernikahan',
+                      statusPernikahan(
+                          controller.profile.value.maritalStatus ?? 'single')),
+                  _buildInfoRow(
+                      'Agama', controller.profile.value.religion ?? 'Unknown'),
                 ],
               ),
             ),

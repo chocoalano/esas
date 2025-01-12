@@ -1,13 +1,13 @@
 import 'dart:convert';
 
+import 'package:esas/app/models/users/user_view.dart';
 import 'package:esas/app/networks/api/akun/api_auth.dart';
 import 'package:get/get.dart';
-import '../../../models/account_model.dart';
 
 class InfoPekerjaanController extends GetxController {
   final ApiAuth provider = Get.find<ApiAuth>();
   var isloading = false.obs;
-  var accountModel = AccountModel(account: Account(employe: Employe())).obs;
+  var profile = UserView().obs;
 
   @override
   void onInit() {
@@ -20,7 +20,7 @@ class InfoPekerjaanController extends GetxController {
     try {
       final response = await provider.getProfile();
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
-      accountModel.value = AccountModel.fromJson(fetch);
+      profile.value = UserView.fromJson(fetch['data']);
     } catch (e) {
       showErrorSnackbar('Error: $e');
     } finally {

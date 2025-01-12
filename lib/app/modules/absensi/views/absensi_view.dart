@@ -145,7 +145,7 @@ class AbsensiView extends StatelessWidget {
     return Column(
       children: [
         _buildInfoRow(
-            item.date != null ? formatDate(item.date) : '',
+            item.createdAt != null ? formatDate(item.createdAt) : '',
             item.timeIn != null ? formatTimeSting(item.timeIn) : '00:00',
             item.statusIn ?? '',
             item.timeOut != null ? formatTimeSting(item.timeOut) : '00:00',
@@ -223,8 +223,8 @@ class AbsensiView extends StatelessWidget {
               _buildDetailHeader(),
               const Divider(),
               const SizedBox(height: 10),
-              _buildInfoDetailRow('NIK', item.user?.nik ?? ''),
-              _buildInfoDetailRow('Tanggal', formatDate(item.date)),
+              _buildInfoDetailRow('NIP', item.nip ?? ''),
+              _buildInfoDetailRow('Tanggal', formatDate(item.createdAt)),
               _buildInfoDetailRow('Jam masuk', formatTimeSting(item.timeIn)),
               _buildInfoStatusRow('Status Jam masuk', item.statusIn ?? ''),
               _buildInfoDetailRow('Jam pulang', formatTimeSting(item.timeOut)),
@@ -267,7 +267,7 @@ class AbsensiView extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               PhotoBox(
-                photoUrl: item.photoIn ?? '',
+                photoUrl: item.imageIn ?? '',
               ),
             ],
           ),
@@ -280,7 +280,7 @@ class AbsensiView extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               PhotoBox(
-                photoUrl: item.photoOut ?? '',
+                photoUrl: item.imageOut ?? '',
               ),
             ],
           ),

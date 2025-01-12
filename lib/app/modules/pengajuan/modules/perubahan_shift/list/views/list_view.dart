@@ -1,7 +1,6 @@
 import 'package:esas/components/floating_action_btn.dart';
 import 'package:esas/components/globat_appbar.dart';
 import 'package:esas/constant.dart';
-import 'package:esas/services/storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -15,8 +14,7 @@ class ListPerubahanShiftView extends GetView<ListController> {
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
-    final Storage storage = Storage();
-    final currentUserId = storage.currentAccountId.value;
+    const currentUserId = 0;
 
     // Load data after the initial frame
     WidgetsBinding.instance.addPostFrameCallback((_) {

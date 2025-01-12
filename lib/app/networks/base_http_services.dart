@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:esas/constant.dart';
-import 'package:esas/services/storage.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
@@ -15,10 +14,7 @@ class BaseHttpService {
 
   // Interceptor untuk menambahkan token ke dalam header setiap request
   Future<Map<String, String>> _buildHeaders() async {
-    final storage = Get.find<Storage>(); // Mengambil token dari Storage
-    final token = storage.currentToken.value.isNotEmpty
-        ? storage.currentToken.value
-        : getLocalStorage.read<String>('token');
+    final token = getLocalStorage.read<String>('token');
     return {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json',
@@ -27,6 +23,7 @@ class BaseHttpService {
 
   // Interceptor untuk menghandle request GET
   Future<http.Response> getRequest(String endpoint) async {
+    print('$baseUrl$endpoint');
     final Uri url = Uri.parse('$baseUrl$endpoint');
     final headers = await _buildHeaders();
     try {
@@ -111,7 +108,7 @@ class BaseHttpService {
       return response;
     } else if (response.statusCode == 401) {
       // Tangani Unauthorized Access (401)
-      Storage().clearStorage();
+      getLocalStorage.remove('token');
       Get.offAllNamed('/login');
       throw Exception('Unauthorized access. Please login again.');
     } else {

@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'package:esas/app/data/permit/perubahan_shift_model.dart';
-import 'package:esas/services/storage.dart';
 import 'package:get/get.dart';
 import '../../base_http_services.dart';
 
 class ApiPerubahanShift extends BaseHttpService {
-  final Storage storage = Get.find<Storage>();
   final prefix = "/mobile";
 
   Future<List<ListPerubahanShifyModel>> fetchPaginate(
@@ -22,7 +20,7 @@ class ApiPerubahanShift extends BaseHttpService {
   }
 
   Future<dynamic> fetchSchedule(String date) async {
-    final authId = storage.currentToken.value;
+    const authId = 0;
     return await getRequest(
         '$prefix/perubahan-shift/list?userIdSelected=$authId&date=$date');
   }

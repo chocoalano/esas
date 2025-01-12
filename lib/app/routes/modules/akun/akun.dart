@@ -1,8 +1,6 @@
 import 'package:esas/app/modules/akun/display/bindings/akun_binding.dart';
 import 'package:esas/app/modules/akun/modules/info_keluarga/bindings/info_keluarga_binding.dart';
 import 'package:esas/app/modules/akun/modules/info_keluarga/views/info_keluarga_view.dart';
-import 'package:esas/app/modules/akun/modules/info_kontak_darurat/bindings/info_kontak_darurat_binding.dart';
-import 'package:esas/app/modules/akun/modules/info_kontak_darurat/views/info_kontak_darurat_view.dart';
 import 'package:esas/app/modules/akun/modules/info_pekerjaan/bindings/info_pekerjaan_binding.dart';
 import 'package:esas/app/modules/akun/modules/info_pekerjaan/views/info_pekerjaan_view.dart';
 import 'package:esas/app/modules/akun/modules/info_personal/bindings/info_personal_binding.dart';
@@ -42,12 +40,6 @@ class AkunRoutes {
         name: '$path/info-pekerjaan',
         page: () => const InfoPekerjaanView(),
         binding: InfoPekerjaanBinding(),
-        transition: Transition.noTransition,
-        middlewares: [AuthMiddleware()]),
-    GetPage(
-        name: '$path/info-kontak-darurat',
-        page: () => const InfoKontakDaruratView(),
-        binding: InfoKontakDaruratBinding(),
         transition: Transition.noTransition,
         middlewares: [AuthMiddleware()]),
     GetPage(

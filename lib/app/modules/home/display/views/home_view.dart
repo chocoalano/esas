@@ -53,30 +53,16 @@ class HomeView extends GetView<HomeController> {
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
+                child: const Padding(
+                  padding: EdgeInsets.all(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Empcard(),
-                      const SizedBox(height: 20),
-                      Obx(
-                        () {
-                          final data = controller.userSchedule.value;
-                          if (data.id != 0) {
-                            return const Absencard();
-                          } else {
-                            return const Center(
-                              child: Text(
-                                "Tidak ada jadwal absensi.",
-                                style: TextStyle(color: dangerColor),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      const Anouncement(),
+                      Empcard(),
+                      SizedBox(height: 20),
+                      Absencard(),
+                      SizedBox(height: 20),
+                      Anouncement(),
                     ],
                   ),
                 ),
