@@ -1,6 +1,7 @@
-import 'package:esas/components/alert_banner.dart';
-import 'package:esas/components/globat_appbar.dart';
+import 'package:esas/components/widgets/globat_appbar.dart';
 import 'package:esas/constant.dart';
+import 'package:esas/support/support.dart';
+import 'package:esas/support/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/info_personal_controller.dart';
@@ -19,15 +20,46 @@ class InfoPersonalView extends GetView<InfoPersonalController> {
         Get.offAllNamed('/akun');
       },
       child: Scaffold(
+        backgroundColor: bgColor,
         appBar: GlobatAppbar(
           title: 'Info Personal',
           act: () => Get.offAllNamed('/akun'),
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [_buildInfo(controller)],
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: _buildInfo(controller),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Obx(() => controller.isBanner.isTrue
+                  ? MaterialBanner(
+                      elevation: 0,
+                      forceActionsBelow: true,
+                      backgroundColor: primaryColor,
+                      content: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          'Jika terdapat ketidak sesuaian data, anda dapat menghubungi Dept. HR untuk merevisinya hingga sesuai dengan data diri anda. sesuaikan data anda untuk penggunaan yang lebih nyaman.',
+                          style: textWhite,
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => controller.isBanner(false),
+                          child: Text(
+                            'Ya, saya mengerti.',
+                            style: textWhite,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const SizedBox.shrink()),
+            ],
           ),
         ),
       ),
@@ -77,10 +109,8 @@ class InfoPersonalView extends GetView<InfoPersonalController> {
                       limitString(
                           controller.profile.value.placebirth ?? 'Unknown',
                           30)),
-                  _buildInfoRow(
-                      'Tanggal lahir',
-                      formatDate(controller.profile.value.datebirth) ??
-                          'Unknown'),
+                  _buildInfoRow('Tanggal lahir',
+                      formatDate(controller.profile.value.datebirth)),
                   _buildInfoRow('Jenis Kelamin',
                       jenisKelamin(controller.profile.value.gender ?? 'm')),
                   _buildInfoRow('Gol. Darah',
@@ -94,16 +124,6 @@ class InfoPersonalView extends GetView<InfoPersonalController> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            AlertBanner(
-              act: controller.showBanner,
-              color: infoColor,
-              msg:
-                  'Jika terdapat ketidaksesuaian data, anda dapat menghubungi Dept. HR!',
-              show: controller.isBanner,
-            )
           ],
         );
       } else {

@@ -1,4 +1,5 @@
 import 'package:esas/app/modules/akun/modules/info_pendidikan_pengalaman/modules/pendidikan_formal/views/form_card.dart';
+import 'package:esas/components/btn_action.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 
@@ -56,14 +57,20 @@ class PendidikanFormalView extends GetView<AkunPendidikanFormalController> {
                 );
               } else {
                 return FormCard(
-                  index: index,
-                  onRemove: () => controller.removeForm(index),
-                  onSave: () => controller.saveProfile(index),
-                );
+                    index: index, onRemove: () => controller.removeForm(index));
               }
             },
           );
         }),
+        bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: BtnAction(
+              act: () => controller.saveFormalEducation(),
+              color: primaryColor,
+              icon: Icons.save,
+              isLoading: controller.isLoading,
+              title: controller.isLoading.isFalse ? 'Simpan' : 'proses',
+            )),
       ),
     );
   }

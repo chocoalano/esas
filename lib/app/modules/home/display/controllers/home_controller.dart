@@ -6,7 +6,7 @@ import 'package:esas/app/modules/login/controllers/login_controller.dart';
 import 'package:esas/app/networks/api/akun/api_auth.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/app/networks/api/beranda/api_beranda.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -54,12 +54,10 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setAccount();
-      fetchScheduleAttendance();
-      gpsC.checkLocationPermission();
-      // absensiC.fetchCurrentAttendance();
-    });
+    setAccount();
+    fetchScheduleAttendance();
+    gpsC.checkLocationPermission();
+    absensiC.fetchCurrentAttendance();
   }
 
   Future<void> testNotification() async {
@@ -72,7 +70,6 @@ class HomeController extends GetxController {
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
       userDetail.value = UserDetail.fromJson(fetch['data']);
     } catch (e) {
-      // print(e.toString());
       showErrorSnackbar(e.toString());
       logout();
     }

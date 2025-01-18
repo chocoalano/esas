@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:esas/app/models/users/user_view.dart';
 import 'package:esas/app/networks/api/akun/api_auth.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
 class InfoPersonalController extends GetxController {

@@ -2,18 +2,22 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
+import 'package:esas/support/support.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'absensi_controller.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class PhotoController extends GetxController {
-  final ApiAbsen apiRepository = Get.put(ApiAbsen());
+  final ApiAbsen provider = Get.put(ApiAbsen());
   final AbsensiController absensiC = Get.put(AbsensiController());
   final initial = Get.arguments != null ? Get.arguments['initial'] : 'in';
+  final timeId = Get.arguments['timeId'];
 
   CameraController? cameraController;
   var isCameraInitialized = false.obs;
@@ -114,26 +118,31 @@ class PhotoController extends GetxController {
       // Konversi RxString ke File
       final File file = File(capturedImagePath.value);
       // Kirim data absensi bersama koordinat saat ini
+      initializeDateFormatting('id_ID', null);
+      String formattedTime =
+          DateFormat('HH:mm:ss', 'id_ID').format(DateTime.now());
       final datapost = {
-        'flag': initial,
+        'time_id': timeId,
+        'time': formattedTime,
+        'type': initial,
         'date': formatDate(DateTime.now()),
         'lat': curLatitude.value.toString(),
-        'lng': curLongitude.value.toString(),
+        'long': curLongitude.value.toString(),
       };
       try {
-        await apiRepository.saveSubmit(datapost, file);
+        await provider.saveSubmit(datapost, file);
         absensiC.fetchCurrentAttendance();
         Get.offAllNamed('/beranda');
         showSuccessSnackbar('Data berhasil disimpan');
         isLoadingApi(false);
       } catch (e) {
-        showErrorSnackbar(e.toString());
+        showErrorSnackbar("Terjadi kesalahan server : ${e.toString()}");
         Get.offAllNamed('/beranda');
         isLoadingApi(false);
       }
     } catch (e) {
       if (kDebugMode) {
-        print(e.toString());
+        print("error ${e.toString()}");
       }
       showErrorSnackbar(
           'Gagal mengambil atau mengunggah foto, pastikan esas mendapatkan izin untuk mengakses kamera. silahkan periksa akses izin aplikasi pada aperangkat anda!');

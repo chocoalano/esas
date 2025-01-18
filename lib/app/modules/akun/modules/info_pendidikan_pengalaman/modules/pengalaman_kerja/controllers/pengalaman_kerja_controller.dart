@@ -1,14 +1,11 @@
 import 'dart:convert';
 
 import 'package:esas/app/networks/api/akun/api_auth.dart';
-import 'package:esas/app/networks/api/akun/api_info_pendidikan_pengalaman.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
 class PengalamanKerjaController extends GetxController {
   final ApiAuth provider = Get.find<ApiAuth>();
-  final ApiInfoPendidikanPengalaman apiRepositories =
-      Get.find<ApiInfoPendidikanPengalaman>();
   var formData = <Map<String, dynamic>>[].obs;
   var isLoading = false.obs;
 
@@ -34,26 +31,17 @@ class PengalamanKerjaController extends GetxController {
   void addForm() {
     formData.add({
       'id': getLastId() + 1,
-      'company': '',
+      'company_name': '',
       'position': '',
-      'from': '',
-      'to': '',
-      'length_of_service': '',
+      'start': '',
+      'finish': '',
+      'certification': true,
     });
   }
 
   // Hapus form berdasarkan index jika lebih dari satu form
   Future<void> removeForm(int index) async {
     if (formData.length > 1) {
-      final dataToRemove = formData[index];
-      int idToRemove;
-      if (dataToRemove['id'] is String) {
-        idToRemove = int.tryParse(dataToRemove['id']) ?? 0;
-        await provider.removeProfile('pengalaman_kerja', idToRemove);
-      } else if (dataToRemove['id'] is int) {
-        idToRemove = dataToRemove['id'];
-        await provider.removeProfile('pengalaman_kerja', idToRemove);
-      }
       formData.removeAt(index);
     }
   }
@@ -74,17 +62,17 @@ class PengalamanKerjaController extends GetxController {
     try {
       final response = await provider.getProfile();
       if (response.statusCode == 200) {
-        final formal = jsonDecode(response.body)['account']['workExperience'];
+        final formal = jsonDecode(response.body)['data']['work_experiences'];
         if (formal is List) {
           formData.clear();
           for (var e in formal) {
             formData.add({
               'id': e['id']?.toString() ?? (getLastId() + 1).toString(),
-              'company': e['company'] ?? '',
+              'company_name': e['company_name'] ?? '',
               'position': e['position'] ?? '',
-              'from': e['from'] ?? '',
-              'to': e['to'] ?? '',
-              'length_of_service': e['lengthOfService'] ?? '',
+              'start': e['start'] ?? '',
+              'finish': e['finish'] ?? '',
+              'certification': e['lengthOfService'] ?? '',
             });
           }
         }
@@ -99,28 +87,27 @@ class PengalamanKerjaController extends GetxController {
   }
 
   // Simpan profil ke server
-  Future<void> saveProfile(int index) async {
-    final dataToSave = formData[index];
-    if (dataToSave['company'] != '' &&
-        dataToSave['position'] != '' &&
-        dataToSave['from'] != '' &&
-        dataToSave['to'] != '' &&
-        dataToSave['length_of_service'] != '') {
-      isLoading(true);
-      try {
-        final response = await apiRepositories.saveSubmit(formData, 'p_kerja');
-        if (response.statusCode == 200) {
-          showSuccessSnackbar('Data berhasil diperbarui');
-        } else {
-          showErrorSnackbar('Error: $response');
-        }
-      } catch (e) {
-        showErrorSnackbar('Error: $e');
-      } finally {
-        isLoading(false);
+  Future<void> saveWorkExperience() async {
+    isLoading(true);
+    try {
+      final processedData = formData.map((item) {
+        return {
+          ...item,
+          'certification': item['certification'] is bool
+              ? item['certification']
+              : item['certification'] == 'true',
+        };
+      }).toList();
+      final response = await provider.saveWorkExperience(processedData);
+      if (response.statusCode == 200) {
+        showSuccessSnackbar('Data berhasil diperbarui');
+      } else {
+        showErrorSnackbar('Error: $response');
       }
-    } else {
-      showErrorSnackbar('Form tidak valid, pastikan form input anda valid!');
+    } catch (e) {
+      showErrorSnackbar('Error: $e');
+    } finally {
+      isLoading(false);
     }
   }
 }

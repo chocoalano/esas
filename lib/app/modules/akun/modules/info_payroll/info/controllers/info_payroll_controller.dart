@@ -1,18 +1,15 @@
 import 'dart:convert';
 
+import 'package:esas/app/models/auth/user_detail.dart';
 import 'package:esas/app/networks/api/akun/api_auth.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:get/get.dart';
-
-import '../../../../models/account_model.dart';
 
 class InfoPayrollController extends GetxController {
   final ApiAuth provider = Get.find<ApiAuth>();
   var isloading = false.obs;
   var visibilityBanner = true.obs;
-  var accountModel = AccountModel(
-          account: Account(employe: Employe(), salary: Salary(), bank: Bank()))
-      .obs;
+  var userDetail = UserDetail().obs;
 
   @override
   void onInit() {
@@ -26,7 +23,7 @@ class InfoPayrollController extends GetxController {
       final response = await provider.getProfile();
       if (response.statusCode == 200) {
         final fetch = jsonDecode(response.body) as Map<String, dynamic>;
-        accountModel.value = AccountModel.fromJson(fetch);
+        userDetail.value = UserDetail.fromJson(fetch['data']);
       } else {
         showErrorSnackbar('Error: ${response.statusCode}');
       }

@@ -1,4 +1,6 @@
 import 'package:esas/constant.dart';
+import 'package:esas/support/support.dart';
+import 'package:esas/support/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,6 +12,8 @@ class Empcard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(HomeController());
+    final imageUrl = controller.userDetail.value.avatar;
+    controller.setAccount();
     return Row(
       children: [
         CircleAvatar(
@@ -22,7 +26,7 @@ class Empcard extends StatelessWidget {
                     backgroundColor: Colors.grey.shade200,
                     child: ClipOval(
                       child: Image.network(
-                        controller.userDetail.value.avatar!,
+                        "$baseUrlApi/assets/$imageUrl",
                         width: 100,
                         height: 100,
                         fit: BoxFit.cover,
@@ -49,16 +53,15 @@ class Empcard extends StatelessWidget {
             children: [
               Obx(() => Text(
                     controller.userDetail.value.name ?? '',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold),
+                    style: profileListTitle,
                   )),
               Obx(() => Text(
                     limitString(controller.userDetail.value.email ?? '', 23),
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    style: profileListSubtitle,
                   )),
               Obx(() => Text(
                     limitString(controller.userDetail.value.nip ?? '', 23),
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    style: profileListSubtitle,
                   )),
             ],
           ),

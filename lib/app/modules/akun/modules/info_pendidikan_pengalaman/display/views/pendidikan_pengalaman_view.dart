@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:esas/components/globat_appbar.dart';
+import 'package:esas/components/widgets/globat_appbar.dart';
 import 'package:esas/constant.dart';
 import '../controllers/akun_pendidikan_pengalaman_controller.dart';
 import 'widget/education_option_builder.dart';

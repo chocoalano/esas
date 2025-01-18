@@ -1,5 +1,5 @@
 import 'package:esas/app/networks/api/akun/api_auth.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
@@ -24,8 +24,9 @@ class UbahPasswordController extends GetxController {
       isLoading(true);
       try {
         final formData = {
-          'old_password': oldPassword,
-          'new_password': confirmPassword
+          'password': oldPassword,
+          'new_password': newPassword,
+          'confirmation_new_password': confirmPassword
         };
         final response = await provider.saveSubmitPassword(formData);
         if (response.statusCode == 200) {

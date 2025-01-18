@@ -1,6 +1,9 @@
 import 'package:esas/app/models/users/user_view.dart';
 import 'package:esas/components/BottomNavigation/bot_nav_view.dart';
+import 'package:esas/components/widgets/build_empty_message.dart';
+import 'package:esas/components/widgets/subtitle_row_text.dart';
 import 'package:esas/constant.dart';
+import 'package:esas/support/support.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -80,7 +83,8 @@ class KaryawanView extends GetView<KaryawanController> {
           child: Obx(() {
             if (controller.listKaryawan.isEmpty) {
               return Center(
-                child: _buildEmptyMessage(),
+                child: buildEmptyMessage(
+                    'Tidak ada data', 'Data tim akan ditampilkan disini'),
               );
             }
             return ListView.builder(
@@ -119,7 +123,7 @@ class KaryawanView extends GetView<KaryawanController> {
             height: 50,
             width: 50,
             child: Image.network(
-              data.avatar ?? '',
+              "$baseUrlApi/assets/${data.avatar}",
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) =>
                   const Icon(Icons.error, color: Colors.grey),
@@ -146,20 +150,6 @@ class KaryawanView extends GetView<KaryawanController> {
         ],
       ),
       onTap: () => _showDetails(data),
-    );
-  }
-
-  Widget buildSubtitleRow(String label, String value) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.black54),
-        ),
-        Text(limitString(value, 20)),
-      ],
     );
   }
 
@@ -214,23 +204,6 @@ class KaryawanView extends GetView<KaryawanController> {
       children: [
         Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         Text(value),
-      ],
-    );
-  }
-
-  Widget _buildEmptyMessage() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Belum ada data',
-          style: TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Daftar Tim Anda akan ditampilkan di sini',
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade400),
-        ),
       ],
     );
   }

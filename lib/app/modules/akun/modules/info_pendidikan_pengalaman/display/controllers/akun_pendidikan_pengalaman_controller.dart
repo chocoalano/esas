@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-import 'package:esas/app/modules/akun/modules/info_pendidikan_pengalaman/display/controllers/models.dart';
+import 'package:esas/app/models/users/formal_education.dart';
+import 'package:esas/app/models/users/informal_education.dart';
+import 'package:esas/app/models/users/work_experience.dart';
 import 'package:esas/app/networks/api/akun/api_auth.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
 class AkunPendidikanPengalamanController extends GetxController {
@@ -25,11 +27,11 @@ class AkunPendidikanPengalamanController extends GetxController {
       if (response.statusCode == 200) {
         final fetch = jsonDecode(response.body) as Map<String, dynamic>;
         // Mengambil data formalEducation dari response dan casting ke List
-        final formal = (fetch['account']['formalEducation'] as List)
+        final formal = (fetch['data']['formal_educations'] as List)
             .cast<Map<String, dynamic>>();
-        final informal = (fetch['account']['informalEducation'] as List)
+        final informal = (fetch['data']['informal_educations'] as List)
             .cast<Map<String, dynamic>>();
-        final pengalaman = (fetch['account']['workExperience'] as List)
+        final pengalaman = (fetch['data']['work_experiences'] as List)
             .cast<Map<String, dynamic>>();
 
         // Parsing data ke model menggunakan map

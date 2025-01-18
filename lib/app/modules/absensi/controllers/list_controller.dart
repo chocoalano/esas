@@ -1,6 +1,6 @@
 import 'package:esas/app/models/attendance/detail.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';

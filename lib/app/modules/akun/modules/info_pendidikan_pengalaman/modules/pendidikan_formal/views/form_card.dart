@@ -1,26 +1,24 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:esas/app/modules/akun/modules/info_pendidikan_pengalaman/modules/pendidikan_formal/controllers/pendidikan_formal_controller.dart';
+import 'package:esas/components/year_picker_field.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../widget/action_button_widget.dart';
 import '../../widget/checked_field_widget.dart';
-import '../../widget/date_field_widget.dart';
 import '../../widget/dropdown_field_widget.dart';
 import '../../widget/text_field_widget.dart';
 
 class FormCard extends StatefulWidget {
   final int index;
   final VoidCallback onRemove;
-  final VoidCallback onSave;
 
   const FormCard({
     super.key,
     required this.index,
     required this.onRemove,
-    required this.onSave,
   });
 
   @override
@@ -32,7 +30,6 @@ class _FormCardState extends State<FormCard> {
   late final TextEditingController _scoreController;
   late final TextEditingController _startController;
   late final TextEditingController _finishController;
-  late final TextEditingController _descriptionController;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -55,9 +52,6 @@ class _FormCardState extends State<FormCard> {
     _finishController = TextEditingController(
       text: _controller.formData[widget.index]['finish'] ?? '',
     );
-    _descriptionController = TextEditingController(
-      text: _controller.formData[widget.index]['description'] ?? '',
-    );
 
     // Attach listeners to controllers for automatic form updates
     _institutionController.addListener(
@@ -68,16 +62,10 @@ class _FormCardState extends State<FormCard> {
         .addListener(() => _updateForm('start', _startController.text));
     _finishController
         .addListener(() => _updateForm('finish', _finishController.text));
-    _descriptionController.addListener(
-        () => _updateForm('description', _descriptionController.text));
   }
 
   void _updateForm(String key, String value) {
     _controller.updateForm(widget.index, key, value);
-  }
-
-  void _handleSave() {
-    _controller.saveProfile(widget.index);
   }
 
   void _handleRemove() {
@@ -90,7 +78,6 @@ class _FormCardState extends State<FormCard> {
     _scoreController.dispose();
     _startController.dispose();
     _finishController.dispose();
-    _descriptionController.dispose();
     super.dispose();
   }
 
@@ -99,6 +86,8 @@ class _FormCardState extends State<FormCard> {
     // Get the current majors value
     final majorsValue =
         _getValidMajorsValue(_controller.formData[widget.index]['majors']);
+    final statusValue =
+        _getValidStatusValue(_controller.formData[widget.index]['status']);
 
     return Form(
       key: _formKey,
@@ -110,9 +99,7 @@ class _FormCardState extends State<FormCard> {
             children: [
               ActionButtonWidget(
                 formKey: _formKey,
-                onSave: _handleSave,
                 onRemove: _handleRemove,
-                saveIconColor: primaryColor,
                 removeIconColor: dangerColor,
               ),
               const SizedBox(height: 10),
@@ -169,49 +156,35 @@ class _FormCardState extends State<FormCard> {
                 borderRadius: 10.0, // Optional customization
               ),
               const SizedBox(height: 10),
-              DateFieldWidget(
+              YearPickerField(
                 controller: _startController,
-                hintText: 'Tanggal Mulai',
+                hintText: 'Tahun Mulai',
                 icon: Icons.calendar_today,
-                context: context,
-                fillColor: primaryColor.withOpacity(0.1),
-                borderRadius: 15.0,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-                onDateSelected: (date) {
-                  _updateForm('start', date);
-                },
               ),
               const SizedBox(height: 10),
-              DateFieldWidget(
+              YearPickerField(
                 controller: _finishController,
-                hintText: 'Tanggal Selesai',
+                hintText: 'Tahun Selesai',
                 icon: Icons.calendar_today,
-                context: context,
-                fillColor: primaryColor.withOpacity(0.1),
-                borderRadius: 15.0,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-                onDateSelected: (date) {
-                  _updateForm('start', date);
-                },
               ),
               const SizedBox(height: 10),
-              TextFieldWidget(
-                controller: _descriptionController,
-                label: "Deskripsi",
-                icon: Icons.description_outlined,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Deskripsi tidak boleh kosong';
+              DropdownFieldWidget(
+                label: 'Pilih status',
+                value: statusValue,
+                items: const [
+                  DropdownMenuItem(value: 'passed', child: Text('Lulus')),
+                  DropdownMenuItem(
+                      value: 'not-passed', child: Text('Tidak lulus')),
+                  DropdownMenuItem(
+                      value: 'in-progress', child: Text('Dalam proses')),
+                ],
+                onChanged: (value) {
+                  if (value != null) {
+                    _updateForm('status', value);
                   }
-                  return null;
                 },
-                fillColor:
-                    primaryColor.withOpacity(0.1), // Optional customization
-                borderRadius: 10.0, // Optional customization
+                fillColor: primaryColor.withOpacity(0.1),
+                borderRadius: 10.0,
               ),
               const SizedBox(height: 10),
               CheckedFieldWidget(
@@ -250,6 +223,15 @@ class _FormCardState extends State<FormCard> {
       'S1',
       'S2',
       'S3',
+    ];
+    return (value != null && validValues.contains(value)) ? value : null;
+  }
+
+  String? _getValidStatusValue(String? value) {
+    const validValues = [
+      'passed',
+      'not-passed',
+      'in-progress',
     ];
     return (value != null && validValues.contains(value)) ? value : null;
   }

@@ -493,6 +493,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  google_fonts:
+    dependency: "direct main"
+    description:
+      name: google_fonts
+      sha256: b1ac0fe2832c9cc95e5e88b57d627c5e68c223b9657f4b96e1487aa9098c7b82
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.1"
   html:
     dependency: transitive
     description:
@@ -597,6 +605,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.19.0"
+  js:
+    dependency: transitive
+    description:
+      name: js
+      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   json_annotation:
     dependency: transitive
     description:
@@ -877,6 +893,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.2"
+  pusher_channels_flutter:
+    dependency: "direct main"
+    description:
+      name: pusher_channels_flutter
+      sha256: "4d83b2012079c7d1a3c42cee1d37a48c974504d869b6a9c085144b2d4e35e58a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.0"
   rxdart:
     dependency: transitive
     description:
@@ -890,22 +914,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
-  socket_io_client:
-    dependency: "direct main"
-    description:
-      name: socket_io_client
-      sha256: "1ad43703f9a4050dac9ea47dc41906f45a73c3b6e01ad16f6aa3ddf606da73ab"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
-  socket_io_common:
-    dependency: transitive
-    description:
-      name: socket_io_common
-      sha256: "392c3613c88ad3ee0e15911db2e7e9dbd675622c2589ce99383630603b097619"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   source_span:
     dependency: transitive
     description:

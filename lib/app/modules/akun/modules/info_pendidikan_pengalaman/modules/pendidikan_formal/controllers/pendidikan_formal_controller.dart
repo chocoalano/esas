@@ -1,14 +1,11 @@
 import 'dart:convert';
 
 import 'package:esas/app/networks/api/akun/api_auth.dart';
-import 'package:esas/app/networks/api/akun/api_info_pendidikan_pengalaman.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
 class AkunPendidikanFormalController extends GetxController {
   final ApiAuth provider = Get.find<ApiAuth>();
-  final ApiInfoPendidikanPengalaman apiRepositories =
-      Get.find<ApiInfoPendidikanPengalaman>();
   var formData = <Map<String, dynamic>>[].obs;
   var isLoading = false.obs;
 
@@ -39,27 +36,15 @@ class AkunPendidikanFormalController extends GetxController {
       'score': '',
       'start': '',
       'finish': '',
-      'description': '',
+      'status': '',
       'certification': false,
     });
   }
 
   // Hapus form berdasarkan index jika lebih dari satu form
   Future<void> removeForm(int index) async {
-    if (formData.length <= 1) return; // Early return jika hanya ada satu data
-
-    final dataToRemove = formData[index];
-    int? idToRemove;
-    if (dataToRemove['id'] is String) {
-      idToRemove = int.tryParse(dataToRemove['id']);
-    } else if (dataToRemove['id'] is int) {
-      idToRemove = dataToRemove['id'];
-    }
-    // Jika ID valid, lakukan penghapusan
-    if (idToRemove != null && idToRemove > 0) {
-      await provider.removeProfile('pendidikan_normal', idToRemove);
-      formData.removeAt(index);
-    }
+    if (formData.length <= 1) return;
+    formData.removeAt(index);
   }
 
   // Update form berdasarkan key dan value
@@ -78,10 +63,10 @@ class AkunPendidikanFormalController extends GetxController {
     try {
       final response = await provider.getProfile();
       if (response.statusCode == 200) {
-        final formal = jsonDecode(response.body)['account']['formalEducation'];
-        if (formal is List) {
+        final fetch = jsonDecode(response.body) as Map<String, dynamic>;
+        if (fetch['data']['formal_educations'] is List) {
           formData.clear();
-          for (var e in formal) {
+          for (var e in fetch['data']['formal_educations']) {
             formData.add({
               'id': e['id']?.toString() ?? (getLastId() + 1).toString(),
               'institution': e['institution'] ?? '',
@@ -89,8 +74,10 @@ class AkunPendidikanFormalController extends GetxController {
               'score': e['score'].toString(),
               'start': e['start'] ?? '',
               'finish': e['finish'] ?? '',
-              'description': e['description'] ?? '',
-              'certification': e['certification'] > 0 ? true : false,
+              'status': e['status'] ?? 'passed',
+              'certification': e['certification'] is bool
+                  ? e['certification']
+                  : e['certification'] == 'true',
             });
           }
         }
@@ -105,30 +92,23 @@ class AkunPendidikanFormalController extends GetxController {
   }
 
   // Simpan profil ke server
-  Future<void> saveProfile(int index) async {
-    final dataToSave = formData[index];
-    if (dataToSave['institution'] != '' &&
-        dataToSave['majors'] != '' &&
-        dataToSave['score'] != '' &&
-        dataToSave['start'] != '' &&
-        dataToSave['finish'] != '' &&
-        dataToSave['description'] != '' &&
-        dataToSave['certification'] != '') {
+  Future<void> saveFormalEducation() async {
+    try {
       isLoading(true);
-      try {
-        final response = await apiRepositories.saveSubmit(formData, 'p_formal');
-        if (response.statusCode == 200) {
-          showSuccessSnackbar('Data berhasil diperbarui');
-        } else {
-          showErrorSnackbar('Error: $response');
-        }
-      } catch (e) {
-        showErrorSnackbar('Error: $e');
-      } finally {
-        isLoading(false);
-      }
-    } else {
-      showErrorSnackbar('Form tidak valid, pastikan form input anda valid!');
+      final processedData = formData.map((item) {
+        return {
+          ...item,
+          'certification': item['certification'] is bool
+              ? item['certification']
+              : item['certification'] == 'true',
+        };
+      }).toList();
+      await provider.saveFormalEducation(processedData);
+      showSuccessSnackbar('Data berhasil disimpan');
+    } catch (e) {
+      showErrorSnackbar('Error: $e');
+    } finally {
+      isLoading(false);
     }
   }
 }

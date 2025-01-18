@@ -23,8 +23,8 @@ class BtnAction extends StatelessWidget {
     return Obx(
       () => Container(
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [primaryColor, secondaryColor], // Gradient colors
+          gradient: LinearGradient(
+            colors: [color, secondaryColor], // Gradient colors
             begin: Alignment.centerLeft,
             end: Alignment.centerRight,
           ),

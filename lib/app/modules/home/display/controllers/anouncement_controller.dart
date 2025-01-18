@@ -1,6 +1,6 @@
 import 'package:esas/app/models/announcement/detail.dart';
 import 'package:esas/app/networks/api/beranda/api_beranda.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
 class AnouncementController extends GetxController {

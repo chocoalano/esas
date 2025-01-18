@@ -1,23 +1,25 @@
 // ignore_for_file: unrelated_type_equality_checks
 
+import 'package:esas/app/models/users/formal_education.dart';
+import 'package:esas/app/models/users/informal_education.dart';
+import 'package:esas/app/models/users/work_experience.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
-
-import '../../controllers/models.dart';
 
 class DetailCard {
   static Widget buildFormalEducationCard(FormalEducation education, int index) {
     return _buildDetailCard(
       title: 'Data Pendidikan ${index + 1}',
       details: [
-        _DetailRow(title: 'Instansi', value: education.institution),
+        _DetailRow(title: 'Instansi', value: education.institution ?? '---'),
         _DetailRow(
             title: 'Tahun Masuk & Keluar',
             value: '${education.start} - ${education.finish}'),
-        _DetailRow(title: 'Tingkatan', value: education.majors),
+        _DetailRow(title: 'Tingkatan', value: education.majors ?? '--'),
+        _DetailRow(title: 'Status', value: education.status ?? '--'),
         _DetailRow(
-            title: 'Apakah Lulus?',
-            value: education.certification == 1 ? 'Ya' : 'Tidak'),
+            title: 'Apakah memiliki sertifikat Lulus?',
+            value: education.certification == true ? 'Ya' : 'Tidak'),
       ],
     );
   }
@@ -27,14 +29,15 @@ class DetailCard {
     return _buildDetailCard(
       title: 'Data Pendidikan/Kursus ${index + 1}',
       details: [
-        _DetailRow(title: 'Instansi', value: education.name),
+        _DetailRow(title: 'Instansi', value: education.institution ?? '---'),
         _DetailRow(
             title: 'Tahun masuk & keluar',
             value: '${education.start}-${education.finish}'),
-        _DetailRow(title: 'Jenis', value: education.type),
-        _DetailRow(title: 'Lama kursus', value: '${education.duration} bulan'),
+        _DetailRow(title: 'Jenis', value: education.type ?? '---'),
+        _DetailRow(title: 'Lama kursus', value: education.duration.toString()),
+        _DetailRow(title: 'Status', value: education.status ?? '---'),
         _DetailRow(
-            title: 'Apakah lulus?',
+            title: 'Apakah memiliki sertifikat Lulus?',
             value: education.certification == true ? 'Ya' : 'Tidak'),
       ],
     );
@@ -44,13 +47,13 @@ class DetailCard {
     return _buildDetailCard(
       title: 'Data Pengalaman Kerja ${index + 1}',
       details: [
-        _DetailRow(title: 'Instansi', value: experience.company),
-        _DetailRow(title: 'Posisi', value: experience.position),
-        _DetailRow(title: 'Sejak', value: experience.from),
-        _DetailRow(title: 'Sampai', value: experience.to),
+        _DetailRow(title: 'Instansi', value: experience.companyName ?? '---'),
+        _DetailRow(title: 'Posisi', value: experience.position ?? '---'),
+        _DetailRow(title: 'Sejak', value: experience.start ?? '---'),
+        _DetailRow(title: 'Sampai', value: experience.finish ?? '---'),
         _DetailRow(
-            title: 'Lama Mengabdi',
-            value: '${experience.lengthOfService} Thn/bln'),
+            title: 'Apakah memiliki sertifikat pekerjaan?',
+            value: experience.certification == true ? 'Ya' : 'Tidak'),
       ],
     );
   }

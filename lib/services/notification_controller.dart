@@ -1,89 +1,76 @@
-// ignore_for_file: library_prefixes
+// ignore_for_file: unnecessary_null_comparison
 
-import 'package:esas/constant.dart';
+import 'dart:convert';
+
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:get_storage/get_storage.dart';
+import 'package:pusher_channels_flutter/pusher_channels_flutter.dart';
 import 'notif_service.dart';
 
 class NotificationController extends GetxController {
   final NotifService notifService = Get.put(NotifService());
-  late IO.Socket socket;
+  late PusherChannelsFlutter pusher;
+  final storage = GetStorage();
+  final isConnected = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    initSocket();
+    pusher = PusherChannelsFlutter.getInstance();
+    connect();
   }
 
-  void initSocket() {
-    // Menghubungkan ke server AdonisJS Socket.IO
-    socket = IO.io(
-      baseUrlApi, // Ganti dengan URL server Anda
-      IO.OptionBuilder()
-          .setTransports(['websocket']) // Menggunakan websocket transport
-          .disableAutoConnect() // Menonaktifkan auto-connect
-          .build(),
-    );
+  Future<void> connect() async {
+    try {
+      await pusher.init(
+        apiKey: '368533d9bcc67e881fff',
+        cluster: 'ap1',
+        onConnectionStateChange: (currentState, previousState) {
+          if (kDebugMode) {
+            print("Connection State: $currentState");
+          }
+          isConnected.value = currentState == 'CONNECTED';
+        },
+        onEvent: (event) {
+          // print("Event Received: ${event.eventName} - ${event.data}");
+          final fetch = jsonDecode(event.data);
+          if (kDebugMode) {
+            final userId = storage.read('userId');
+            if (userId == fetch['to']) {
+              notifService.showNotification('Pemberitahuan', fetch['message']);
+            }
+          }
+        },
+        onSubscriptionSucceeded: (channel, data) {
+          if (kDebugMode) {
+            print("Subscription Succeeded: $channel");
+          }
+        },
+        onError: (message, code, e) {
+          if (kDebugMode) {
+            print("Error: $message (Code: $code)");
+          }
+        },
+      );
 
-    // Koneksi ke socket server
-    socket.connect();
-
-    // Saat menerima pesan 'userConnected' dari server
-    socket.on('connection', (data) {
-      _handleNotificationData(data);
-    });
-
-    // Anda bisa menambah event lain di sini jika diperlukan
-  }
-
-  void _handleNotificationData(dynamic data) {
-    if (data is List) {
-      for (var item in data) {
-        _checkAndShowNotification(item);
+      // Pastikan langganan berhasil
+      final subscription =
+          await pusher.subscribe(channelName: 'notification-channel');
+      if (subscription == null) {
+        throw Exception("Subscription failed. Channel not found.");
       }
-    } else if (data is Map<String, dynamic>) {
-      _handlePayload(data);
-    }
-  }
 
-  void _checkAndShowNotification(Map<String, dynamic> item) {
-    notifService.showNotification(item['title'], item['message']);
-  }
-
-  void _handlePayload(Map<String, dynamic> data) {
-    String title = data['title'];
-    String message = data['message'];
-    final payload = data['payload'] as Map<String, dynamic>;
-
-    // Menggunakan map untuk menyederhanakan pengecekan role
-    final validRoles = {
-      'pengajuan-cuti': [payload['userLine'], payload['userHr']],
-      'pengajuan-shift': [payload['lineId'], payload['hrId']],
-      'pengajuan-lembur': [
-        payload['userAdm'],
-        payload['userLine'],
-        payload['userGm'],
-        payload['userHr'],
-        payload['userDirector'],
-        payload['userFat'],
-      ],
-      'pengajuan-korbsen': [payload['lineId'], payload['hrId']],
-    };
-
-    if (validRoles.containsKey(data['type'])) {
-      for (var roleId in validRoles[data['type']]!) {
-        notifService.showNotification(title, message);
-        break;
+      await pusher.connect();
+    } catch (e) {
+      if (kDebugMode) {
+        print("Connection Error: $e");
       }
-    } else if (kDebugMode) {
-      print(payload);
-    }
-  }
 
-  @override
-  void onClose() {
-    socket.dispose(); // Menutup socket ketika controller dihancurkan
-    super.onClose();
+      // Tampilkan pesan error ke pengguna
+      showErrorSnackbar(
+          "Connection to Pusher failed. Please check your configuration.");
+    }
   }
 }

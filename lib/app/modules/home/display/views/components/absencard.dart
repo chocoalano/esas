@@ -1,6 +1,8 @@
 import 'package:esas/app/modules/absensi/controllers/gps_controller.dart';
 import 'package:esas/app/modules/home/display/controllers/home_controller.dart';
 import 'package:esas/constant.dart';
+import 'package:esas/support/style.dart';
+import 'package:esas/support/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +16,10 @@ class Absencard extends StatelessWidget {
     final GpsController gpsC = Get.put(GpsController());
     final AbsensiController absensiC = Get.put(AbsensiController());
     final homeController = Get.put(HomeController());
+
+    absensiC.fetchCurrentAttendance();
+
+    absensiC.fetchListTime();
     return Column(
       children: [
         Container(
@@ -25,12 +31,12 @@ class Absencard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     'Jadwal kerja sekarang',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: textRowBoldSm,
                   )
                 ],
               ),
@@ -64,6 +70,58 @@ class Absencard extends StatelessWidget {
               const SizedBox(height: 20),
               _buildAbsenceTime(absensiC),
               const SizedBox(height: 20),
+              Obx(() => DropdownButtonFormField(
+                    value: absensiC.timeId.value,
+                    items: absensiC.listTime
+                        .map((time) => DropdownMenuItem(
+                              value: time.id.toString(),
+                              child: Text(
+                                  "${time.name} jam: ${time.inTime}-${time.outTime}"),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      absensiC.timeId.value = value;
+                    },
+                    decoration: formInput(
+                      label: 'Pilih jam kerja',
+                      icon: Icons.timer_outlined,
+                    ),
+                  )),
+              const SizedBox(height: 20),
+              Obx(
+                () {
+                  if (absensiC.showAlert.isTrue) {
+                    return Column(
+                      children: [
+                        MaterialBanner(
+                          elevation: 0,
+                          forceActionsBelow: true,
+                          backgroundColor: dangerColor,
+                          content: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              'Anda harus memilih waktu absensi terlebih dulu, sebelum anda melakukan absen!',
+                              style: textWhite,
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => absensiC.showAlert(false),
+                              child: Text(
+                                'Ya, saya mengerti.',
+                                style: textWhite,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
               Center(
                 child: Obx(
                   () => gpsC.isWithinRange.isFalse
@@ -98,18 +156,16 @@ class Absencard extends StatelessWidget {
   }
 
   Widget _buildHeader() {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           'Absen Masuk',
-          style: TextStyle(
-              fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+          style: textRowBoldSm,
         ),
         Text(
           'Absen Keluar',
-          style: TextStyle(
-              fontSize: 16, color: Colors.black, fontWeight: FontWeight.bold),
+          style: textRowBoldSm,
         ),
       ],
     );
@@ -119,10 +175,16 @@ class Absencard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Obx(() => _buildTimeText(absensiC.timeIn.value,
-            absensiC.statusIn.value == 'late' ? false : true)),
-        Obx(() => _buildTimeText(absensiC.timeOut.value,
-            absensiC.statusOut.value == 'late' ? false : true)),
+        Obx(() => _buildTimeText(
+            absensiC.currentAttendance.value.timeIn ?? '--:--:--',
+            absensiC.currentAttendance.value.statusIn == 'late'
+                ? false
+                : true)),
+        Obx(() => _buildTimeText(
+            absensiC.currentAttendance.value.timeOut ?? '--:--:--',
+            absensiC.currentAttendance.value.statusOut == 'late'
+                ? false
+                : true)),
       ],
     );
   }
@@ -152,22 +214,33 @@ class Absencard extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _buildAbsenceButton(
-          label: 'Absen Masuk',
-          icon: Icons.login,
-          isVisible: absensiC.btnIn.isFalse,
-          onPressed: gpsC.isWithinRange.value
-              ? () => Get.offAllNamed('/beranda/absen/photo',
-                  arguments: {'initial': 'in'})
-              : null,
-        ),
+            label: 'Absen Masuk',
+            icon: Icons.login,
+            isVisible: absensiC.btnIn.isFalse,
+            onPressed: () {
+              if (gpsC.isWithinRange.value && absensiC.timeId.value != null) {
+                Get.offAllNamed('/beranda/absen/photo', arguments: {
+                  'initial': 'in',
+                  'timeId': absensiC.timeId.value
+                });
+              } else {
+                absensiC.showAlert(true);
+              }
+            }),
         _buildAbsenceButton(
           label: 'Absen Pulang',
           icon: Icons.logout,
           isVisible: absensiC.btnOut.isFalse,
-          onPressed: gpsC.isWithinRange.value
-              ? () => Get.offAllNamed('/beranda/absen/photo',
-                  arguments: {'initial': 'out'})
-              : null,
+          onPressed: () {
+            if (gpsC.isWithinRange.value && absensiC.timeId.value != null) {
+              Get.offAllNamed('/beranda/absen/photo', arguments: {
+                'initial': 'out',
+                'timeId': absensiC.timeId.value
+              });
+            } else {
+              absensiC.showAlert(true);
+            }
+          },
         ),
       ],
     );
@@ -183,7 +256,7 @@ class Absencard extends StatelessWidget {
         ? ElevatedButton.icon(
             onPressed: onPressed,
             icon: Icon(icon, color: bgColor),
-            label: Text(label, style: const TextStyle(color: bgColor)),
+            label: Text(label, style: textWhite),
             style: ElevatedButton.styleFrom(
               backgroundColor: primaryColor,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

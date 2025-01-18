@@ -1,6 +1,7 @@
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/build_empty_message.dart';
+import 'package:esas/support/support.dart';
+import 'package:esas/support/typography.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/anouncement_controller.dart';
@@ -49,7 +50,10 @@ class Anouncement extends StatelessWidget {
           // Wrap the content in Flexible or SizedBox to avoid layout issues
           Obx(() {
             if (controller.list.isEmpty) {
-              return _buildEmptyAnnouncementMessage();
+              return Center(
+                child: buildEmptyMessage('Belum ada pengumuman',
+                    'Data informasi pengumuman akan dimuat disini'),
+              );
             } else {
               // Ensure there's a constraint for the ListView
               return RefreshIndicator(
@@ -91,30 +95,12 @@ class Anouncement extends StatelessWidget {
 
   // Helper method for title row
   Row _buildTitleRow() {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           'Pengumuman',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ],
-    );
-  }
-
-  // Helper method for empty announcement message
-  Column _buildEmptyAnnouncementMessage() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Text(
-          'Belum ada pengumuman',
-          style: TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'Pengumuman Anda akan ditampilkan di sini',
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade400),
+          style: textRowBoldSm,
         ),
       ],
     );

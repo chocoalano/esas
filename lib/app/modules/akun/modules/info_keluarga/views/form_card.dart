@@ -7,13 +7,8 @@ import '../controllers/info_keluarga_controller.dart';
 class FormCard extends StatefulWidget {
   final int index;
   final VoidCallback onRemove;
-  final VoidCallback onSave;
 
-  const FormCard(
-      {super.key,
-      required this.index,
-      required this.onRemove,
-      required this.onSave});
+  const FormCard({super.key, required this.index, required this.onRemove});
 
   @override
   FormCardState createState() => FormCardState();
@@ -155,14 +150,6 @@ class FormCardState extends State<FormCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        IconButton(
-          onPressed: () {
-            if (_formKey.currentState?.validate() ?? false) {
-              widget.onSave();
-            }
-          },
-          icon: const Icon(Icons.save_alt_outlined, color: primaryColor),
-        ),
         IconButton(
           onPressed: widget.onRemove,
           icon: const Icon(Icons.remove_circle_outline, color: dangerColor),

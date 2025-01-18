@@ -1,6 +1,6 @@
 import 'package:esas/components/btn_action.dart';
 import 'package:esas/components/forms/text_input.dart';
-import 'package:esas/components/globat_appbar.dart';
+import 'package:esas/components/widgets/globat_appbar.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -38,22 +38,20 @@ class FormPayrollView extends GetView<FormPayrollController> {
                   TextFieldComponent(
                       icon: Icons.business_outlined,
                       label: 'Nama Bank',
-                      name: 'bankName',
-                      onChanged: (value) => controller.bankName.value = value!),
+                      name: 'bank_name',
+                      onChanged: (input) => controller.bank_name(input)),
                   const SizedBox(height: 16),
                   TextFieldComponent(
                       icon: Icons.credit_card,
                       label: 'Nomor Rekening',
-                      name: 'bankAccount',
-                      onChanged: (value) =>
-                          controller.bankAccount.value = value!),
+                      name: 'bank_number',
+                      onChanged: (input) => controller.bank_number(input)),
                   const SizedBox(height: 16),
                   TextFieldComponent(
                       icon: Icons.account_balance,
                       label: 'Atas nama pemilik akun',
-                      name: 'bankAccountHolder',
-                      onChanged: (value) =>
-                          controller.bankAccountHolder.value = value!),
+                      name: 'bank_holder',
+                      onChanged: (input) => controller.bank_holder(input)),
                 ],
               ),
             ),

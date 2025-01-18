@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:esas/components/BottomNavigation/bot_nav_view.dart';
 import 'package:esas/constant.dart';
+import 'package:esas/support/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,7 @@ class AkunView extends GetView<AkunController> {
 
   @override
   Widget build(BuildContext context) {
-    controller.getProfileImg();
+    controller.getProfile();
 
     return PopScope(
       canPop: false,
@@ -86,11 +87,11 @@ class AkunView extends GetView<AkunController> {
                   )),
               Obx(() => Text(
                     controller.profile.value.departement ?? 'Departement ?',
-                    style: const TextStyle(color: Colors.black54),
+                    style: caption,
                   )),
               Obx(() => Text(
                     controller.profile.value.position ?? 'Position ?',
-                    style: const TextStyle(color: Colors.black54),
+                    style: caption,
                   )),
             ],
           ),
@@ -115,7 +116,7 @@ class AkunView extends GetView<AkunController> {
           backgroundColor: Colors.grey.shade200,
           child: ClipOval(
             child: Image.network(
-              imageUrl,
+              "$baseUrlApi/assets/$imageUrl",
               width: 100,
               height: 100,
               fit: BoxFit.cover,
@@ -177,10 +178,7 @@ class AkunView extends GetView<AkunController> {
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Text(
         title,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
+        style: profileTitle,
       ),
     );
   }
@@ -233,7 +231,7 @@ class AkunView extends GetView<AkunController> {
       elevation: 0,
       child: ListTile(
         leading: Icon(icon, color: Colors.black54),
-        title: Text(text, style: const TextStyle(fontSize: 16)),
+        title: Text(text, style: listile),
         trailing: const Icon(Icons.chevron_right),
         onTap: onTap,
       ),

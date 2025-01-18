@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:esas/app/models/auth/office.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 

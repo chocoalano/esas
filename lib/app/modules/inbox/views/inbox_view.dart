@@ -1,17 +1,35 @@
+import 'package:esas/app/models/notification/notification_model.dart';
 import 'package:esas/app/modules/inbox/controllers/inbox_controller.dart';
-import 'package:esas/app/modules/inbox/views/pages/persetujuan_list.dart';
 import 'package:esas/components/BottomNavigation/bot_nav_view.dart';
+import 'package:esas/components/widgets/build_empty_message.dart';
 import 'package:esas/constant.dart';
+import 'package:esas/support/support.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'pages/notification_list.dart';
 
 class InboxView extends GetView<InboxController> {
   const InboxView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ScrollController scrollController = ScrollController();
+
+    // Refresh function
+    Future<void> onRefresh() async {
+      await controller.refreshData();
+    }
+
+    // Scroll listener for pagination
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent - 100 &&
+          controller.hasMore.value &&
+          !controller.isLoading.value) {
+        controller.loadMoreList();
+      }
+    });
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -33,32 +51,83 @@ class InboxView extends GetView<InboxController> {
             style: TextStyle(color: bgColor),
           ),
           centerTitle: true,
-          bottom: TabBar(
-            controller: controller.tabController,
-            tabs: const [
-              Tab(text: "Notifikasi"),
-              Tab(text: "Butuh persetujuan"),
-            ],
-            labelColor: Colors.white, // Text color for selected tab
-            unselectedLabelColor:
-                Colors.white70, // Text color for unselected tabs
-            labelStyle: const TextStyle(
-              fontWeight: FontWeight.bold, // Add more styles if needed
-            ),
-            indicatorColor: Colors.white, // Color of the indicator
-          ),
+          actions: [
+            IconButton(
+                onPressed: () => controller.refreshData(),
+                icon: const Icon(
+                  Icons.refresh,
+                  color: bgColor,
+                )),
+            IconButton(
+                onPressed: () => controller.clearData(),
+                icon: const Icon(
+                  Icons.clear,
+                  color: bgColor,
+                ))
+          ],
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: TabBarView(
-            controller: controller.tabController,
-            children: const [
-              NotificationList(),
-              PersetujuanList(),
-            ],
-          ),
+        body: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: Obx(() {
+            if (controller.isLoading.isTrue) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: primaryColor,
+                ),
+              );
+            } else {
+              if (controller.list.isEmpty) {
+                return Center(
+                  child: buildEmptyMessage(
+                      'Tidak ada data', 'Data akan ditampilkan disini'),
+                );
+              }
+              return ListView.builder(
+                controller: scrollController,
+                itemCount: controller.list.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < controller.list.length) {
+                    final data = controller.list[index];
+                    return _buildListItem(data);
+                  } else if (controller.hasMore.value) {
+                    return const Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox(); // Tidak ada lebih banyak data
+                  }
+                },
+              );
+            }
+          }),
         ),
         bottomNavigationBar: BotNavView(),
+      ),
+    );
+  }
+
+  Widget _buildListItem(NotificationModel data) {
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Card(
+        color: bgColor,
+        child: ListTile(
+          leading: data.readAt == null
+              ? const Icon(Icons.notifications_active, color: primaryColor)
+              : const Icon(Icons.notifications),
+          title: Text(
+            limitString(data.data!.title ?? '', 30),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black54,
+            ),
+          ),
+          subtitle: Text(data.data!.body ?? ''),
+          onTap: () => controller.read(data.id!),
+        ),
       ),
     );
   }

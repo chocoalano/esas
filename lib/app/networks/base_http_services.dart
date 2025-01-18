@@ -23,11 +23,27 @@ class BaseHttpService {
 
   // Interceptor untuk menghandle request GET
   Future<http.Response> getRequest(String endpoint) async {
-    print('$baseUrl$endpoint');
     final Uri url = Uri.parse('$baseUrl$endpoint');
     final headers = await _buildHeaders();
     try {
       final response = await http.get(url, headers: headers);
+      return _handleResponse(response);
+    } catch (e) {
+      throw _handleError(e);
+    }
+  }
+
+  // Interceptor untuk menghandle request POST
+  Future<http.Response> postListRequest(
+      String endpoint, List<Map<String, dynamic>> body) async {
+    final Uri url = Uri.parse('$baseUrl$endpoint');
+    final headers = await _buildHeaders();
+    try {
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: jsonEncode(body),
+      );
       return _handleResponse(response);
     } catch (e) {
       throw _handleError(e);

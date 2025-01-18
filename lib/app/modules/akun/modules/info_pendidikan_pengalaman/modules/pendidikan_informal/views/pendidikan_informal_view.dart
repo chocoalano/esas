@@ -1,3 +1,4 @@
+import 'package:esas/components/btn_action.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 
@@ -58,12 +59,20 @@ class PendidikanInformalView extends GetView<PendidikanInformalController> {
                 return FormCard(
                   index: index,
                   onRemove: () => controller.removeForm(index),
-                  onSave: () => controller.saveProfile(index),
                 );
               }
             },
           );
         }),
+        bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: BtnAction(
+              act: () => controller.saveInformalEducation(),
+              color: primaryColor,
+              icon: Icons.save,
+              isLoading: controller.isLoading,
+              title: controller.isLoading.isFalse ? 'Simpan' : 'proses',
+            )),
       ),
     );
   }

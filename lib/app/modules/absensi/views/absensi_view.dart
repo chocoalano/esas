@@ -1,5 +1,7 @@
-import 'package:esas/components/photo_box.dart';
+import 'package:esas/app/models/attendance/detail.dart';
+import 'package:esas/components/widgets/photo_box.dart';
 import 'package:esas/constant.dart';
+import 'package:esas/support/support.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/list_controller.dart';
@@ -125,7 +127,7 @@ class AbsensiView extends StatelessWidget {
     );
   }
 
-  Widget _buildListTile(var item) {
+  Widget _buildListTile(Detail item) {
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Container(
@@ -141,7 +143,7 @@ class AbsensiView extends StatelessWidget {
     );
   }
 
-  Widget _buildSubtitle(var item) {
+  Widget _buildSubtitle(Detail item) {
     return Column(
       children: [
         _buildInfoRow(
@@ -206,7 +208,7 @@ class AbsensiView extends StatelessWidget {
     );
   }
 
-  void _showDetails(var item) {
+  void _showDetails(Detail item) {
     Get.bottomSheet(
       Container(
         width: Get.width,
@@ -227,8 +229,13 @@ class AbsensiView extends StatelessWidget {
               _buildInfoDetailRow('Tanggal', formatDate(item.createdAt)),
               _buildInfoDetailRow('Jam masuk', formatTimeSting(item.timeIn)),
               _buildInfoStatusRow('Status Jam masuk', item.statusIn ?? ''),
-              _buildInfoDetailRow('Jam pulang', formatTimeSting(item.timeOut)),
-              _buildInfoStatusRow('Status Jam pulang', item.statusOut ?? ''),
+              _buildInfoDetailRow(
+                  'Jam pulang',
+                  item.timeOut != null
+                      ? formatTimeSting(item.timeOut)
+                      : '--:--:--'),
+              _buildInfoStatusRow('Status Jam pulang',
+                  item.timeOut != null ? item.statusOut ?? '' : '---'),
               const SizedBox(height: 10),
               const Divider(),
               const SizedBox(height: 10),
@@ -255,7 +262,7 @@ class AbsensiView extends StatelessWidget {
     );
   }
 
-  Widget _buildPhotoSection(var item) {
+  Widget _buildPhotoSection(Detail item) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -267,7 +274,7 @@ class AbsensiView extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               PhotoBox(
-                photoUrl: item.imageIn ?? '',
+                photoUrl: "$baseUrlApi/assets/${item.imageIn}",
               ),
             ],
           ),
@@ -280,7 +287,7 @@ class AbsensiView extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               PhotoBox(
-                photoUrl: item.imageOut ?? '',
+                photoUrl: "$baseUrlApi/assets/${item.imageOut}",
               ),
             ],
           ),

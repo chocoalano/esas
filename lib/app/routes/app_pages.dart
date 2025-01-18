@@ -1,5 +1,3 @@
-import 'package:esas/app/routes/modules/pengajuan/cuti.dart';
-import 'package:esas/app/routes/modules/pengajuan/koreksi_absen.dart';
 import 'package:esas/auth_middleware.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -13,9 +11,7 @@ import 'modules/akun/akun.dart';
 import 'modules/akun/info_payroll.dart';
 import 'modules/akun/info_pendidikan_pengalaman.dart';
 import 'modules/beranda/beranda.dart';
-import 'modules/pengajuan/lembur.dart';
 import 'modules/pengajuan/pengajuan.dart';
-import 'modules/pengajuan/perubahan_shift.dart';
 
 part 'app_routes.dart';
 
@@ -72,9 +68,5 @@ class AppPages {
 
     // Group route: Pengajuan
     ...PengajuanRoutes.routes,
-    ...KoreksiAbsenRoutes.routes,
-    ...PerubahanShiftRoutes.routes,
-    ...LemburRoutes.routes,
-    ...CutiRoutes.routes,
   ];
 }

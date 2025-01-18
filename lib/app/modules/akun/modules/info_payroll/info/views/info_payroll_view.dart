@@ -1,6 +1,5 @@
 import 'package:card_loading/card_loading.dart';
-import 'package:esas/components/alert_banner.dart';
-import 'package:esas/components/globat_appbar.dart';
+import 'package:esas/components/widgets/globat_appbar.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
 
@@ -40,14 +39,14 @@ class InfoPayrollView extends GetView<InfoPayrollController> {
 
   Widget _buildAttendanceInfo(InfoPayrollController controller) {
     return Obx(() {
-      final data = controller.accountModel.value;
+      final data = controller.userDetail.value;
       if (controller.isloading.isFalse) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
               child: CreditCardUi(
-                cardHolderFullName: data.account!.bank!.bankAccountHolder ?? '',
+                cardHolderFullName: data.name ?? '',
                 cardNumber: '',
                 validFrom: '00/00',
                 validThru: '00/00',
@@ -99,24 +98,15 @@ class InfoPayrollView extends GetView<InfoPayrollController> {
                   const SizedBox(
                     height: 10,
                   ),
+                  _buildInfoRow('Nama bank', data.employee?.bankName ?? ''),
                   _buildInfoRow(
-                      'Nama bank', data.account!.bank!.bankName ?? ''),
-                  _buildInfoRow(
-                      'No. Rekening', data.account!.bank!.bankAccount ?? ''),
-                  _buildInfoRow(
-                      'An. Bank', data.account!.bank!.bankAccountHolder ?? ''),
+                      'No. Rekening', data.employee?.bankNumber ?? ''),
+                  _buildInfoRow('An. Bank', data.employee?.bankHolder ?? ''),
                 ],
               ),
             ),
             const SizedBox(
               height: 30,
-            ),
-            AlertBanner(
-              act: controller.setBanner,
-              color: infoColor,
-              msg:
-                  'Jika terdapat ketidak sesuaian data, silahkan hubungi Dept. HR!',
-              show: controller.visibilityBanner,
             ),
             Obx(
               () => controller.visibilityBanner.isTrue
@@ -146,17 +136,15 @@ class InfoPayrollView extends GetView<InfoPayrollController> {
                     height: 10,
                   ),
                   _buildInfoRow(
-                      'Gaji pokok',
-                      formatRupiah(
-                          (data.account!.salary!.basicSalary ?? 0).toDouble())),
+                    'Gaji pokok',
+                    formatRupiah(
+                      double.tryParse(
+                              data.salaries?.basicSalary?.toString() ?? '0') ??
+                          0.0,
+                    ),
+                  ),
                   _buildInfoRow('Tipe waktu pembayaran',
-                      data.account!.salary!.salaryType ?? ''),
-                  _buildInfoRow('Jadwal pembayaran',
-                      data.account!.salary!.paymentSchedule ?? ''),
-                  _buildInfoRow('Aturan pembayaran lembur',
-                      data.account!.salary!.overtimeSettings ?? ''),
-                  _buildInfoRow('Mata uang pembayaran',
-                      data.account!.salary!.currency ?? ''),
+                      data.salaries?.paymentType ?? ''),
                 ],
               ),
             ),

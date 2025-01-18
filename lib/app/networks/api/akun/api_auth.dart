@@ -1,33 +1,47 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:esas/app/models/Tools/bug_reports.dart';
+import 'package:esas/app/models/auth/work_schedule.dart';
 import 'package:http/http.dart' as http;
 import '../../base_http_services.dart';
 
 class ApiAuth extends BaseHttpService {
-  Future<dynamic> saveSubmitBugs(
+  Future<List<BugReports>> bugReportsList(
+      int page, int limit, String search) async {
+    final response =
+        await getRequest('/bug-report?page=$page&limit=$limit&search=$search');
+    final data = jsonDecode(response.body)['data']['data'];
+    if (data != null && data.length > 0) {
+      return List<BugReports>.from(data.map((e) => BugReports.fromJson(e)));
+    } else {
+      return [];
+    }
+  }
+
+  Future<dynamic> saveSubmitBugReports(
       Map<String, dynamic> datapost, File file) async {
     http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-      'pictureProof',
+      'image',
       file.path,
     );
     final response =
-        await postFormDataRequest('/mobile/bug', datapost, [multipartFile]);
+        await postFormDataRequest('/bug-report', datapost, [multipartFile]);
     return response.statusCode;
   }
 
   Future<dynamic> saveChangeAvatar(
       Map<String, dynamic> datapost, File file) async {
     http.MultipartFile multipartFile = await http.MultipartFile.fromPath(
-      'image',
+      'avatar',
       file.path,
     );
     final response = await postFormDataRequest(
-        '/user-update/avatar', datapost, [multipartFile]);
+        '/auth/profile-avatar', datapost, [multipartFile]);
     return response.statusCode;
   }
 
-  Future<dynamic> saveSubmitDataDiri(Map<String, dynamic> datapost) async {
-    final response = await postRequest('/user-update/data-diri', datapost);
-    return response.statusCode;
+  Future<dynamic> getProfileDisplay() async {
+    return await getRequest('/auth/profile-display');
   }
 
   Future<dynamic> getProfile() async {
@@ -43,14 +57,42 @@ class ApiAuth extends BaseHttpService {
   }
 
   Future<dynamic> saveSubmitBank(Map<String, dynamic> datapost) async {
-    return await postRequest('/user-update/update_bank', datapost);
+    return await postRequest('/auth/profile-update-bank', datapost);
   }
 
   Future<dynamic> saveSubmitPassword(Map<String, dynamic> datapost) async {
-    return await postRequest('/user-update/ubah-password', datapost);
+    return await postRequest('/auth/profile-update-password', datapost);
   }
 
-  Future<dynamic> removeProfile(String type, int id) async {
-    return await deleteRequest('/user-remove/$type/$id');
+  Future<dynamic> saveFamily(List<Map<String, dynamic>> datapost) async {
+    return await postListRequest('/auth/profile-update-family', datapost);
+  }
+
+  Future<dynamic> saveFormalEducation(
+      List<Map<String, dynamic>> datapost) async {
+    return await postListRequest(
+        '/auth/profile-update-formal-education', datapost);
+  }
+
+  Future<dynamic> saveInformalEducation(
+      List<Map<String, dynamic>> datapost) async {
+    return await postListRequest(
+        '/auth/profile-update-informal-education', datapost);
+  }
+
+  Future<dynamic> saveWorkExperience(
+      List<Map<String, dynamic>> datapost) async {
+    return await postListRequest(
+        '/auth/profile-update-work-experience', datapost);
+  }
+
+  Future<List<WorkSchedule>> listJadwalKerja() async {
+    final response = await getRequest('/auth/profile-schedule-list');
+    final data = jsonDecode(response.body)['data'];
+    if (data != null && data.length > 0) {
+      return List<WorkSchedule>.from(data.map((e) => WorkSchedule.fromJson(e)));
+    } else {
+      return [];
+    }
   }
 }

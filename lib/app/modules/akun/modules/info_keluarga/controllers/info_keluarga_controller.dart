@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'package:esas/app/networks/api/akun/api_auth.dart';
-import 'package:esas/app/networks/api/akun/api_auth_family.dart';
-import 'package:esas/constant.dart';
+import 'package:esas/components/widgets/snackbar.dart';
 import 'package:get/get.dart';
 
 class InfoKeluargaController extends GetxController {
   final ApiAuth provider = Get.find<ApiAuth>();
-  final ApiAuthFamily apiFamily = Get.find<ApiAuthFamily>();
 
   var formData = <Map<String, dynamic>>[]
       .obs; // Menggunakan dynamic untuk fleksibilitas data
@@ -33,7 +31,7 @@ class InfoKeluargaController extends GetxController {
   // Tambahkan form baru
   void addForm() {
     formData.add({
-      'id': getLastId() + 1, // Menggunakan getLastId untuk id dinamis
+      'id': getLastId() + 1,
       'fullname': '',
       'relationship': '',
       'birthdate': '',
@@ -45,43 +43,19 @@ class InfoKeluargaController extends GetxController {
   // Hapus form berdasarkan index jika lebih dari satu form
   Future<void> removeForm(int index) async {
     if (formData.length > 1) {
-      final dataToRemove = formData[index];
-      int idToRemove;
-      if (dataToRemove['id'] is String) {
-        idToRemove = int.tryParse(dataToRemove['id']) ?? 0;
-        await provider.removeProfile('kontak_keluarga', idToRemove);
-      } else if (dataToRemove['id'] is int) {
-        idToRemove = dataToRemove['id'];
-        await provider.removeProfile('kontak_keluarga', idToRemove);
-      }
       formData.removeAt(index);
     }
   }
 
-  Future<void> saveForm(int index) async {
-    final dataToSave = formData[index];
-    if (dataToSave['fullname'] != '' &&
-        dataToSave['relationship'] != '' &&
-        dataToSave['birthdate'] != '' &&
-        dataToSave['marital_status'] != '' &&
-        dataToSave['job'] != '') {
+  Future<void> saveForm() async {
+    try {
       isLoading(true);
-      try {
-        final response = await apiFamily.saveSubmit(formData);
-        if (response.statusCode == 200) {
-          getProfile();
-          showSuccessSnackbar('Data berhasil diperbarui');
-        } else {
-          showErrorSnackbar('Error: ${response.body}');
-        }
-      } catch (e) {
-        showErrorSnackbar('Error: $e');
-      } finally {
-        isLoading(false);
-      }
-    } else {
-      showErrorSnackbar(
-          'Form tidak valid, pastikan anda menghisi form dengan benar!');
+      await provider.saveFamily(formData);
+      showSuccessSnackbar('Data berhasil disimpan');
+    } catch (e) {
+      showErrorSnackbar('Error: $e');
+    } finally {
+      isLoading(false);
     }
   }
 
@@ -98,12 +72,11 @@ class InfoKeluargaController extends GetxController {
       final response = await provider.getProfile();
       if (response.statusCode == 200) {
         final fetch = jsonDecode(response.body) as Map<String, dynamic>;
-        final family = fetch['account']['family'];
+        final family = fetch['data']['families'];
         formData.clear();
         for (var contact in family) {
           formData.add({
-            'id': contact['id']?.toString() ??
-                (getLastId() + 1).toString(), // Menangani id null
+            'id': contact['id']?.toString() ?? (getLastId() + 1).toString(),
             'fullname': contact['fullname'] ?? '',
             'relationship': contact['relationship'] ?? '',
             'birthdate': contact['birthdate'] ?? '',

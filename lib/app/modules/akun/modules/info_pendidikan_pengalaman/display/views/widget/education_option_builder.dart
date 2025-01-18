@@ -1,6 +1,8 @@
+import 'package:esas/app/models/users/formal_education.dart';
+import 'package:esas/app/models/users/informal_education.dart';
 import 'package:esas/constant.dart';
 import 'package:flutter/material.dart';
-import '../../controllers/models.dart';
+import '../../../../../../../models/users/work_experience.dart';
 import 'detail_card.dart';
 
 class EducationOptionBuilder {
