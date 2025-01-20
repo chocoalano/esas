@@ -20,7 +20,7 @@ class InfoPersonalController extends GetxController {
   Future<void> getProfile() async {
     isloading(true);
     try {
-      final response = await provider.getProfile();
+      final response = await provider.getProfileDisplay();
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
       if (response.statusCode == 200) {
         profile.value = UserView.fromJson(fetch['data']);

@@ -35,7 +35,7 @@ class AbsensiController extends GetxController {
       showErrorSnackbar('Waktu jaringan habis. Silahkan coba dilain waktu.');
     } catch (e) {
       if (kDebugMode) {
-        print(e.toString());
+        print("Errornya difungsi pas get absen hari ini ${e.toString()}");
       }
       notifService.showNotification(
           'Absensi', 'Anda belum melakukan absen hari ini');
@@ -51,7 +51,8 @@ class AbsensiController extends GetxController {
       listTime.clear();
       listTime.addAll(response);
     } catch (e) {
-      showErrorSnackbar("Terjadi kesalahan server : ${e.toString()}");
+      showErrorSnackbar(
+          "Sistem tidak bisa mendeteksi daftar jam kerja anda, hal ini dikarnakan kami tidak memiliki data mengenai Departemen, Jabatan, dan level anda sebagai pekerja. silahkan hubungi Tim HRGA untuk membantu anda melengkapi data diri anda. Terimakasih.");
     } finally {
       isLoading(false);
     }

@@ -8,7 +8,6 @@ import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/app/networks/api/beranda/api_beranda.dart';
 import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../absensi/controllers/absensi_controller.dart';
@@ -70,7 +69,7 @@ class HomeController extends GetxController {
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
       userDetail.value = UserDetail.fromJson(fetch['data']);
     } catch (e) {
-      showErrorSnackbar(e.toString());
+      showErrorSnackbar("Error ketika memuat akun ${e.toString()}");
       logout();
     }
   }

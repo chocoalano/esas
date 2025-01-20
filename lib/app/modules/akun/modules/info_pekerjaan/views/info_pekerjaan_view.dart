@@ -1,6 +1,7 @@
 import 'package:esas/components/widgets/globat_appbar.dart';
 import 'package:esas/constant.dart';
 import 'package:esas/support/support.dart';
+import 'package:esas/support/typography.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -74,6 +75,30 @@ class InfoPekerjaanView extends GetView<InfoPekerjaanController> {
                 ],
               ),
             ),
+            const SizedBox(height: 10),
+            Obx(() => controller.isBanner.isTrue
+                ? MaterialBanner(
+                    elevation: 0,
+                    forceActionsBelow: true,
+                    backgroundColor: primaryColor,
+                    content: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Jika terdapat ketidak sesuaian data, anda dapat menghubungi Dept. HR untuk merevisinya hingga sesuai dengan data diri anda. sesuaikan data anda untuk penggunaan yang lebih nyaman.',
+                        style: textWhite,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => controller.isBanner(false),
+                        child: Text(
+                          'Ya, saya mengerti.',
+                          style: textWhite,
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink()),
           ],
         );
       } else {
