@@ -22,7 +22,7 @@ class AbsensiController extends GetxController {
   Rx<int?> selectedShift = Rx<int?>(null);
 
   void fetchCurrentAttendance() async {
-    isLoading(true);
+    isLoading.value = true;
     try {
       final response = await provider.fetchCurrentAbsen();
       if (response.statusCode == 200) {
@@ -40,7 +40,7 @@ class AbsensiController extends GetxController {
       notifService.showNotification(
           'Absensi', 'Anda belum melakukan absen hari ini');
     } finally {
-      isLoading(false);
+      isLoading.value = false;
     }
   }
 

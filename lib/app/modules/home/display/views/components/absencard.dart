@@ -68,7 +68,21 @@ class Absencard extends StatelessWidget {
             children: [
               _buildHeader(),
               const SizedBox(height: 20),
-              _buildAbsenceTime(absensiC),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Obx(() => _buildTimeText(
+                      absensiC.currentAttendance.value.timeIn ?? '--:--:--',
+                      absensiC.currentAttendance.value.statusIn == 'late'
+                          ? false
+                          : true)),
+                  Obx(() => _buildTimeText(
+                      absensiC.currentAttendance.value.timeOut ?? '--:--:--',
+                      absensiC.currentAttendance.value.statusOut == 'late'
+                          ? false
+                          : true)),
+                ],
+              ),
               const SizedBox(height: 20),
               Obx(() => DropdownButtonFormField(
                     value: absensiC.timeId.value,
@@ -167,24 +181,6 @@ class Absencard extends StatelessWidget {
           'Absen Keluar',
           style: textRowBoldSm,
         ),
-      ],
-    );
-  }
-
-  Widget _buildAbsenceTime(AbsensiController absensiC) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Obx(() => _buildTimeText(
-            absensiC.currentAttendance.value.timeIn ?? '--:--:--',
-            absensiC.currentAttendance.value.statusIn == 'late'
-                ? false
-                : true)),
-        Obx(() => _buildTimeText(
-            absensiC.currentAttendance.value.timeOut ?? '--:--:--',
-            absensiC.currentAttendance.value.statusOut == 'late'
-                ? false
-                : true)),
       ],
     );
   }

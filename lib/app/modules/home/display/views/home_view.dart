@@ -1,14 +1,14 @@
-// ignore_for_file: deprecated_member_use
 import 'package:esas/components/BottomNavigation/bot_nav_view.dart';
 import 'package:esas/constant.dart';
+import 'package:esas/support/support.dart';
+import 'package:esas/support/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 import 'components/absencard.dart';
 import 'components/anouncement.dart';
-import 'components/empcard.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -53,16 +53,72 @@ class HomeView extends GetView<HomeController> {
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight,
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.all(10),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Empcard(),
-                      SizedBox(height: 20),
-                      Absencard(),
-                      SizedBox(height: 20),
-                      Anouncement(),
+                      Row(
+                        children: [
+                          Obx(
+                            () => CircleAvatar(
+                              radius: 30,
+                              backgroundColor: bgColor,
+                              child: controller.userDetail.value.avatar != null
+                                  ? ClipOval(
+                                      child: FadeInImage.assetNetwork(
+                                        placeholder: 'assets/loading.gif',
+                                        image:
+                                            "$baseUrlApi/assets/${controller.userDetail.value.avatar}",
+                                        width: 100,
+                                        height: 100,
+                                        fit: BoxFit.cover,
+                                        imageErrorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Icon(
+                                            Icons.error,
+                                            color: Colors.grey,
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  : const Icon(
+                                      Icons.person,
+                                      color: Colors.grey,
+                                    ),
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Obx(() => Text(
+                                      controller.userDetail.value.name ?? '',
+                                      style: profileListTitle,
+                                    )),
+                                Obx(() => Text(
+                                      limitString(
+                                          controller.userDetail.value.email ??
+                                              '',
+                                          23),
+                                      style: profileListSubtitle,
+                                    )),
+                                Obx(() => Text(
+                                      limitString(
+                                          controller.userDetail.value.nip ?? '',
+                                          23),
+                                      style: profileListSubtitle,
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      const Absencard(),
+                      const SizedBox(height: 20),
+                      const Anouncement(),
                     ],
                   ),
                 ),

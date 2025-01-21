@@ -43,6 +43,27 @@ class PengajuanView extends GetView<PengajuanController> {
                   'Tidak ada data', 'Data tim akan ditampilkan disini'),
             );
           }
+          final Map<String, IconData> typeIcons = {
+            'cuti tahunan': Icons.holiday_village,
+            'Dispensasi menikah': Icons.favorite,
+            'Dispensasi menikahkan anak': Icons.favorite_border,
+            'Dispensasi khitan/baptis anak': Icons.child_care,
+            'Dispensasi istri melahirkan/keguguran': Icons.pregnant_woman,
+            'Dispensasi Keluarga/Anggota Keluarga Dalam Satu Rumah Meninggal':
+                Icons.hotel_sharp,
+            'Dispensasi Melahirkan/Keguguran': Icons.local_hospital,
+            'cuti haid': Icons.woman,
+            'Dispensasi ibadah agama': Icons.mosque_outlined,
+            'Dispensasi Wisuda (anak/pribadi)': Icons.school,
+            'Dispensasi Lain-lain': Icons.perm_contact_cal,
+            'Dispensasi Tugas Kantor (dalam/luar kota)':
+                Icons.task_alt_outlined,
+            'Izin Sakit (surat dokter & resep)': Icons.sick,
+            'Izin Sakit (tanpa surat dokter)': Icons.sick_outlined,
+            'Izin Sakit Kecelakaan Kerja (surat dokter & resep)':
+                Icons.sticky_note_2_outlined,
+            'Izin Sakit (rawat inap)': Icons.single_bed_outlined,
+          };
           return Padding(
             padding: const EdgeInsets.all(15),
             child: ListView.builder(
@@ -51,7 +72,7 @@ class PengajuanView extends GetView<PengajuanController> {
                 if (index < controller.list.length) {
                   final data = controller.list[index];
                   return buildPengajuanOption(context,
-                      icon: Icons.document_scanner_outlined,
+                      icon: typeIcons[data.type] ?? Icons.help_outline,
                       text: data.type ?? '',
                       onTap: () =>
                           Get.offAllNamed('pengajuan/cuti', arguments: data));

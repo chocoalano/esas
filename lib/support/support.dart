@@ -19,7 +19,7 @@ bool validateApproval(List<Approval> approvals) {
   return hasApproval;
 }
 
-String capitalizedString(String text, {int maxLength = 20}) {
+String capitalizedString(String text, {int maxLength = 70}) {
   if (text.isEmpty) return text;
 
   // Batasi panjang teks sesuai dengan maxLength

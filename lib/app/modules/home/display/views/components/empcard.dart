@@ -12,8 +12,8 @@ class Empcard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(HomeController());
-    final imageUrl = controller.userDetail.value.avatar;
     controller.setAccount();
+    final imageUrl = controller.userDetail.value.avatar;
     return Row(
       children: [
         CircleAvatar(
