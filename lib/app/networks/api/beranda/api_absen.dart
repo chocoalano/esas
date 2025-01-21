@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:esas/app/models/attendance/detail.dart';
 import 'package:esas/app/models/auth/timework.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../../base_http_services.dart';
 
@@ -29,7 +30,9 @@ class ApiAbsen extends BaseHttpService {
   Future<List<TimeWork>> fetchListTimeAbsen() async {
     final response = await getRequest('$prefix/profile-list-time');
     final data = jsonDecode(response.body)['data'];
-    print(data);
+    if (kDebugMode) {
+      print(data);
+    }
     if (data != null && data.length > 0) {
       return List<TimeWork>.from(data.map((e) => TimeWork.fromJson(e)));
     } else {
