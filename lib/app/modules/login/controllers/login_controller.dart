@@ -41,27 +41,17 @@ class LoginController extends GetxController {
         showErrorSnackbar('Login failed: ${response.statusCode}');
       }
     } catch (e) {
-      showErrorSnackbar(e.toString());
+      showErrorSnackbar(
+          'KOmbinasi NIP/email dengan password anda tidak dikenali!');
     } finally {
       loading(false);
     }
   }
 
   Future<void> getLogout() async {
-    loading(true);
-    try {
-      final response = await provider.submitLogout({});
-      if (response.statusCode == 200) {
-        clearStorage();
-        Get.offAllNamed('/login');
-      } else {
-        showErrorSnackbar('Logout failed: ${response.statusCode}');
-      }
-    } catch (e) {
-      showErrorSnackbar(e.toString());
-    } finally {
-      loading(false);
-    }
+    await provider.submitLogout({});
+    clearStorage();
+    Get.offAllNamed('/login');
   }
 
   void setStorage(String token, String tokenType, String nameAuth, int userId,

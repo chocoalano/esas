@@ -45,7 +45,8 @@ class ApiAbsen extends BaseHttpService {
   }
 
   Future<dynamic> fetchCurrentAbsen() async {
-    return await getRequest('$prefix/profile-current-attendance');
+    final userId = getLocalStorage.read<int>('userId');
+    return await getRequest('$prefix/profile-current-attendance/$userId');
   }
 
   Future<dynamic> fetchLocationAbsen() async {

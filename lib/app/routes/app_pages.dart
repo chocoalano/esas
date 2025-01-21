@@ -1,3 +1,5 @@
+import 'package:esas/app/modules/splash/bindings/splash_binding.dart';
+import 'package:esas/app/modules/splash/views/splash_view.dart';
 import 'package:esas/auth_middleware.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -25,13 +27,20 @@ class AppPages {
   static String? get token => _storage.read<String>('token');
 
   // Define the initial route dynamically
-  static final String initial =
-      token?.isNotEmpty == true ? '/beranda' : Routes.login;
+  static const String initial = Routes.splash;
 
   // Define reusable middleware list
   static final List<GetMiddleware> _authMiddlewares = [AuthMiddleware()];
 
   static final routes = [
+    // Splash route
+    GetPage(
+      name: _Paths.splash,
+      page: () => const SplashView(),
+      binding: SplashBinding(),
+      transition: Transition.native,
+    ),
+
     // Login route
     GetPage(
       name: _Paths.login,

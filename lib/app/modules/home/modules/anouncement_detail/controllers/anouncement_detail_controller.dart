@@ -22,7 +22,7 @@ class AnouncementDetailController extends GetxController {
       final response = await provider.announcementRequestDetail(id);
       announcementDetail.value = response;
     } catch (e) {
-      showErrorSnackbar('Error : ${e.toString()}');
+      showErrorSnackbar('Terjadi kesalahan server Error : ${e.toString()}');
     } finally {
       isLoading(false);
     }

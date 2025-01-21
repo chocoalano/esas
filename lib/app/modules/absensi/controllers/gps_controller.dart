@@ -66,7 +66,7 @@ class GpsController extends GetxController {
         showErrorSnackbar('Data lokasi absen tidak berhasil dimuat');
       }
     } catch (e) {
-      showErrorSnackbar(e.toString());
+      showErrorSnackbar("error di controller gps boss ${e.toString()}");
     }
   }
 

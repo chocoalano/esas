@@ -17,6 +17,7 @@ class HomeController extends GetxController {
   final ApiBeranda apiBeranda = Get.put(ApiBeranda());
   final ApiAbsen apiAbsenRepository = Get.put(ApiAbsen());
   final ApiAuth apiAuthRepository = Get.put(ApiAuth());
+  var isLoading = false.obs;
   var userSchedule = WorkSchedule(
     id: null,
     userId: null,
@@ -64,6 +65,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> setAccount() async {
+    isLoading(true);
     try {
       final response = await apiAuthRepository.getProfile();
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
@@ -71,6 +73,8 @@ class HomeController extends GetxController {
     } catch (e) {
       showErrorSnackbar("Error ketika memuat akun ${e.toString()}");
       logout();
+    } finally {
+      isLoading(false);
     }
   }
 

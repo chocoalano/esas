@@ -33,7 +33,8 @@ class ListController extends GetxController {
       if (kDebugMode) {
         print(e.toString());
       }
-      showErrorSnackbar(e.toString());
+      showErrorSnackbar(
+          "TErjadi kesalahan pada controller list absen ${e.toString()}");
     } finally {
       isLoading(false);
     }

@@ -142,7 +142,7 @@ class PhotoController extends GetxController {
       }
     } catch (e) {
       if (kDebugMode) {
-        print("error ${e.toString()}");
+        print("error absen ${e.toString()}");
       }
       showErrorSnackbar(
           'Gagal mengambil atau mengunggah foto, pastikan esas mendapatkan izin untuk mengakses kamera. silahkan periksa akses izin aplikasi pada aperangkat anda!');

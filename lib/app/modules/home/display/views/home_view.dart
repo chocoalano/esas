@@ -60,34 +60,43 @@ class HomeView extends GetView<HomeController> {
                     children: [
                       Row(
                         children: [
-                          Obx(
-                            () => CircleAvatar(
-                              radius: 30,
-                              backgroundColor: bgColor,
-                              child: controller.userDetail.value.avatar != null
-                                  ? ClipOval(
-                                      child: FadeInImage.assetNetwork(
-                                        placeholder: 'assets/loading.gif',
-                                        image:
-                                            "$baseUrlApi/assets/${controller.userDetail.value.avatar}",
-                                        width: 100,
-                                        height: 100,
-                                        fit: BoxFit.cover,
-                                        imageErrorBuilder:
-                                            (context, error, stackTrace) {
-                                          return const Icon(
-                                            Icons.error,
+                          Obx(() {
+                            if (controller.isLoading.isTrue) {
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                  color: primaryColor,
+                                ),
+                              );
+                            } else {
+                              return CircleAvatar(
+                                radius: 30,
+                                backgroundColor: bgColor,
+                                child:
+                                    controller.userDetail.value.avatar != null
+                                        ? ClipOval(
+                                            child: FadeInImage.assetNetwork(
+                                              placeholder: 'assets/loading.gif',
+                                              image:
+                                                  "$baseUrlApi/assets/${controller.userDetail.value.avatar}",
+                                              width: 100,
+                                              height: 100,
+                                              fit: BoxFit.cover,
+                                              imageErrorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return const Icon(
+                                                  Icons.error,
+                                                  color: Colors.grey,
+                                                );
+                                              },
+                                            ),
+                                          )
+                                        : const Icon(
+                                            Icons.person,
                                             color: Colors.grey,
-                                          );
-                                        },
-                                      ),
-                                    )
-                                  : const Icon(
-                                      Icons.person,
-                                      color: Colors.grey,
-                                    ),
-                            ),
-                          ),
+                                          ),
+                              );
+                            }
+                          }),
                           const SizedBox(width: 20),
                           Expanded(
                             child: Column(
