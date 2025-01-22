@@ -113,7 +113,7 @@ class FormCardState extends State<FormCard> {
                 value: maritalStatusValue,
                 items: const [
                   DropdownMenuItem(value: 'single', child: Text('Lajang')),
-                  DropdownMenuItem(value: 'marriade', child: Text('Menikah')),
+                  DropdownMenuItem(value: 'married', child: Text('Menikah')),
                   DropdownMenuItem(value: 'widow', child: Text('Janda')),
                   DropdownMenuItem(value: 'widower', child: Text('Duda')),
                 ],
@@ -254,7 +254,7 @@ class FormCardState extends State<FormCard> {
   }
 
   String? _getValidMaritalStatusValue(String? value) {
-    const validValues = ['single', 'marriade', 'widow', 'widower'];
+    const validValues = ['single', 'married', 'widow', 'widower'];
     return (value != null && validValues.contains(value)) ? value : null;
   }
 }

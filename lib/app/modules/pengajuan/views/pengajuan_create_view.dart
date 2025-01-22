@@ -21,6 +21,8 @@ class PengajuanCreateView extends GetView<PengajuanCreateController> {
   Widget build(BuildContext context) {
     final data = Get.arguments as PermitType;
 
+    const textError = TextStyle(fontSize: 12, color: dangerColor);
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -99,7 +101,15 @@ class PengajuanCreateView extends GetView<PengajuanCreateController> {
                                 errorText: 'Jadwal kerja ID harus diisi'),
                             hint: const Text('Pilih salah satu jadwal kerja'),
                           ))),
-                  const SizedBox(height: 16),
+                  Obx(() => controller.errorMessages['permit_numbers'] != ''
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Text(
+                            controller.errorMessages['permit_numbers'] ?? '',
+                            style: textError,
+                          ),
+                        )
+                      : const SizedBox.shrink()),
 
                   // Tanggal mulai
                   Padding(
@@ -116,8 +126,15 @@ class PengajuanCreateView extends GetView<PengajuanCreateController> {
                           errorText: 'Tanggal mulai harus diisi'),
                     ),
                   ),
-                  const SizedBox(height: 16),
-
+                  Obx(() => controller.errorMessages['start_date'] != ''
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Text(
+                            controller.errorMessages['start_date'] ?? '',
+                            style: textError,
+                          ),
+                        )
+                      : const SizedBox.shrink()),
                   // Tanggal selesai
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10),
@@ -145,7 +162,15 @@ class PengajuanCreateView extends GetView<PengajuanCreateController> {
                       ]),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  Obx(() => controller.errorMessages['end_date'] != ''
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Text(
+                            controller.errorMessages['end_date'] ?? '',
+                            style: textError,
+                          ),
+                        )
+                      : const SizedBox.shrink()),
 
                   // Waktu mulai
                   Padding(
@@ -162,7 +187,15 @@ class PengajuanCreateView extends GetView<PengajuanCreateController> {
                           errorText: 'Waktu mulai harus diisi'),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  Obx(() => controller.errorMessages['start_time'] != ''
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Text(
+                            controller.errorMessages['start_time'] ?? '',
+                            style: textError,
+                          ),
+                        )
+                      : const SizedBox.shrink()),
 
                   // Waktu selesai
                   Padding(
@@ -191,7 +224,15 @@ class PengajuanCreateView extends GetView<PengajuanCreateController> {
                       ]),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  Obx(() => controller.errorMessages['end_time'] != ''
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Text(
+                            controller.errorMessages['end_time'] ?? '',
+                            style: textError,
+                          ),
+                        )
+                      : const SizedBox.shrink()),
 
                   // Catatan
                   Padding(
@@ -204,8 +245,15 @@ class PengajuanCreateView extends GetView<PengajuanCreateController> {
                           errorText: 'Keterangan harus diisi'),
                     ),
                   ),
-                  const SizedBox(height: 16),
-
+                  Obx(() => controller.errorMessages['notes'] != ''
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Text(
+                            controller.errorMessages['notes'] ?? '',
+                            style: textError,
+                          ),
+                        )
+                      : const SizedBox.shrink()),
                   // Input file (jika data.withFile bernilai true)
                   if (data.withFile!)
                     Padding(

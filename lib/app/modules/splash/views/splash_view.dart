@@ -25,8 +25,11 @@ class SplashView extends GetView<SplashController> {
               height: MediaQuery.of(context).size.width *
                   0.5, // Tinggi gambar sesuai diameter lingkaran
             ),
-
-            const Spacer(), // Spasi antar elemen
+            const Spacer(),
+            const Center(
+                child: CircularProgressIndicator(
+              color: bgColor,
+            )), // Spasi antar elemen
             const Text(
               'Esas Application', // Teks judul aplikasi
               style: TextStyle(
@@ -47,7 +50,7 @@ class SplashView extends GetView<SplashController> {
               ),
               textAlign: TextAlign.center, // Pusatkan teks
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             )
           ],

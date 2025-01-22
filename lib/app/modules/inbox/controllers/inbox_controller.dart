@@ -44,7 +44,7 @@ class InboxController extends GetxController {
     await loadMoreList();
   }
 
-  Future<void> read(int notifId) async {
+  Future<void> read(String notifId) async {
     isLoading.value = true;
     try {
       final response = await provider.isread(notifId);

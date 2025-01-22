@@ -11,6 +11,7 @@ class SplashController extends GetxController {
   final GetStorage _localStorage = GetStorage();
   final ApiAuth _apiAuthRepository = Get.find<ApiAuth>();
   final LoginController _loginController = Get.find<LoginController>();
+  var isLoading = false.obs;
 
   // Observable for user details
   final userDetail = UserDetail(
@@ -36,6 +37,7 @@ class SplashController extends GetxController {
 
   // Check authentication and navigate accordingly
   Future<void> checkAuth() async {
+    isLoading(true);
     try {
       // Retrieve token from local storage
       final token = _localStorage.read<String>('token');
@@ -43,7 +45,7 @@ class SplashController extends GetxController {
       // If no token, navigate to login
       if (token == null || token.isEmpty) {
         // Adding delay to avoid navigation conflict
-        Future.delayed(Duration.zero, () {
+        Future.delayed(const Duration(seconds: 2), () {
           Get.offAllNamed('/login');
         });
         return;
@@ -56,7 +58,7 @@ class SplashController extends GetxController {
         userDetail.value = UserDetail.fromJson(data['data']);
 
         // Adding delay to avoid navigation conflict
-        Future.delayed(Duration.zero, () {
+        Future.delayed(const Duration(seconds: 2), () {
           Get.offAllNamed('/beranda');
         });
       } else {
@@ -69,6 +71,8 @@ class SplashController extends GetxController {
         print('Error in checkAuth: $e');
       }
       _handleAuthError();
+    } finally {
+      isLoading(false);
     }
   }
 
@@ -76,7 +80,7 @@ class SplashController extends GetxController {
   void _handleAuthError() {
     _loginController.clearStorage();
     // Adding delay to avoid navigation conflict
-    Future.delayed(const Duration(minutes: 1), () {
+    Future.delayed(const Duration(seconds: 2), () {
       Get.offAllNamed('/login');
     });
   }

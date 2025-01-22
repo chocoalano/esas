@@ -36,7 +36,7 @@ class ApiPermit extends BaseHttpService {
     );
     final response =
         await postFormDataRequest('/permit', datapost, [multipartFile]);
-    return response.statusCode;
+    return response;
   }
 
   Future<dynamic> approval(int id, String status, String notes) async {

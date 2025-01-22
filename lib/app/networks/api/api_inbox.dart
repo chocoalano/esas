@@ -16,7 +16,7 @@ class ApiInbox extends BaseHttpService {
     }
   }
 
-  Future<dynamic> isread(int id) async {
+  Future<dynamic> isread(String id) async {
     final response = await getRequest('$prefix/$id');
     return response.statusCode;
   }

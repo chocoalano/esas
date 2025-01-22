@@ -1,7 +1,7 @@
 import 'package:esas/app/models/notification/data.dart';
 
 class NotificationModel {
-  int? id;
+  String? id;
   String? type;
   String? notifiableType;
   int? notifiableId;
