@@ -21,6 +21,28 @@ class NotificationModel {
     this.updatedAt,
   });
 
+  NotificationModel copyWith({
+    String? id,
+    String? type,
+    String? notifiableType,
+    int? notifiableId,
+    Data? data,
+    dynamic readAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return NotificationModel(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      notifiableType: notifiableType ?? this.notifiableType,
+      notifiableId: notifiableId ?? this.notifiableId,
+      data: data ?? this.data,
+      readAt: readAt ?? this.readAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
   factory NotificationModel.fromJson(Map<String, dynamic> json) =>
       NotificationModel(
         id: json["id"],

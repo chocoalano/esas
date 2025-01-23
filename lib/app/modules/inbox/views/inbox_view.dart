@@ -8,27 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-class InboxView extends GetView<InboxController> {
+class InboxView extends StatelessWidget {
   const InboxView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final ScrollController scrollController = ScrollController();
-
-    // Refresh function
-    Future<void> onRefresh() async {
-      await controller.refreshData();
-    }
-
-    // Scroll listener for pagination
-    scrollController.addListener(() {
-      if (scrollController.position.pixels >=
-              scrollController.position.maxScrollExtent - 100 &&
-          controller.hasMore.value &&
-          !controller.isLoading.value) {
-        controller.loadMoreList();
-      }
-    });
 
     return PopScope(
       canPop: false,
@@ -43,58 +28,43 @@ class InboxView extends GetView<InboxController> {
       },
       child: Scaffold(
         backgroundColor: bgColor,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: primaryColor,
-          title: const Text(
-            'Inbox',
-            style: TextStyle(color: bgColor),
-          ),
-          centerTitle: true,
-          actions: [
-            IconButton(
-                onPressed: () => controller.refreshData(),
-                icon: const Icon(
-                  Icons.refresh,
-                  color: bgColor,
-                )),
-            IconButton(
-                onPressed: () => controller.clearData(),
-                icon: const Icon(
-                  Icons.clear,
-                  color: bgColor,
-                ))
-          ],
-        ),
+        appBar: _buildAppBar(),
         body: RefreshIndicator(
-          onRefresh: onRefresh,
+          onRefresh: () async =>
+              await Get.find<InboxController>().refreshData(),
           child: Obx(() {
+            final controller = Get.find<InboxController>();
+
+            // Scroll listener for pagination
+            scrollController.addListener(() {
+              if (scrollController.position.pixels >=
+                      scrollController.position.maxScrollExtent - 100 &&
+                  controller.hasMore.isTrue &&
+                  !controller.isLoading.isTrue) {
+                controller.loadMoreList();
+              }
+            });
+
             if (controller.isLoading.isTrue) {
               return const Center(
-                child: CircularProgressIndicator(
-                  color: primaryColor,
-                ),
+                child: CircularProgressIndicator(color: primaryColor),
+              );
+            } else if (controller.list.isEmpty) {
+              return Center(
+                child: buildEmptyMessage(
+                    'Tidak ada data', 'Data akan ditampilkan di sini'),
               );
             } else {
-              if (controller.list.isEmpty) {
-                return Center(
-                  child: buildEmptyMessage(
-                      'Tidak ada data', 'Data akan ditampilkan disini'),
-                );
-              }
               return ListView.builder(
                 controller: scrollController,
                 itemCount: controller.list.length + 1,
                 itemBuilder: (context, index) {
                   if (index < controller.list.length) {
-                    final data = controller.list[index];
-                    return _buildListItem(data);
-                  } else if (controller.hasMore.value) {
+                    return _buildListItem(controller.list[index], controller);
+                  } else if (controller.hasMore.isTrue) {
                     return const Padding(
                       padding: EdgeInsets.all(16.0),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      child: Center(child: CircularProgressIndicator()),
                     );
                   } else {
                     return const SizedBox(); // Tidak ada lebih banyak data
@@ -109,23 +79,52 @@ class InboxView extends GetView<InboxController> {
     );
   }
 
-  Widget _buildListItem(NotificationModel data) {
+  AppBar _buildAppBar() {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      backgroundColor: primaryColor,
+      title: const Text(
+        'Inbox',
+        style: TextStyle(color: bgColor),
+      ),
+      centerTitle: true,
+      actions: [
+        IconButton(
+          onPressed: () => Get.find<InboxController>().refreshData(),
+          icon: const Icon(Icons.refresh, color: bgColor),
+        ),
+        IconButton(
+          onPressed: () => Get.find<InboxController>().clearData(),
+          icon: const Icon(Icons.clear, color: bgColor),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildListItem(NotificationModel data, InboxController controller) {
     return Padding(
-      padding: const EdgeInsets.all(5.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5.0),
       child: Card(
-        color: bgColor,
+        color: Colors.white,
+        elevation: 1,
         child: ListTile(
-          leading: data.readAt == null
-              ? const Icon(Icons.notifications_active, color: primaryColor)
-              : const Icon(Icons.notifications),
+          leading: Icon(
+            data.readAt == null
+                ? Icons.notifications_active
+                : Icons.notifications,
+            color: data.readAt == null ? primaryColor : Colors.grey,
+          ),
           title: Text(
-            limitString(data.data!.title ?? '', 30),
+            limitString(data.data?.title ?? '', 30),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.black54,
+              color: Colors.black87,
             ),
           ),
-          subtitle: Text(data.data!.body ?? ''),
+          subtitle: Text(
+            data.data?.body ?? '',
+            style: const TextStyle(color: Colors.black54),
+          ),
           onTap: () => controller.read(data.id!),
         ),
       ),

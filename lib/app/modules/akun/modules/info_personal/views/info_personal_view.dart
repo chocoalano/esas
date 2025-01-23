@@ -27,38 +27,39 @@ class InfoPersonalView extends GetView<InfoPersonalController> {
         ),
         body: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.all(10),
-                child: _buildInfo(controller),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Obx(() => controller.isBanner.isTrue
-                  ? MaterialBanner(
-                      elevation: 0,
-                      forceActionsBelow: true,
-                      backgroundColor: primaryColor,
-                      content: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          'Jika terdapat ketidak sesuaian data, anda dapat menghubungi Dept. HR untuk merevisinya hingga sesuai dengan data diri anda. sesuaikan data anda untuk penggunaan yang lebih nyaman.',
-                          style: textWhite,
+                child: Obx(() {
+                  if (controller.isloading.isFalse) {
+                    return Column(
+                      children: [
+                        _buildInfoSection(controller),
+                        const SizedBox(height: 10),
+                        _buildAddressSection(
+                          'Alamat lengkap',
+                          controller.profile.value.citizenAddress ?? 'Unknown',
                         ),
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => controller.isBanner(false),
-                          child: Text(
-                            'Ya, saya mengerti.',
-                            style: textWhite,
-                          ),
+                        const SizedBox(height: 10),
+                        _buildAddressSection(
+                          'Alamat tempat tinggal lengkap',
+                          controller.profile.value.residentialAddress ??
+                              'Unknown',
                         ),
                       ],
-                    )
-                  : const SizedBox.shrink()),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: primaryColor,
+                      ),
+                    );
+                  }
+                }),
+              ),
+              const SizedBox(height: 30),
+              Obx(() => _buildBanner(controller)),
             ],
           ),
         ),
@@ -66,74 +67,90 @@ class InfoPersonalView extends GetView<InfoPersonalController> {
     );
   }
 
-  Widget _buildInfo(InfoPersonalController controller) {
-    return Obx(() {
-      if (controller.isloading.isFalse) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade300),
-              ),
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Data Pribadi',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.black54),
-                  ),
-                  const Divider(),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  _buildInfoRow(
-                      'Nama',
-                      limitString(
-                          controller.profile.value.name ?? 'Unknown', 20)),
-                  _buildInfoRow(
-                      'NIP', controller.profile.value.nip ?? 'Unknown'),
-                  _buildInfoRow(
-                      'Email',
-                      limitString(
-                          controller.profile.value.email ?? 'Unknown', 30)),
-                  _buildInfoRow(
-                      'Tlp/HP', controller.profile.value.phone ?? 'Unknown'),
-                  _buildInfoRow(
-                      'Tempat lahir',
-                      limitString(
-                          controller.profile.value.placebirth ?? 'Unknown',
-                          30)),
-                  _buildInfoRow('Tanggal lahir',
-                      formatDate(controller.profile.value.datebirth)),
-                  _buildInfoRow('Jenis Kelamin',
-                      jenisKelamin(controller.profile.value.gender ?? 'm')),
-                  _buildInfoRow('Gol. Darah',
-                      controller.profile.value.blood ?? 'Unknown'),
-                  _buildInfoRow(
-                      'Status pernikahan',
-                      statusPernikahan(
-                          controller.profile.value.maritalStatus ?? 'single')),
-                  _buildInfoRow(
-                      'Agama', controller.profile.value.religion ?? 'Unknown'),
-                ],
-              ),
+  Widget _buildInfoSection(InfoPersonalController controller) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Data Pribadi',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black54,
             ),
-          ],
-        );
-      } else {
-        return const Center(
-          child: CircularProgressIndicator(
-            color: primaryColor,
           ),
-        );
-      }
-    });
+          const Divider(),
+          const SizedBox(height: 10),
+          _buildInfoRow('Nama',
+              limitString(controller.profile.value.name ?? 'Unknown', 20)),
+          _buildInfoRow('NIP', controller.profile.value.nip ?? 'Unknown'),
+          _buildInfoRow('Email',
+              limitString(controller.profile.value.email ?? 'Unknown', 20)),
+          _buildInfoRow('Tlp/HP', controller.profile.value.phone ?? 'Unknown'),
+          _buildInfoRow(
+              'Tempat lahir',
+              limitString(
+                  controller.profile.value.placebirth ?? 'Unknown', 30)),
+          _buildInfoRow(
+              'Tanggal lahir', formatDate(controller.profile.value.datebirth)),
+          _buildInfoRow('Jenis Kelamin',
+              jenisKelamin(controller.profile.value.gender ?? 'm')),
+          _buildInfoRow(
+              'Gol. Darah', controller.profile.value.blood ?? 'Unknown'),
+          _buildInfoRow(
+              'Status pernikahan',
+              statusPernikahan(
+                  controller.profile.value.maritalStatus ?? 'single')),
+          _buildInfoRow(
+              'Agama', controller.profile.value.religion ?? 'Unknown'),
+          _buildInfoRow('Tipe Identitas',
+              controller.profile.value.identityType ?? 'Unknown'),
+          _buildInfoRow('No. Identitas',
+              controller.profile.value.identityNumbers ?? 'Unknown'),
+          _buildInfoRow(
+              'Provinsi', controller.profile.value.province ?? 'Unknown'),
+          _buildInfoRow('Kota', controller.profile.value.city ?? 'Unknown'),
+          _buildInfoRow(
+              'Alamat', controller.profile.value.citizenAddress ?? 'Unknown'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddressSection(String title, String address) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: Colors.black54,
+            ),
+          ),
+          const Divider(),
+          const SizedBox(height: 10),
+          Text(
+            address,
+            style: const TextStyle(color: Colors.black54),
+            softWrap: true,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildInfoRow(String label, String value) {
@@ -142,11 +159,52 @@ class InfoPersonalView extends GetView<InfoPersonalController> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: _labelStyle()),
+          Flexible(
+            flex: 2,
+            child: Text(
+              label,
+              style: _labelStyle(),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           const SizedBox(width: 8),
-          Text(value),
+          Flexible(
+            flex: 3,
+            child: Text(
+              value,
+              style: const TextStyle(color: Colors.black54),
+              softWrap: true,
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget _buildBanner(InfoPersonalController controller) {
+    if (controller.isBanner.isFalse) {
+      return const SizedBox.shrink();
+    }
+    return MaterialBanner(
+      elevation: 0,
+      forceActionsBelow: true,
+      backgroundColor: primaryColor,
+      content: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          'Jika terdapat ketidak sesuaian data, anda dapat menghubungi Dept. HR untuk merevisinya hingga sesuai dengan data diri anda. Sesuaikan data anda untuk penggunaan yang lebih nyaman.',
+          style: textWhite,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => controller.isBanner(false),
+          child: Text(
+            'Ya, saya mengerti.',
+            style: textWhite,
+          ),
+        ),
+      ],
     );
   }
 
