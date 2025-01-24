@@ -18,8 +18,13 @@ class ApiAbsen extends BaseHttpService {
   }
 
   Future<List<Detail>> fetchPaginate(int page, int limit, String filter) async {
-    final response = await getRequest('/attendance/auth?search=$filter');
+    final cacheBuster = DateTime.now().millisecondsSinceEpoch;
+    final response =
+        await getRequest('/attendance/auth?search=$filter&cb=$cacheBuster');
     final data = jsonDecode(response.body)['data'];
+    if (kDebugMode) {
+      print("=======================>>>>>>>>>>>>>>${data[1]}");
+    }
     if (data != null && data.length > 0) {
       return List<Detail>.from(data.map((e) => Detail.fromJson(e)));
     } else {

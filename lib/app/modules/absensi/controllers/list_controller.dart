@@ -9,39 +9,69 @@ class ListController extends GetxController {
   final ApiAbsen provider = ApiAbsen();
   final int page = 1;
   final int limit = 15;
+
+  // Reactive variables
   var isLoading = false.obs;
   var filter = (DateTime.now().month).obs;
   var list = <Detail>[].obs;
 
+  // Month names for the calendar
   final List<Map<String, String>> months = List.generate(12, (index) {
     final monthName = DateFormat.MMMM().format(DateTime(0, index + 1));
     return {'nama': monthName, 'value': '${index + 1}'};
   });
 
-  void calendarSelected(int date) {
-    filter(date);
-    loadMoreList(filter.value.toString());
+  @override
+  void onInit() {
+    super.onInit();
+    loadMoreList(filter.value.toString()); // Load initial data
   }
 
-  Future loadMoreList(String filter) async {
-    try {
-      isLoading(true);
-      List<Detail> response = await provider.fetchPaginate(1, 31, filter);
-      list.clear();
-      list.addAll(response);
-    } catch (e) {
-      if (kDebugMode) {
-        print(e.toString());
-      }
-      showErrorSnackbar(
-          "TErjadi kesalahan pada controller list absen ${e.toString()}");
-    } finally {
-      isLoading(false);
+  void calendarSelected(int date) {
+    if (filter.value != date) {
+      filter(date); // Update the filter only if it changes
+      refreshData(); // Refresh the list with the new filter
     }
   }
 
-  Future refreshData() async {
-    list.value = [];
-    await loadMoreList(filter.value.toString());
+  Future<void> loadMoreList(String filter) async {
+    try {
+      isLoading(true); // Show loading indicator
+      // Fetch paginated data from the API
+      List<Detail> response = await provider.fetchPaginate(page, limit, filter);
+
+      // Clear the current list and add new data
+      list.clear();
+      list.addAll(response);
+
+      // Force UI update to prevent stale data (useful for cached widgets)
+      list.refresh();
+      if (kDebugMode) {
+        print("===================>>>>>>>>${list[1].timeOut}");
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error in loadMoreList: ${e.toString()}");
+      }
+      showErrorSnackbar(
+          "Terjadi kesalahan pada controller list absen: ${e.toString()}");
+    } finally {
+      isLoading(false); // Hide loading indicator
+    }
+  }
+
+  Future<void> refreshData() async {
+    try {
+      isLoading(true); // Show loading indicator
+      list.clear(); // Clear the current list
+      await loadMoreList(filter.value.toString()); // Reload data
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error in refreshData: ${e.toString()}");
+      }
+      showErrorSnackbar("Gagal memuat ulang data: ${e.toString()}");
+    } finally {
+      isLoading(false); // Hide loading indicator
+    }
   }
 }

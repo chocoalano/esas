@@ -105,6 +105,15 @@ class AbsensiView extends StatelessWidget {
               Get.offAllNamed('/beranda');
             },
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.refresh,
+                color: bgColor,
+              ),
+              onPressed: () => controller.refreshData(),
+            )
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: onRefresh,
