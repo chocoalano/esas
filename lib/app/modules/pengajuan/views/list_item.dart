@@ -26,7 +26,7 @@ Widget listItem(PermitList data) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                limitString(data.permitType?.type ?? '', 30),
+                limitString(data.permitType?.type ?? '', 25),
                 style: listile,
               ),
               TextButton.icon(

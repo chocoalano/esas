@@ -48,56 +48,51 @@ class PengajuanShowView extends GetView<PengajuanShowController> {
                   const SizedBox(height: 10),
                   _buildDescriptionCard(data),
                   const SizedBox(height: 10),
-                  Container(
-                    width: Get.width,
-                    height: Get.height / 3.5,
-                    decoration: BoxDecoration(
-                      color: Colors
-                          .grey.shade200, // Background color for image box
-                      borderRadius: BorderRadius.circular(8),
+                  if (data.file != null && data.file!.isNotEmpty)
+                    Container(
+                      width: Get.width,
+                      height: Get.height / 3.5,
+                      decoration: BoxDecoration(
+                        color: Colors
+                            .grey.shade200, // Background color for image box
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: (data.file != null && data.file!.isNotEmpty)
+                            ? Image.network(
+                                "$baseUrlApi/assets/${data.file}", // Full image URL
+                                fit: BoxFit
+                                    .contain, // Ensures the image fits properly within the box
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    color: Colors.grey
+                                        .shade300, // Background color for the placeholder
+                                    child: const Icon(
+                                      Icons
+                                          .image, // Icon to indicate missing image
+                                      size: 50,
+                                      color: Colors.grey,
+                                    ),
+                                  ); // Placeholder when image fails to load
+                                },
+                              )
+                            : const SizedBox
+                                .shrink(), // Placeholder when URL is empty
+                      ),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: data.file!.isNotEmpty
-                          ? Image.network(
-                              "$baseUrlApi/assets/${data.file}", // Full image URL
-                              fit: BoxFit
-                                  .contain, // Ensures the image fits properly within the box
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey
-                                      .shade300, // Background color for the placeholder
-                                  child: const Icon(
-                                    Icons
-                                        .image, // Icon to indicate missing image
-                                    size: 50,
-                                    color: Colors.grey,
-                                  ),
-                                ); // Placeholder when image fails to load
-                              },
-                            )
-                          : Container(
-                              color: Colors.grey
-                                  .shade300, // Background color for the placeholder
-                              child: const Icon(
-                                Icons.image, // Icon to indicate missing image
-                                size: 50,
-                                color: Colors.grey,
-                              ),
-                            ), // Placeholder when URL is empty
-                    ),
-                  )
+                  const SizedBox(height: 10),
+                  validateApproval(data.approvals ?? [])
+                      ? Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: BtnApproval(data),
+                        )
+                      : const SizedBox.shrink()
                 ],
               ),
             ),
           );
         }),
-        bottomNavigationBar: validateApproval(data.approvals ?? [])
-            ? Padding(
-                padding: const EdgeInsets.all(10),
-                child: BtnApproval(data),
-              )
-            : null,
       ),
     );
   }

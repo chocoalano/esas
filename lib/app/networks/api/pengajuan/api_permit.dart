@@ -39,6 +39,11 @@ class ApiPermit extends BaseHttpService {
     return response;
   }
 
+  Future<dynamic> saveSubmitNotFile(Map<String, dynamic> datapost) async {
+    final response = await postRequest('/permit', datapost);
+    return response;
+  }
+
   Future<dynamic> approval(int id, String status, String notes) async {
     final datapost = {"approve": status, "notes": notes};
     return await putRequest('$prefix/$id', datapost);
