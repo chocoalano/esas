@@ -40,6 +40,7 @@ Widget listItem(PermitList data) {
           const SizedBox(height: 8.0),
 
           // Subtitle Section
+          buildSubtitleRow('Nama', formatDate(data.startDate)),
           buildSubtitleRow('Tgl. Mulai', formatDate(data.startDate)),
           buildSubtitleRow('Tgl. Selesai', formatDate(data.endDate)),
 
