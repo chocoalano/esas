@@ -1,51 +1,54 @@
+import 'package:esas/app/models/Permit/permit_user.dart';
 import 'package:esas/app/models/users/user_timework_schedule.dart';
 
 import 'approval.dart';
 import 'permit_type.dart';
 
 class PermitList {
-  int? id;
-  String? permitNumbers;
-  int? userId;
-  int? permitTypeId;
-  int? userTimeworkScheduleId;
+  int id;
+  String permitNumbers;
+  int userId;
+  int permitTypeId;
+  int userTimeworkScheduleId;
   dynamic timeinAdjust;
   dynamic timeoutAdjust;
   dynamic currentShiftId;
   dynamic adjustShiftId;
-  DateTime? startDate;
-  DateTime? endDate;
-  String? startTime;
-  String? endTime;
-  String? notes;
-  String? file;
-  DateTime? createdAt;
-  DateTime? updatedAt;
-  PermitType? permitType;
-  List<Approval>? approvals;
-  UserTimeworkSchedule? userTimeworkSchedule;
+  DateTime startDate;
+  DateTime endDate;
+  String startTime;
+  String endTime;
+  String notes;
+  dynamic file;
+  DateTime createdAt;
+  DateTime updatedAt;
+  PermitUser user;
+  PermitType permitType;
+  List<Approval> approvals;
+  UserTimeworkSchedule userTimeworkSchedule;
 
   PermitList({
-    this.id,
-    this.permitNumbers,
-    this.userId,
-    this.permitTypeId,
-    this.userTimeworkScheduleId,
-    this.timeinAdjust,
-    this.timeoutAdjust,
-    this.currentShiftId,
-    this.adjustShiftId,
-    this.startDate,
-    this.endDate,
-    this.startTime,
-    this.endTime,
-    this.notes,
-    this.file,
-    this.createdAt,
-    this.updatedAt,
-    this.permitType,
-    this.approvals,
-    this.userTimeworkSchedule,
+    required this.id,
+    required this.permitNumbers,
+    required this.userId,
+    required this.permitTypeId,
+    required this.userTimeworkScheduleId,
+    required this.timeinAdjust,
+    required this.timeoutAdjust,
+    required this.currentShiftId,
+    required this.adjustShiftId,
+    required this.startDate,
+    required this.endDate,
+    required this.startTime,
+    required this.endTime,
+    required this.notes,
+    required this.file,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.user,
+    required this.permitType,
+    required this.approvals,
+    required this.userTimeworkSchedule,
   });
 
   factory PermitList.fromJson(Map<String, dynamic> json) => PermitList(
@@ -58,31 +61,20 @@ class PermitList {
         timeoutAdjust: json["timeout_adjust"],
         currentShiftId: json["current_shift_id"],
         adjustShiftId: json["adjust_shift_id"],
-        startDate: json["start_date"] == null
-            ? null
-            : DateTime.parse(json["start_date"]),
-        endDate:
-            json["end_date"] == null ? null : DateTime.parse(json["end_date"]),
+        startDate: DateTime.parse(json["start_date"]),
+        endDate: DateTime.parse(json["end_date"]),
         startTime: json["start_time"],
         endTime: json["end_time"],
         notes: json["notes"],
         file: json["file"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
-        permitType: json["permit_type"] == null
-            ? null
-            : PermitType.fromJson(json["permit_type"]),
-        approvals: json["approvals"] == null
-            ? []
-            : List<Approval>.from(
-                json["approvals"]!.map((x) => Approval.fromJson(x))),
-        userTimeworkSchedule: json["user_timework_schedule"] == null
-            ? null
-            : UserTimeworkSchedule.fromJson(json["user_timework_schedule"]),
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        user: PermitUser.fromJson(json["user"]),
+        permitType: PermitType.fromJson(json["permit_type"]),
+        approvals: List<Approval>.from(
+            json["approvals"].map((x) => Approval.fromJson(x))),
+        userTimeworkSchedule:
+            UserTimeworkSchedule.fromJson(json["user_timework_schedule"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -96,19 +88,18 @@ class PermitList {
         "current_shift_id": currentShiftId,
         "adjust_shift_id": adjustShiftId,
         "start_date":
-            "${startDate!.year.toString().padLeft(4, '0')}-${startDate!.month.toString().padLeft(2, '0')}-${startDate!.day.toString().padLeft(2, '0')}",
+            "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
         "end_date":
-            "${endDate!.year.toString().padLeft(4, '0')}-${endDate!.month.toString().padLeft(2, '0')}-${endDate!.day.toString().padLeft(2, '0')}",
+            "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
         "start_time": startTime,
         "end_time": endTime,
         "notes": notes,
         "file": file,
-        "created_at": createdAt?.toIso8601String(),
-        "updated_at": updatedAt?.toIso8601String(),
-        "permit_type": permitType?.toJson(),
-        "approvals": approvals == null
-            ? []
-            : List<dynamic>.from(approvals!.map((x) => x.toJson())),
-        "user_timework_schedule": userTimeworkSchedule?.toJson(),
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "user": user.toJson(),
+        "permit_type": permitType.toJson(),
+        "approvals": List<dynamic>.from(approvals.map((x) => x.toJson())),
+        "user_timework_schedule": userTimeworkSchedule.toJson(),
       };
 }

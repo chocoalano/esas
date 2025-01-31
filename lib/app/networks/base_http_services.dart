@@ -142,7 +142,7 @@ class BaseHttpService {
     } else if (error is FormatException) {
       return Exception('Bad response format.');
     } else {
-      return Exception('An error occurred: $error');
+      return error;
     }
   }
 }

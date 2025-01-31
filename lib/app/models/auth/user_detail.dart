@@ -12,6 +12,7 @@ class UserDetail {
   DateTime? emailVerifiedAt;
   String? avatar;
   String? status;
+  String? deviceId;
   DateTime? createdAt;
   DateTime? updatedAt;
   Details? details;
@@ -32,6 +33,7 @@ class UserDetail {
     this.emailVerifiedAt,
     this.avatar,
     this.status,
+    this.deviceId,
     this.createdAt,
     this.updatedAt,
     this.details,
@@ -55,6 +57,7 @@ class UserDetail {
             : DateTime.parse(json["email_verified_at"]),
         avatar: json["avatar"],
         status: json["status"],
+        deviceId: json["device_id"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),

@@ -26,7 +26,7 @@ Widget listItem(PermitList data) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                limitString(data.permitType?.type ?? '', 25),
+                limitString(data.permitType.type ?? '', 25),
                 style: listile,
               ),
               TextButton.icon(
@@ -40,15 +40,16 @@ Widget listItem(PermitList data) {
           const SizedBox(height: 8.0),
 
           // Subtitle Section
-          buildSubtitleRow('Nama', formatDate(data.startDate)),
+          buildSubtitleRow('Nama', limitString(data.user.name, 25)),
+          buildSubtitleRow('NIP', limitString(data.user.nip, 25)),
           buildSubtitleRow('Tgl. Mulai', formatDate(data.startDate)),
           buildSubtitleRow('Tgl. Selesai', formatDate(data.endDate)),
 
           // Approvals Section
-          if (data.approvals != null && data.approvals!.isNotEmpty)
+          if (data.approvals.isNotEmpty)
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: data.approvals!
+              children: data.approvals
                   .map(
                     (approval) => buildSubtitleRow(
                       'Status ${approval.userType}', // Assuming `userType` is a property in approval
@@ -60,19 +61,18 @@ Widget listItem(PermitList data) {
             ),
 
           // Notes Section
-          if (data.notes != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                limitString(data.notes!, 100),
-                style: TextStyle(color: Colors.grey.shade500),
-              ),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              limitString(data.notes, 100),
+              style: TextStyle(color: Colors.grey.shade500),
             ),
+          ),
 
           const SizedBox(height: 12.0),
 
           // Approval Buttons Section
-          if (validateApproval(data.approvals ?? [])) BtnApproval(data),
+          if (validateApproval(data.approvals)) BtnApproval(data),
         ],
       ),
     ),

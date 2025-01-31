@@ -17,6 +17,10 @@ class ApiAbsen extends BaseHttpService {
     return await postFormDataRequest('/attendance', datapost, [multipartFile]);
   }
 
+  Future<dynamic> submitQRcode(Map<String, dynamic> datapost) async {
+    return await postRequest('/attendance/qr/auth', datapost);
+  }
+
   Future<List<Detail>> fetchPaginate(int page, int limit, String filter) async {
     final cacheBuster = DateTime.now().millisecondsSinceEpoch;
     final response =

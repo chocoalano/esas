@@ -48,8 +48,16 @@ class ApiAuth extends BaseHttpService {
     return await getRequest('/auth/profile');
   }
 
+  Future<dynamic> getSetting() async {
+    return await getRequest('/auth/setting');
+  }
+
   Future<dynamic> submitLogin(Map<String, dynamic> datapost) async {
     return await postRequest('/auth/login', datapost);
+  }
+
+  Future<dynamic> setImei(Map<String, dynamic> datapost) async {
+    return await postRequest('/auth/set-imei', datapost);
   }
 
   Future<dynamic> submitLogout(Map<String, dynamic> datapost) async {

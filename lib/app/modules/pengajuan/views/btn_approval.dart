@@ -80,7 +80,7 @@ Widget _buildApprovalButton({
   return ElevatedButton(
     onPressed: () {
       _handleApproval(
-          formKey, approvalStatus, data.id!, controller, data.permitType!);
+          formKey, approvalStatus, data.id, controller, data.permitType);
     },
     style: ElevatedButton.styleFrom(
       shape: RoundedRectangleBorder(

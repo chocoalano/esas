@@ -16,7 +16,7 @@ class PengajuanShowView extends GetView<PengajuanShowController> {
     final data = Get.arguments as PermitList;
 
     // Memuat detail data
-    controller.loadDetail(data.id!);
+    controller.loadDetail(data.id);
 
     return PopScope(
       canPop: false,
@@ -82,7 +82,7 @@ class PengajuanShowView extends GetView<PengajuanShowController> {
                       ),
                     ),
                   const SizedBox(height: 10),
-                  validateApproval(data.approvals ?? [])
+                  validateApproval(data.approvals)
                       ? Padding(
                           padding: const EdgeInsets.all(10),
                           child: BtnApproval(data),
@@ -113,7 +113,7 @@ class PengajuanShowView extends GetView<PengajuanShowController> {
           children: [
             Center(
               child: Text(
-                limitString(data.permitType?.type ?? '...', 50),
+                limitString(data.permitType.type ?? '...', 50),
                 style: textRowBold,
               ),
             ),
@@ -122,17 +122,17 @@ class PengajuanShowView extends GetView<PengajuanShowController> {
                 limitString(controller.detail.value.user?.name ?? '---', 20)),
             _buildDetailRow('NIP', controller.detail.value.user?.nip ?? '---'),
             const Divider(),
-            _buildDetailRow('Nomor pengajuan', data.permitNumbers!),
-            _buildDetailRow('Tgl. Dibuat', formatDate(data.createdAt)),
-            _buildDetailRow('Tgl. Diajukan pada', formatDate(data.startDate)),
-            _buildDetailRow('Tgl. Diajukan sampai', formatDate(data.endDate)),
-            _buildDetailRow('Jam Diajukan pada', data.startTime ?? '--:--:--'),
-            _buildDetailRow('Jam Diajukan sampai', data.endTime ?? '--:--:--'),
+            _buildDetailRow('Nomor pengajuan', data.permitNumbers),
+            _buildDetailRow('Tanggal Dibuat', formatDate(data.createdAt)),
+            _buildDetailRow('Tanggal Mulai', formatDate(data.startDate)),
+            _buildDetailRow('Tanggal Selesai', formatDate(data.endDate)),
+            _buildDetailRow('Waktu Mulai', data.startTime),
+            _buildDetailRow('Waktu Selesai', data.endTime),
             const Divider(),
-            if (data.approvals != null && data.approvals!.isNotEmpty)
-              ...data.approvals!.map(
+            if (data.approvals.isNotEmpty)
+              ...data.approvals.map(
                 (approval) => _buildDetailRow(
-                  'Status Approval ${approval.userType}',
+                  'Status ${approval.userType}',
                   approvalString(approval.userApprove!),
                 ),
               ),
@@ -165,7 +165,7 @@ class PengajuanShowView extends GetView<PengajuanShowController> {
               Expanded(
                 child: SingleChildScrollView(
                   child: Text(
-                    data.notes ?? 'Tanpa keterangan',
+                    data.notes,
                     style: textRowNormalSm,
                     textAlign: TextAlign.left,
                   ),

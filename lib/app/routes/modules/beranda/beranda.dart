@@ -2,6 +2,7 @@ import 'package:esas/app/modules/absensi/bindings/absensi_binding.dart';
 import 'package:esas/app/modules/absensi/views/absensi_view.dart';
 import 'package:esas/app/modules/home/display/bindings/home_binding.dart';
 import 'package:esas/app/modules/home/display/views/components/photo_screen.dart';
+import 'package:esas/app/modules/home/display/views/components/qr_screen.dart';
 import 'package:esas/app/modules/home/display/views/home_view.dart';
 import 'package:esas/auth_middleware.dart';
 import 'package:get/get.dart';
@@ -33,6 +34,12 @@ class BerandaRoutes {
     GetPage(
         name: '$path/absen/photo',
         page: () => const PhotoScreen(),
+        binding: AbsensiBinding(),
+        transition: Transition.noTransition,
+        middlewares: [AuthMiddleware()]),
+    GetPage(
+        name: '$path/absen/qr',
+        page: () => const QrCodeScreen(),
         binding: AbsensiBinding(),
         transition: Transition.noTransition,
         middlewares: [AuthMiddleware()])

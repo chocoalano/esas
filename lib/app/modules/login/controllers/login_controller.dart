@@ -3,6 +3,7 @@ import 'package:esas/app/networks/api/akun/api_auth.dart';
 import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_device_imei/flutter_device_imei.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -30,8 +31,12 @@ class LoginController extends GetxController {
   Future<void> login(String indicatour, String password) async {
     loading(true);
     try {
-      final response = await provider
-          .submitLogin({'indicatour': indicatour, 'password': password});
+      String? imei = await FlutterDeviceImei.instance.getIMEI();
+      final response = await provider.submitLogin({
+        'indicatour': indicatour,
+        'password': password,
+        'device_info': imei
+      });
       if (response.statusCode == 200) {
         final fetch = jsonDecode(response.body) as Map<String, dynamic>;
         final info = fetch['data'];
@@ -43,10 +48,10 @@ class LoginController extends GetxController {
       }
     } catch (e) {
       if (kDebugMode) {
-        print(e.toString());
+        print("==============>>>>>> error api : ${e.toString()}");
       }
       showErrorSnackbar(
-          'Kombinasi NIP/email dengan password anda tidak dikenali!');
+          'Kombinasi NIP/email/Device imei dengan password anda tidak dikenali!, kami mencatat device anda, jika anda menggunakan device baru/berganti device, silahkan hubungi dept HR untuk mendaftarkan device anda.');
     } finally {
       loading(false);
     }

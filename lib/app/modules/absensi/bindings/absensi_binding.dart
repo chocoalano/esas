@@ -1,3 +1,4 @@
+import 'package:esas/app/modules/absensi/controllers/qr_code_controller.dart';
 import 'package:get/get.dart';
 
 import 'package:esas/app/modules/absensi/controllers/gps_controller.dart';
@@ -21,6 +22,9 @@ class AbsensiBinding extends Bindings {
     );
     Get.lazyPut<AbsensiController>(
       () => AbsensiController(),
+    );
+    Get.lazyPut<QrCodeController>(
+      () => QrCodeController(),
     );
     Get.lazyPut<ApiAbsen>(
       () => ApiAbsen(),

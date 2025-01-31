@@ -21,8 +21,9 @@ class InboxController extends GetxController {
 
   /// Memuat lebih banyak data (pagination)
   Future<void> loadMoreList() async {
-    if (isLoading.value || !hasMore.value)
+    if (isLoading.value || !hasMore.value) {
       return; // Jika sedang loading atau tidak ada data lagi
+    }
     isLoading.value = true;
     try {
       final response = await provider.fetchPaginate(page.value, limit);

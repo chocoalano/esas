@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:esas/components/BottomNavigation/bot_nav_view.dart';
 import 'package:esas/constant.dart';
 import 'package:esas/support/support.dart';
