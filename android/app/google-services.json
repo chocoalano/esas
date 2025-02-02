@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "834167435213",
+    "project_id": "esas-7d76f",
+    "storage_bucket": "esas-7d76f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:834167435213:android:52c55f263e1c352d975e84",
+        "android_client_info": {
+          "package_name": "com.example.esas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_tSzEwwbHn4mSXO1AND-EoMxWoNcu1Do"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
