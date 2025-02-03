@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:esas/app/modules/absensi/controllers/absensi_controller.dart';
+import 'package:esas/app/modules/absensi/controllers/gps_controller.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
@@ -9,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class QrCodeController extends GetxController {
+  final GpsController gpsC = Get.put(GpsController());
   final qrText = ''.obs;
   var isLoading = false.obs;
   final RxMap<String, dynamic> qrData = <String, dynamic>{}.obs;
@@ -43,6 +45,7 @@ class QrCodeController extends GetxController {
         'type': qrData['type'],
         'token': qrData['token'],
       };
+      print(datapost);
       try {
         isLoading(true);
         await provider.submitQRcode(datapost);
@@ -53,12 +56,23 @@ class QrCodeController extends GetxController {
         if (kDebugMode) {
           print("============== response error qrcode ${e.toString()}");
         }
+
         final errorMessage = _extractErrorMessage(e.toString());
 
         try {
           Map<String, dynamic> jsonResponse = jsonDecode(errorMessage);
-          final errorText = jsonResponse['data']?['error'] ??
-              "Terjadi kesalahan yang tidak diketahui";
+
+          String errorText = "Terjadi kesalahan yang tidak diketahui";
+
+          if (jsonResponse.containsKey('data') && jsonResponse['data'] is Map) {
+            if (jsonResponse['data'].containsKey('error')) {
+              errorText = jsonResponse['data']['error'].toString();
+            } else if (jsonResponse.containsKey('message')) {
+              errorText = jsonResponse['message'].toString();
+            }
+          } else if (jsonResponse.containsKey('message')) {
+            errorText = jsonResponse['message'].toString();
+          }
 
           if (kDebugMode) {
             print("=============== response absen : $jsonResponse");
@@ -71,6 +85,7 @@ class QrCodeController extends GetxController {
           showErrorSnackbar("Terjadi kesalahan server.");
         }
       } finally {
+        gpsC.getLocationData();
         isLoading(false);
       }
     });
