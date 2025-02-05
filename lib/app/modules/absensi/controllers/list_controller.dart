@@ -1,4 +1,4 @@
-import 'package:esas/app/models/attendance/detail.dart';
+import 'package:esas/app/models/attendance/attendance_auth.dart';
 import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
@@ -8,12 +8,12 @@ import 'package:intl/intl.dart';
 class ListController extends GetxController {
   final ApiAbsen provider = ApiAbsen();
   final int page = 1;
-  final int limit = 15;
+  final int limit = 31;
 
   // Reactive variables
   var isLoading = false.obs;
-  var filter = (DateTime.now().month).obs;
-  var list = <Detail>[].obs;
+  var filter = DateTime.now().month.obs;
+  var list = <AttendanceAuth>[].obs;
 
   // Month names for the calendar
   final List<Map<String, String>> months = List.generate(12, (index) {
@@ -28,8 +28,8 @@ class ListController extends GetxController {
   }
 
   void calendarSelected(int date) {
-    if (filter.value != date) {
-      filter(date); // Update the filter only if it changes
+    if (date >= 1 && date <= 12 && filter.value != date) {
+      filter(date); // Update the filter only if it's valid and changes
       refreshData(); // Refresh the list with the new filter
     }
   }
@@ -37,17 +37,18 @@ class ListController extends GetxController {
   Future<void> loadMoreList(String filter) async {
     try {
       isLoading(true); // Show loading indicator
-      // Fetch paginated data from the API
-      List<Detail> response = await provider.fetchPaginate(page, limit, filter);
+      List<AttendanceAuth> response =
+          await provider.fetchPaginate(page, limit, filter);
 
-      // Clear the current list and add new data
       list.clear();
       list.addAll(response);
+      list.refresh(); // Force UI update
 
-      // Force UI update to prevent stale data (useful for cached widgets)
-      list.refresh();
-      if (kDebugMode) {
-        print("===================>>>>>>>>${list[1].timeOut}");
+      // Cek apakah list memiliki cukup data sebelum mengakses index 1
+      if (list.length > 1) {
+        if (kDebugMode) {
+          print("===================>>>>>>>>${list[0].timeOut}");
+        }
       }
     } catch (e) {
       if (kDebugMode) {
@@ -62,16 +63,16 @@ class ListController extends GetxController {
 
   Future<void> refreshData() async {
     try {
-      isLoading(true); // Show loading indicator
-      list.clear(); // Clear the current list
-      await loadMoreList(filter.value.toString()); // Reload data
+      isLoading(true);
+      list.clear();
+      await loadMoreList(filter.value.toString());
     } catch (e) {
       if (kDebugMode) {
         print("Error in refreshData: ${e.toString()}");
       }
       showErrorSnackbar("Gagal memuat ulang data: ${e.toString()}");
     } finally {
-      isLoading(false); // Hide loading indicator
+      isLoading(false);
     }
   }
 }

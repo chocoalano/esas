@@ -1,4 +1,4 @@
-class Detail {
+class AttendanceAuth {
   int? id;
   int? userId;
   int? companyId;
@@ -17,23 +17,23 @@ class Detail {
   String? level;
   dynamic workDay;
   dynamic shiftname;
-  dynamic detailIn;
+  dynamic attendanceAuthIn;
   dynamic out;
   dynamic userTimeworkScheduleId;
   String? timeIn;
   String? latIn;
   String? longIn;
-  String? imageIn;
+  dynamic imageIn;
   String? statusIn;
   String? timeOut;
   String? latOut;
   String? longOut;
-  String? imageOut;
+  dynamic imageOut;
   String? statusOut;
   DateTime? createdAt;
   DateTime? updatedAt;
 
-  Detail({
+  AttendanceAuth({
     this.id,
     this.userId,
     this.companyId,
@@ -52,7 +52,7 @@ class Detail {
     this.level,
     this.workDay,
     this.shiftname,
-    this.detailIn,
+    this.attendanceAuthIn,
     this.out,
     this.userTimeworkScheduleId,
     this.timeIn,
@@ -69,7 +69,7 @@ class Detail {
     this.updatedAt,
   });
 
-  factory Detail.fromJson(Map<String, dynamic> json) => Detail(
+  factory AttendanceAuth.fromJson(Map<String, dynamic> json) => AttendanceAuth(
         id: json["id"],
         userId: json["user_id"],
         companyId: json["company_id"],
@@ -92,7 +92,7 @@ class Detail {
         level: json["level"],
         workDay: json["work_day"],
         shiftname: json["shiftname"],
-        detailIn: json["in"],
+        attendanceAuthIn: json["in"],
         out: json["out"],
         userTimeworkScheduleId: json["user_timework_schedule_id"],
         timeIn: json["time_in"],
@@ -134,7 +134,7 @@ class Detail {
         "level": level,
         "work_day": workDay,
         "shiftname": shiftname,
-        "in": detailIn,
+        "in": attendanceAuthIn,
         "out": out,
         "user_timework_schedule_id": userTimeworkScheduleId,
         "time_in": timeIn,

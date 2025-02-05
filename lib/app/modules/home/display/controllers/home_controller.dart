@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:esas/app/models/auth/user_detail.dart';
 import 'package:esas/app/models/auth/work_schedule.dart';
 import 'package:esas/app/models/setting.dart';
@@ -9,13 +10,14 @@ import 'package:esas/app/networks/api/beranda/api_absen.dart';
 import 'package:esas/app/networks/api/beranda/api_beranda.dart';
 import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_device_imei/flutter_device_imei.dart';
 import 'package:get/get.dart';
 
 import '../../../absensi/controllers/absensi_controller.dart';
 import '../../../absensi/controllers/gps_controller.dart';
 
 class HomeController extends GetxController {
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
   final ApiBeranda apiBeranda = Get.put(ApiBeranda());
   final ApiAbsen apiAbsenRepository = Get.put(ApiAbsen());
   final ApiAuth apiAuthRepository = Get.put(ApiAuth());
@@ -80,7 +82,8 @@ class HomeController extends GetxController {
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
       userDetail.value = UserDetail.fromJson(fetch['data']);
       if (userDetail.value.deviceId == null) {
-        String? imei = await FlutterDeviceImei.instance.getIMEI();
+        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        String? imei = androidInfo.id;
         await apiAuthRepository.setImei({"imei": imei});
       }
     } catch (e) {

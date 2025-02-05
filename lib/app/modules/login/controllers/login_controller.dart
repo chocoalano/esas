@@ -1,14 +1,16 @@
 import 'dart:convert';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:esas/app/networks/api/akun/api_auth.dart';
 import 'package:esas/components/widgets/snackbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_device_imei/flutter_device_imei.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class LoginController extends GetxController {
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
   final formKey = GlobalKey<FormBuilderState>();
   final ApiAuth provider = Get.put(ApiAuth());
   final storage = GetStorage();
@@ -31,7 +33,8 @@ class LoginController extends GetxController {
   Future<void> login(String indicatour, String password) async {
     loading(true);
     try {
-      String? imei = await FlutterDeviceImei.instance.getIMEI();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      String? imei = androidInfo.id;
       final response = await provider.submitLogin({
         'indicatour': indicatour,
         'password': password,

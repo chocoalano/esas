@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:esas/app/models/attendance/detail.dart';
+import 'package:esas/app/models/attendance/attendance_auth.dart';
 import 'package:esas/app/models/auth/timework.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -21,16 +21,18 @@ class ApiAbsen extends BaseHttpService {
     return await postRequest('/attendance/qr/auth', datapost);
   }
 
-  Future<List<Detail>> fetchPaginate(int page, int limit, String filter) async {
+  Future<List<AttendanceAuth>> fetchPaginate(
+      int page, int limit, String filter) async {
     final cacheBuster = DateTime.now().millisecondsSinceEpoch;
     final response =
         await getRequest('/attendance/auth?search=$filter&cb=$cacheBuster');
     final data = jsonDecode(response.body)['data'];
     if (kDebugMode) {
-      print("=======================>>>>>>>>>>>>>>${data[1]}");
+      print("=======================>>>>>>>>>>>>>>data absen : $data");
     }
     if (data != null && data.length > 0) {
-      return List<Detail>.from(data.map((e) => Detail.fromJson(e)));
+      return List<AttendanceAuth>.from(
+          data.map((e) => AttendanceAuth.fromJson(e)));
     } else {
       return [];
     }

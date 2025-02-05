@@ -1,14 +1,19 @@
-import 'package:esas/app/modules/absensi/controllers/qr_code_controller.dart';
-import 'package:esas/constant.dart';
+import 'dart:convert';
+
+import 'package:esas/components/widgets/globat_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
-class QrCodeScreen extends GetView<QrCodeController> {
+import '../../../../absensi/controllers/qr_code_controller.dart';
+
+class QrCodeScreen extends StatelessWidget {
   const QrCodeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final QrCodeController controller = Get.put(QrCodeController());
+
     return PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
@@ -18,43 +23,56 @@ class QrCodeScreen extends GetView<QrCodeController> {
           Get.offAllNamed('/beranda');
         },
         child: Scaffold(
-          appBar: AppBar(
-            actions: [
-              IconButton(
-                  onPressed: () => controller.qrController?.resumeCamera(),
-                  icon: const Icon(
-                    Icons.refresh,
-                    color: bgColor,
-                  ))
-            ],
-            backgroundColor: primaryColor,
-            title: const Text(
-              'Scan absensi kode QR',
-              style: TextStyle(color: bgColor),
-            ),
-            leading: IconButton(
-                onPressed: () => Get.offAllNamed('/beranda'),
-                icon: const Icon(
-                  Icons.chevron_left,
-                  color: bgColor,
-                )),
+          appBar: GlobatAppbar(
+            title: 'Absensi Kode QR',
+            act: () => Get.offAllNamed('/beranda'),
           ),
-          body: Column(
+          body: Stack(
             children: [
-              Expanded(
-                flex: 5,
-                child: QRView(
-                  key: GlobalKey(debugLabel: 'QR'),
-                  onQRViewCreated: controller.onQRViewCreated,
-                  overlay: QrScannerOverlayShape(
-                    borderColor: primaryColor,
-                    borderRadius: 10,
-                    borderLength: 30,
-                    borderWidth: 10,
-                    cutOutSize: 250,
+              MobileScanner(
+                controller: controller.scannerController,
+                onDetect: controller.handleBarcode,
+              ),
+
+              /// Overlay Frame (Kotak Scanner)
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 4),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-              )
+              ),
+
+              /// Hasil Scan
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  color: Colors.black54,
+                  child: Obx(() {
+                    if (controller.errorMessage.isNotEmpty) {
+                      return Text(
+                        "⚠️ ${controller.errorMessage.value}",
+                        style: const TextStyle(color: Colors.red, fontSize: 16),
+                      );
+                    }
+                    if (controller.qrData.isEmpty) {
+                      return const Text(
+                        "Pindain kode QR pada perangkat dan lokasi yang telah ditentukan perusahaan untuk melakukan absen!",
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      );
+                    }
+                    return Text(
+                      "📌 Data: ${jsonEncode(controller.qrData['token'])}",
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                    );
+                  }),
+                ),
+              ),
             ],
           ),
         ));

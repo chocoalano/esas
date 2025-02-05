@@ -1,4 +1,4 @@
-import 'package:esas/app/models/attendance/detail.dart';
+import 'package:esas/app/models/attendance/attendance_auth.dart';
 import 'package:esas/components/widgets/photo_box.dart';
 import 'package:esas/constant.dart';
 import 'package:esas/support/support.dart';
@@ -136,7 +136,7 @@ class AbsensiView extends StatelessWidget {
     );
   }
 
-  Widget _buildListTile(Detail item) {
+  Widget _buildListTile(AttendanceAuth item) {
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Container(
@@ -152,7 +152,7 @@ class AbsensiView extends StatelessWidget {
     );
   }
 
-  Widget _buildSubtitle(Detail item) {
+  Widget _buildSubtitle(AttendanceAuth item) {
     return Column(
       children: [
         _buildInfoRow(
@@ -217,7 +217,7 @@ class AbsensiView extends StatelessWidget {
     );
   }
 
-  void _showDetails(Detail item) {
+  void _showDetails(AttendanceAuth item) {
     Get.bottomSheet(
       Container(
         width: Get.width,
@@ -271,7 +271,7 @@ class AbsensiView extends StatelessWidget {
     );
   }
 
-  Widget _buildPhotoSection(Detail item) {
+  Widget _buildPhotoSection(AttendanceAuth item) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
