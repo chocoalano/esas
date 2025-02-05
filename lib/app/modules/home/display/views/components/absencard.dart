@@ -78,6 +78,11 @@ class Absencard extends StatelessWidget {
                       absensiC.currentAttendance.value.statusIn == 'late'
                           ? false
                           : true)),
+                  Obx(() => gpsC.isLoading.isFalse
+                      ? IconButton.outlined(
+                          onPressed: () => gpsC.checkLocationPermission(),
+                          icon: Icon(Icons.refresh))
+                      : const CircularProgressIndicator(color: primaryColor)),
                   Obx(() => _buildTimeText(
                       absensiC.currentAttendance.value.timeOut ?? '--:--:--',
                       absensiC.currentAttendance.value.statusOut == 'late'

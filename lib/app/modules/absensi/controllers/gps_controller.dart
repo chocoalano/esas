@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 
 class GpsController extends GetxController {
   final ApiAbsen provider = ApiAbsen();
+  var isLoading = false.obs;
   var isWithinRange = false.obs;
   var currentDistance = 0.0.obs;
   var isMockedLocation = false.obs;
@@ -52,6 +53,7 @@ class GpsController extends GetxController {
   }
 
   Future<void> getLocationData() async {
+    isLoading.value = true;
     try {
       final response = await provider.fetchLocationAbsen();
       final fetch = jsonDecode(response.body) as Map<String, dynamic>;
@@ -67,6 +69,8 @@ class GpsController extends GetxController {
       }
     } catch (e) {
       showErrorSnackbar("error di controller gps boss ${e.toString()}");
+    } finally {
+      isLoading.value = false;
     }
   }
 
