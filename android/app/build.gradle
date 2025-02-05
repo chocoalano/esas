@@ -64,6 +64,10 @@ android {
     //         signingConfig = signingConfigs.debug
     //     }
     // }
+
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 flutter {
