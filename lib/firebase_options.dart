@@ -51,20 +51,20 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD_tSzEwwbHn4mSXO1AND-EoMxWoNcu1Do',
-    appId: '1:834167435213:android:07a49e6aafd78510975e84',
-    messagingSenderId: '834167435213',
-    projectId: 'esas-7d76f',
-    storageBucket: 'esas-7d76f.firebasestorage.app',
+    apiKey: 'AIzaSyDX4fG04ecuN-2HtHncpd3EpH7cRGu9fMQ',
+    appId: '1:732843162485:android:0bf16c8ea889fe7617f13c',
+    messagingSenderId: '732843162485',
+    projectId: 'esas-90b5a',
+    storageBucket: 'esas-90b5a.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyB1FsQNASYDQKuDD-1Pbog-2qKDz9w8Ltk',
-    appId: '1:834167435213:ios:f10b3e5dcf994d2c975e84',
-    messagingSenderId: '834167435213',
-    projectId: 'esas-7d76f',
-    storageBucket: 'esas-7d76f.firebasestorage.app',
-    iosBundleId: 'com.example.esasFlutter',
+    apiKey: 'AIzaSyBTT3AOf6D_NWd1M13ILEUtLJBPe8mtEDQ',
+    appId: '1:732843162485:ios:e469638f1fb0b3e517f13c',
+    messagingSenderId: '732843162485',
+    projectId: 'esas-90b5a',
+    storageBucket: 'esas-90b5a.firebasestorage.app',
+    iosBundleId: 'com.example.esas',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
