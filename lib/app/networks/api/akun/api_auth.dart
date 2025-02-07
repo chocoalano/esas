@@ -72,6 +72,10 @@ class ApiAuth extends BaseHttpService {
     return await postRequest('/auth/profile-update-password', datapost);
   }
 
+  Future<dynamic> setDeviceToken(Map<String, dynamic> datapost) async {
+    return await postRequest('/auth/store-device-token', datapost);
+  }
+
   Future<dynamic> saveFamily(List<Map<String, dynamic>> datapost) async {
     return await postListRequest('/auth/profile-update-family', datapost);
   }

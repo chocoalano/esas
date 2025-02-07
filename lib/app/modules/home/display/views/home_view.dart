@@ -2,6 +2,7 @@
 
 import 'package:esas/components/BottomNavigation/bot_nav_view.dart';
 import 'package:esas/constant.dart';
+import 'package:esas/services/fcm_service.dart';
 import 'package:esas/support/support.dart';
 import 'package:esas/support/typography.dart';
 import 'package:flutter/material.dart';
@@ -17,64 +18,69 @@ class HomeView extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) async {
-        if (didPop) {
-          return;
-        }
-        if (context.mounted) {
-          SystemNavigator.pop();
-        }
-      },
-      child: Scaffold(
-        backgroundColor: bgColor,
-        appBar: AppBar(
-          backgroundColor: primaryColor,
-          title: SvgPicture.asset(
-            'assets/svg/logo_esas.svg',
-            height: 30,
-            width: 30,
-            color: Colors.white,
-          ),
-          automaticallyImplyLeading: false,
-          actions: [
-            IconButton(
-              onPressed: () => controller.logout(),
-              icon: const Icon(
-                Icons.logout_sharp,
-                color: bgColor,
+    final FcmService fcmService = Get.find<FcmService>();
+
+    return FutureBuilder(
+      future: fcmService.requestPermission(),
+      builder: (context, snapshot) {
+        return PopScope(
+          canPop: false,
+          onPopInvoked: (didPop) async {
+            if (didPop) {
+              return;
+            }
+            if (context.mounted) {
+              SystemNavigator.pop();
+            }
+          },
+          child: Scaffold(
+            backgroundColor: bgColor,
+            appBar: AppBar(
+              backgroundColor: primaryColor,
+              title: SvgPicture.asset(
+                'assets/svg/logo_esas.svg',
+                height: 30,
+                width: 30,
+                color: Colors.white,
               ),
-            ),
-          ],
-        ),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight,
+              automaticallyImplyLeading: false,
+              actions: [
+                IconButton(
+                  onPressed: () => controller.logout(),
+                  icon: const Icon(
+                    Icons.logout_sharp,
+                    color: bgColor,
+                  ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Row(
+              ],
+            ),
+            body: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Obx(() {
-                            if (controller.isLoading.isTrue) {
-                              return const Center(
-                                child: CircularProgressIndicator(
-                                  color: primaryColor,
-                                ),
-                              );
-                            } else {
-                              return CircleAvatar(
-                                radius: 30,
-                                backgroundColor: bgColor,
-                                child:
-                                    controller.userDetail.value.avatar != null
+                          Row(
+                            children: [
+                              Obx(() {
+                                if (controller.isLoading.isTrue) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: primaryColor,
+                                    ),
+                                  );
+                                } else {
+                                  return CircleAvatar(
+                                    radius: 30,
+                                    backgroundColor: bgColor,
+                                    child: controller.userDetail.value.avatar !=
+                                            null
                                         ? ClipOval(
                                             child: FadeInImage.assetNetwork(
                                               placeholder: 'assets/loading.gif',
@@ -96,49 +102,54 @@ class HomeView extends GetView<HomeController> {
                                             Icons.person,
                                             color: Colors.grey,
                                           ),
-                              );
-                            }
-                          }),
-                          const SizedBox(width: 20),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Obx(() => Text(
-                                      controller.userDetail.value.name ?? '',
-                                      style: profileListTitle,
-                                    )),
-                                Obx(() => Text(
-                                      limitString(
-                                          controller.userDetail.value.email ??
+                                  );
+                                }
+                              }),
+                              const SizedBox(width: 20),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Obx(() => Text(
+                                          controller.userDetail.value.name ??
                                               '',
-                                          23),
-                                      style: profileListSubtitle,
-                                    )),
-                                Obx(() => Text(
-                                      limitString(
-                                          controller.userDetail.value.nip ?? '',
-                                          23),
-                                      style: profileListSubtitle,
-                                    )),
-                              ],
-                            ),
+                                          style: profileListTitle,
+                                        )),
+                                    Obx(() => Text(
+                                          limitString(
+                                              controller
+                                                      .userDetail.value.email ??
+                                                  '',
+                                              23),
+                                          style: profileListSubtitle,
+                                        )),
+                                    Obx(() => Text(
+                                          limitString(
+                                              controller.userDetail.value.nip ??
+                                                  '',
+                                              23),
+                                          style: profileListSubtitle,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
+                          const SizedBox(height: 20),
+                          const Absencard(),
+                          const SizedBox(height: 20),
+                          const Anouncement(),
                         ],
                       ),
-                      const SizedBox(height: 20),
-                      const Absencard(),
-                      const SizedBox(height: 20),
-                      const Anouncement(),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            );
-          },
-        ),
-        bottomNavigationBar: BotNavView(),
-      ),
+                );
+              },
+            ),
+            bottomNavigationBar: BotNavView(),
+          ),
+        );
+      },
     );
   }
 }

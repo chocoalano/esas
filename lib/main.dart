@@ -73,16 +73,6 @@ Future<void> _initializeServices() async {
       }
     }
 
-    final fcmToken = await messaging.getToken(
-        vapidKey:
-            "BBAZvAVD58R62xjfTqvWNc3IKHrDmkQPntrpVxydKTPp1ea3MOyiAIqP_auom1IeURoYSKJQTDUOvX5cwWlBfbk");
-
-    if (fcmToken != null) {
-      if (kDebugMode) {
-        print("================token :: $fcmToken");
-      }
-    }
-
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
       if (kDebugMode) {
         print("================token refreshed :: $fcmToken");

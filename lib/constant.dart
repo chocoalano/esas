@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 const baseUrlApi = 'https://esas.sinergiabadisentosa.com/api';
+// const baseUrlApi = 'http://192.168.51.186:8000/api';
 // const baseUrlApi = 'http://172.16.1.16:8000/api';
 
 const primaryColor = Color(0xFF079246);

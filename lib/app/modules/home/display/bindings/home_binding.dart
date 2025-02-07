@@ -1,6 +1,7 @@
 import 'package:esas/app/modules/login/controllers/login_controller.dart';
 import 'package:esas/app/networks/api/akun/api_auth.dart';
 import 'package:esas/app/networks/api/beranda/api_beranda.dart';
+import 'package:esas/services/fcm_service.dart';
 import 'package:get/get.dart';
 
 import '../../../absensi/controllers/photo_controller.dart';
@@ -23,6 +24,9 @@ class HomeBinding extends Bindings {
     );
     Get.lazyPut<ApiAuth>(
       () => ApiAuth(),
+    );
+    Get.lazyPut<FcmService>(
+      () => FcmService(),
     );
   }
 }
